@@ -12,7 +12,7 @@ def get_variable_type(problem, varidx):
     elif vartype == 'int':
         # Note: integer support is wonky with pyGPGO.
         # Additional steps (eg. rounding) in objective function may be required.
-        return 'int'
+        return 'cont'
     else:
         raise ValueError(f'Variable of type {vartype} supported by pyGPGO.')
 
@@ -42,12 +42,15 @@ def optimize_pyGPGO(problem, max_evals, gp, acq):
     mon = Monitor()
 
     # Note, pyGPGO seems to maximize by default, objective is therefore negated.
+    # Furthermore: passing `int` as type seems to be very fragile.
+    # performing manual rounding instead.
     def f(**x):
         mon.commit_start_eval()
-        xvec = np.array([v for k, v in x.items()])
+        xvec = np.array([v if t == 'cont' else round(v) for (k, v), t in zip(x.items(), problem.vartype())])
+        # print(f"Processed vector: {xvec}")
         r = -problem.evaluate(xvec)
         mon.commit_end_eval(r)
-        return r
+        return float(r)
 
     mon.start()
     gpgo = GPGO(gp, acq, f, params)
