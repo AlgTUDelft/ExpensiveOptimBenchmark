@@ -2,10 +2,11 @@ import numpy as np
 
 class TSP:
 
-    def __init__(self, W, n_iter, noise_factor):
+    def __init__(self, W, n_iter, noise_seed=None, noise_factor=1):
         self.d = W.shape[0] - 2
         self.W = W
         self.n_iter = n_iter
+        self.noise_rng = np.random.RandomState(seed=noise_seed)
         self.noise_factor = noise_factor
 
     def _evaluate(self, x):
@@ -24,16 +25,9 @@ class TSP:
             robust_total_route_length += self.W[current, last]
             robust_total_route_length += self.W[last, 0]
 
-        robust_total_route_length += np.random.random() * self.n_iter * (self.d + 2) * self.noise_factor
+        robust_total_route_length += self.noise_rng.random() * self.n_iter * (self.d + 2) * self.noise_factor
 
         return robust_total_route_length
-
-    def f_kw(self, **kargs):
-        vc = np.array([v for k, v in kargs.items()])
-        return self._evaluate(vc)
-        
-    def f_arr(self, x):
-        return self._evaluate(x)
 
     def lbs(self):
         return np.zeros(self.d, dtype=int)
@@ -41,10 +35,15 @@ class TSP:
     def ubs(self):
         return np.array([self.d-x-1 for x in range(0, self.d)])
 
-    def n(self):
+    def dims(self):
         return self.d
 
-    def vars(self):
-        return {
-            'i{x}'.format(x=x): ('int', [0, self.d-x-1]) for x in range(0, self.d)
-        }
+
+def load_explicit_W(path):
+    with open(path) as f:
+        return np.array([list(map(lambda x: float(x.strip()))) for line in f.readlines()])
+
+import tsplib95
+
+def load_tsplib_W(path):
+    return np.array(tsplib95.load(path).edge_weight_format)

@@ -9,15 +9,8 @@ class RosenbrockInt:
         self.d = d
         self.scaling = d*(100*((self.ub-self.lb**2)**2)+(self.ub-1)**2)
 
-    def _evaluate(self, x):
+    def evaluate(self, x):
         return rosen(x)/self.scaling
-
-    def f_kw(self, **kargs):
-        vc = np.array([v for k, v in kargs.items()])
-        return self._evaluate(vc)
-        
-    def f_arr(self, x):
-        return self._evaluate(x)
 
     def lbs(self):
         return self.lb*np.ones(self.d, dtype=int)
@@ -25,10 +18,8 @@ class RosenbrockInt:
     def ubs(self):
         return self.ub*np.ones(self.d, dtype=int)
 
-    def n(self):
-        return self.d
+    def vartype(self):
+        return np.array(['int'] * self.d)
 
-    def vars(self):
-        return {
-            'i{x}'.format(x=x): ('int', [self.lb, self.ub]) for x in range(0, self.d)
-        }
+    def dims(self):
+        return self.d

@@ -20,16 +20,9 @@ class Convex:
         self.noise_factor = noise_factor
         self.noise_rng = np.random.RandomState(seed=noise_seed)
 
-    def _evaluate(self, x):
+    def evaluate(self, x):
         diff = x - self.x_star
         return np.matmul(np.matmul(diff.T, self.A), diff) + self.noise_rng.uniform() * self.noise_factor
-
-    def f_kw(self, **kargs):
-        vc = np.array([v for k, v in kargs.items()])
-        return self._evaluate(vc)
-        
-    def f_arr(self, x):
-        return self._evaluate(x)
 
     def lbs(self):
         return np.zeros(self.d, dtype=int)
@@ -37,10 +30,8 @@ class Convex:
     def ubs(self):
         return np.ones(self.d, dtype=int)
 
-    def n(self):
-        return self.d
+    def vartype(self):
+        return np.array(['int'] * self.d)
 
-    def vars(self):
-        return {
-            'i{x}'.format(x=x): ('int', [0, 1]) for x in range(0, self.d)
-        }
+    def dims(self):
+        return self.d
