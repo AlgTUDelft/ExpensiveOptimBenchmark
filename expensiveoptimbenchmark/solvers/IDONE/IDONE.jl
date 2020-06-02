@@ -337,8 +337,8 @@ function optimize_surrogate(model :: IDONEModel, initial_x :: Vector{Float64}, f
     # model is well behaved at the point of error.
     # Backtracking Linesearch has issues with NaN values as well.
     # Which seems to be caused by being used together with Fminbox.
-    # optimizer = Fminbox()
-    optimizer = Fminbox(ParticleSwarm())
+    optimizer = Fminbox()
+    # optimizer = Fminbox(ParticleSwarm())
     # optimizer = Fminbox(LBFGS(linesearch=LineSearches.BackTracking()))
     options = Optim.Options(iterations=50)
     
