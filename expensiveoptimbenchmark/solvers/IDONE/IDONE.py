@@ -17,7 +17,7 @@ import time
 import numpy as np
 from scipy.optimize import minimize, Bounds
 
-def IDONE_minimize(obj, x0, lb, ub, max_evals):
+def IDONE_minimize(obj, x0, lb, ub, max_evals, verbose=1, log=False):
 	d = len(x0) # dimension, number of variables
 	current_time = time.time() # time when starting the algorithm
 	next_X = [] # candidate solution presented by the algorithm
@@ -166,7 +166,8 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals):
 	
 	## Iteratively evaluate the objective, update the model, find the minimum of the model, and explore the search space
 	for ii in range(0,max_evals):
-		print(f"Starting IDONE iteration {ii}/{max_evals}")
+		if verbose > 0 and ii % verbose == 0:
+			print(f"Starting IDONE iteration {ii}/{max_evals}")
 		x = np.copy(next_X).astype(int)
 		if ii==0:
 			y = obj(x) # Evaluate the objective
@@ -249,17 +250,18 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals):
 		
 		# Save data to log file
 		filename = 'log_IDONE_'+ str(current_time) + ".log"
-		with open(filename, 'a') as f:
-			print('\n\n IDONE iteration: ', ii, file=f)
-			print('Time spent training the model:				 ', update_time, file=f)
-			print('Time spent finding the minimum of the model: ', minimization_time, file=f)
-			print('Current time: ', time.time(), file=f)
-			print('Evaluated data point and evaluation:						   ', np.copy(x).astype(int),  ', ',  inv_scale(y), file=f)
-			print('Best found data point and evaluation so far:				   ', np.copy(best_X).astype(int),  ', ',  inv_scale(best_y), file=f)
-			print('Best data point according to the model and predicted value:    ', next_X_before_exploration, ', ', inv_scale(model['out'](next_X_before_exploration)), file=f)
-			print('Suggested next data point and predicted value:			       ', next_X,   ', ',  inv_scale(model['out'](next_X)), file=f)
-			if ii>=max_evals-1:
-				print('Model parameters: ', np.transpose(model['c']), file=f)
+		if log:
+			with open(filename, 'a') as f:
+				print('\n\n IDONE iteration: ', ii, file=f)
+				print('Time spent training the model:				 ', update_time, file=f)
+				print('Time spent finding the minimum of the model: ', minimization_time, file=f)
+				print('Current time: ', time.time(), file=f)
+				print('Evaluated data point and evaluation:						   ', np.copy(x).astype(int),  ', ',  inv_scale(y), file=f)
+				print('Best found data point and evaluation so far:				   ', np.copy(best_X).astype(int),  ', ',  inv_scale(best_y), file=f)
+				print('Best data point according to the model and predicted value:    ', next_X_before_exploration, ', ', inv_scale(model['out'](next_X_before_exploration)), file=f)
+				print('Suggested next data point and predicted value:			       ', next_X,   ', ',  inv_scale(model['out'](next_X)), file=f)
+				if ii>=max_evals-1:
+					print('Model parameters: ', np.transpose(model['c']), file=f)
 	
 	return best_X, inv_scale(best_y), model, filename
 
