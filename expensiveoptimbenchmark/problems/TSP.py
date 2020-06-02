@@ -44,6 +44,7 @@ def load_explicit_W(path):
         return np.array([list(map(lambda x: float(x.strip()))) for line in f.readlines()])
 
 import tsplib95
+import networkx
 
 def load_tsplib_W(path):
-    return np.array(tsplib95.load(path).edge_weight_format)
+    return networkx.to_numpy_matrix(tsplib95.load(path).get_graph())
