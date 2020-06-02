@@ -1,3 +1,5 @@
+import numpy as np
+
 from pyGPGO.GPGO import GPGO
 from ..utils import Monitor
 
@@ -27,7 +29,7 @@ def get_variable_domain(problem, varidx):
         raise ValueError(f'Variable of type {vartype} supported by pyGPGO.')
 
 def get_variables(problem):
-    {
+    return {
         f'v{i}': (get_variable_type(problem, i), get_variable_domain(problem, i))
         for i in range(problem.dims())
     }
