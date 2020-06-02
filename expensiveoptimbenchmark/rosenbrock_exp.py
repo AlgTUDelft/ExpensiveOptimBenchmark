@@ -3,10 +3,11 @@ import numpy as np
 from problems.rosenbrock_int import RosenbrockInt
 from solvers.IDONE.wIDONE import optimize_IDONE
 from solvers.pyGPGO.wpyGPGO import optimize_pyGPGO
+from solvers.hyperopt.whyperopt import optimize_hyperopt_tpe
 
 d = 3
 problem = RosenbrockInt(d)
-max_evals = 200
+max_evals = 20
 
 ## IDONE
 solX, solY, mon = optimize_IDONE(problem, max_evals)
@@ -61,11 +62,21 @@ print(f"and {np.mean(mon.eval_time())}s per call on the evaluation itself.")
 #     print(f"Spent {np.mean(mon.model_time())}s per call on building a model,")
 #     print(f"and {np.mean(mon.eval_time())}s per call on the evaluation itself.")
 
+##
+solX, solY, mon = optimize_hyperopt_tpe(problem, max_evals)
+solXHyp, solYHyp, monHyp = solX, solY, mon
+
+
+print(f"hyperopt found solution {solX} with {solY}.")
+print(f"Spent {np.mean(mon.model_time())}s per call on deciding the next point,")
+print(f"and {np.mean(mon.eval_time())}s per call on the evaluation itself.")
+
 ## Plot!
 import matplotlib.pyplot as plt
 
 plt.plot(monID.model_time(), label="IDONE")
-plt.plot(monGPGO.model_time(), label="GPGO/1")
+plt.plot(monHyp.model_time(), label="HyperOpt")
+# plt.plot(monGPGO.model_time(), label="GPGO/1")
 # plt.plot(monGPGO2.model_time(), label="GPGO/2")
 plt.legend()
 plt.show()

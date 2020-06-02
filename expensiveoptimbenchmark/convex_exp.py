@@ -4,10 +4,11 @@ from problems.convex import Convex
 
 from solvers.IDONE.wIDONE import optimize_IDONE
 from solvers.pyGPGO.wpyGPGO import optimize_pyGPGO
+from solvers.hyperopt.whyperopt import optimize_hyperopt_tpe
 
-d = 5
+d = 50
 problem = Convex(d, 0)
-max_evals = 20
+max_evals = 100
 
 ## IDONE
 solX, solY, mon = optimize_IDONE(problem, max_evals)
@@ -36,7 +37,7 @@ print(f"Optimum was {problem.x_star}")
 # from pyGPGO.GPGO import GPGO
 
 # cov = matern32()
-# gp = GaussianProcess(cov, optimize=True, usegrads=True)
+# gp = GaussianProcess(cov)
 # # gp = GaussianProcess(cov, optimize=True)
 # acq = Acquisition(mode='ExpectedImprovement')
 
@@ -46,6 +47,15 @@ print(f"Optimum was {problem.x_star}")
 # print(f"pyGPGO/1 found solution {solX} with {solY}")
 # print(f"Spent {np.mean(mon.model_time())}s per call on building a model,")
 # print(f"and {np.mean(mon.eval_time())}s per call on the evaluation itself.")
+
+##
+solX, solY, mon = optimize_hyperopt_tpe(problem, max_evals)
+solXHyp, solYHyp, monHyp = solX, solY, mon
+
+
+print(f"hyperopt found solution {solX} with {solY}.")
+print(f"Spent {np.mean(mon.model_time())}s per call on deciding the next point,")
+print(f"and {np.mean(mon.eval_time())}s per call on the evaluation itself.")
 
 ## pyGPGO - 2, only works on Unix/Linux. Fails horribly on windows.
 
@@ -67,7 +77,8 @@ print(f"Optimum was {problem.x_star}")
 import matplotlib.pyplot as plt
 
 plt.plot(monID.model_time(), label="IDONE")
-plt.plot(monGPGO.model_time(), label="GPGO/1")
+# plt.plot(monGPGO.model_time(), label="GPGO/1")
+plt.plot(monHyp.model_time(), label="HyperOpt")
 # plt.plot(monGPGO2.model_time(), label="GPGO/2")
 plt.legend()
 plt.show()
