@@ -1,15 +1,19 @@
+import os.path
 import numpy as np
+import tsplib95
+import networkx
 
 class TSP:
 
-    def __init__(self, W, n_iter, noise_seed=None, noise_factor=1):
+    def __init__(self, name, W, n_iter, noise_seed=None, noise_factor=1):
+        self.name = name
         self.d = W.shape[0] - 2
         self.W = W
         self.n_iter = n_iter
         self.noise_rng = np.random.RandomState(seed=noise_seed)
         self.noise_factor = noise_factor
 
-    def _evaluate(self, x):
+    def evaluate(self, x):
         robust_total_route_length = 0.0
         
         for iteration in range(self.n_iter):
@@ -19,13 +23,16 @@ class TSP:
             for i in x:
                 next_up = unvisited.pop(i)
                 robust_total_route_length += self.W[current, next_up]
+                robust_total_route_length += self.noise_rng.random() * self.noise_factor
                 current = next_up
 
             last = unvisited.pop()
             robust_total_route_length += self.W[current, last]
+            robust_total_route_length += self.noise_rng.random() * self.noise_factor
             robust_total_route_length += self.W[last, 0]
-
-        robust_total_route_length += self.noise_rng.random() * self.n_iter * (self.d + 2) * self.noise_factor
+            robust_total_route_length += self.noise_rng.random() * self.noise_factor
+        
+        # robust_total_route_length += self.noise_rng.random() * self.n_iter * (self.d + 2) * self.noise_factor
 
         return robust_total_route_length
 
@@ -35,16 +42,22 @@ class TSP:
     def ubs(self):
         return np.array([self.d-x-1 for x in range(0, self.d)])
 
+    def vartype(self):
+        return np.array(['int'] * self.d)
+
     def dims(self):
         return self.d
 
+    def __str__(self):
+        return f"TSP(name={self.name},iterations={self.n_iter})"
 
-def load_explicit_W(path):
+
+def load_explicit_tsp(path, iters=100):
     with open(path) as f:
-        return np.array([list(map(lambda x: float(x.strip()))) for line in f.readlines()])
+        W = np.array([list(map(lambda x: float(x.strip()))) for line in f.readlines()])
+        return TSP(os.path.basename(path), W, iters)
 
-import tsplib95
-import networkx
-
-def load_tsplib_W(path):
-    return networkx.to_numpy_matrix(tsplib95.load(path).get_graph())
+def load_tsplib(path, iters=100):
+    instance = tsplib95.load(path)
+    W = networkx.to_numpy_matrix(instance.get_graph())
+    return TSP(instance.name, W, iters)
