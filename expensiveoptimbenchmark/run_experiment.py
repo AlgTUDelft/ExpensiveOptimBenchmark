@@ -96,6 +96,12 @@ def execute_pygpgo(params, problem, max_eval):
     acq = Acquisition(mode='ExpectedImprovement')
     return optimize_pyGPGO(problem, max_eval, gp, acq)
 
+# bayesian-optimization
+from solvers.bayesianoptimization.wbayesianoptimization import optimize_bayesian_optimization
+def execute_bayesianoptimization(params, problem, max_eval):
+    # TODO: Allow picking different configurations?
+    return optimize_bayesian_optimization(problem, max_eval)
+
 solvers = {
     'idone': {
         'args': {'--model'},
@@ -120,7 +126,7 @@ solvers = {
         'args': set(),
         'defaults': {
         },
-        'executor': None #TODO!
+        'executor': execute_bayesianoptimization
     }
 }
 

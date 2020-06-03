@@ -20,6 +20,19 @@ all = ["numba", "bokeh (>=1.4.0)"]
 
 [[package]]
 category = "main"
+description = "Bayesian Optimization package"
+name = "bayesian-optimization"
+optional = false
+python-versions = "*"
+version = "1.2.0"
+
+[package.dependencies]
+numpy = ">=1.9.0"
+scikit-learn = ">=0.18.0"
+scipy = ">=0.14.0"
+
+[[package]]
+category = "main"
 description = "Time-handling functionality from netcdf4-python"
 name = "cftime"
 optional = false
@@ -550,13 +563,16 @@ pandas = ">=0.25"
 setuptools = ">=41.2"
 
 [metadata]
-content-hash = "997eb6ae52f0d8f1d404f80ad4640799973f0f8490f690bc5bc04564af6b41fc"
+content-hash = "abdf4a252be9ddcc9e24b81bfaab7b8d317c77ad1fcca3ca0cfde14440ea93a7"
 python-versions = "^3.7"
 
 [metadata.files]
 arviz = [
     {file = "arviz-0.8.2-py3-none-any.whl", hash = "sha256:63bdd652cbc94deb6f4259856916c91c5d0db093285e0dfe19f596b310d44c66"},
     {file = "arviz-0.8.2.tar.gz", hash = "sha256:f74060daa6e86b2df6c50db436e72125dbae1ab4555c1865e02f1f431d79d4e9"},
+]
+bayesian-optimization = [
+    {file = "bayesian-optimization-1.2.0.tar.gz", hash = "sha256:c2fd3af4b6cc24ee1c145295b2a900ffb9b455cad924e8185a8d5784712bc935"},
 ]
 cftime = [
     {file = "cftime-1.1.3-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:106d8bd1c144c83de1288c51225fd6846539074b60bb9e05b5e357d5e1eed6b9"},
