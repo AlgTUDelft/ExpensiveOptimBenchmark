@@ -18,10 +18,10 @@ class TSP:
         
         for iteration in range(self.n_iter):
             current = 0
-            unvisited = list(range(1, self.d))
+            unvisited = list(range(1, self.d+2))
 
-            for i in x:
-                next_up = unvisited.pop(i)
+            for di, i in enumerate(x):
+                next_up = unvisited.pop(int(round(i)))
                 robust_total_route_length += self.W[current, next_up]
                 robust_total_route_length += self.noise_rng.random() * self.noise_factor
                 current = next_up
@@ -40,7 +40,7 @@ class TSP:
         return np.zeros(self.d, dtype=int)
 
     def ubs(self):
-        return np.array([self.d-x-1 for x in range(0, self.d)])
+        return np.array([self.d-x for x in range(0, self.d)])
 
     def vartype(self):
         return np.array(['int'] * self.d)
