@@ -115,6 +115,7 @@ general = {
 }
 problem = {}
 solver = {}
+current_solvers = []
 
 
 i = 1
@@ -192,25 +193,36 @@ while len(args) > i and args[i].startswith("-"):
     problem['params'][name_value[0]] = name_value[1]
     i += 1
 
-if len(args) <= i or args[i] not in solvers:
-    print(f"Expected a solver. Possible options: {solvers.keys()}.")
-    sys.exit(-1)
-
-solver['name'] = args[i]
-solver['info'] = solvers[args[i]]
-solver['params'] = solver['info']['defaults']
-
-while len(args) > i and args[i].startswith("-"):
-    name_value = args[i].split("=")
-    if name_value[0] not in problem['info']['args']:
-        print(f"Problem {problem['name']} does not accept argument {name_value[0]}")
+while len(args) > i:
+    if len(args) <= i or args[i] not in solvers:
+        print(f"Expected a solver. Possible options: {solvers.keys()}.")
         sys.exit(-1)
-    problem['params'][name_value[0]] = name_value[1]
+
+    solver['name'] = args[i]
+    solver['info'] = solvers[args[i]]
+    solver['params'] = solver['info']['defaults'].copy()
+
     i += 1
+    
+    while len(args) > i and args[i].startswith("-"):
+        name_value = args[i].split("=")
+        if name_value[0] not in problem['info']['args']:
+            print(f"Problem {problem['name']} does not accept argument {name_value[0]}")
+            sys.exit(-1)
+        problem['params'][name_value[0]] = name_value[1]
+        i += 1
+    
+    current_solvers.append(solver.copy())
+    solver = {}
+
+if len(current_solvers) == 0:
+        print(f"Expected a solver. Possible options: {solvers.keys()}.")
+        sys.exit(-1)
 
 # Actually perform the experiment.
 problems = problem['info']['constructor'](problem['params'])
 
-for r in range(repetitions):
+for solver in current_solvers:
     for problem_instance in problems:
-        solY, solX, monitor = solver['info']['executor'](solver['params'], problem_instance, max_eval)
+        for r in range(repetitions):
+            solY, solX, monitor = solver['info']['executor'](solver['params'], problem_instance, max_eval)
