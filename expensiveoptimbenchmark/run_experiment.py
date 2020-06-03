@@ -203,7 +203,7 @@ while len(args) > i:
     solver['params'] = solver['info']['defaults'].copy()
 
     i += 1
-    
+
     while len(args) > i and args[i].startswith("-"):
         name_value = args[i].split("=")
         if name_value[0] not in problem['info']['args']:
@@ -219,10 +219,24 @@ if len(current_solvers) == 0:
         print(f"Expected a solver. Possible options: {solvers.keys()}.")
         sys.exit(-1)
 
-# Actually perform the experiment.
+## Actually perform the experiment.
+import os
+import time
+
 problems = problem['info']['constructor'](problem['params'])
 
+os.makedirs("./results/", exist_ok=True)
+
+logfile_iters = f"./results/experiment_{problem['name']}_{time.time()}_iters.csv"
+logfile_summary = f"./results/experiment_{problem['name']}_{time.time()}_summ.csv"
+
+emit_header = True
 for solver in current_solvers:
     for problem_instance in problems:
         for r in range(repetitions):
             solY, solX, monitor = solver['info']['executor'](solver['params'], problem_instance, max_eval)
+            with open(logfile_iters, 'a') as f:
+                monitor.emit_csv_iters(f, emit_header=emit_header)
+            with open(logfile_summary, 'a') as f:
+                monitor.emit_csv_summary(f, emit_header=emit_header)
+            emit_header = False
