@@ -107,11 +107,12 @@ solvers = {
     }
 }
 
-general_args = {'--repetitions', '--max-eval'}
+general_args = {'--repetitions', '--max-eval', '--out-path'}
 
 # Parse
 general = {
-    '--repetitions': 1
+    '--repetitions': 1,
+    '--out-path': './results/',
 }
 problem = {}
 solver = {}
@@ -128,6 +129,7 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print(f" Note: if a problem is specified in a way that it produces multiples")
     print(f"       each of these problems are repeated `repetitions` times.")
     print(f" --max-eval=<int> \t Set the maximum number of evaluations (required)")
+    print(f" --out-path=<path> \t Where to place the logfiles. (default: ./results)")
     print()
     print(f"Problems:")
     print()
@@ -176,6 +178,9 @@ while len(args) > i and args[i].startswith("-"):
 
 repetitions = int(general['--repetitions'])
 max_eval = int(general['--max-eval'])
+out_path = general['--out-path']
+if out_path[-1] != '/':
+    out_path = out_path + '/'
 
 if args[i] not in problems:
     print(f"Expected a problem. Possible options: {problems.keys()}.")
@@ -225,10 +230,10 @@ import time
 
 problems = problem['info']['constructor'](problem['params'])
 
-os.makedirs("./results/", exist_ok=True)
+os.makedirs(out_path, exist_ok=True)
 
-logfile_iters = f"./results/experiment_{problem['name']}_{time.time()}_iters.csv"
-logfile_summary = f"./results/experiment_{problem['name']}_{time.time()}_summ.csv"
+logfile_iters = f"{out_path}experiment_{problem['name']}_{time.time()}_iters.csv"
+logfile_summary = f"{out_path}results/experiment_{problem['name']}_{time.time()}_summ.csv"
 
 emit_header = True
 for solver in current_solvers:
