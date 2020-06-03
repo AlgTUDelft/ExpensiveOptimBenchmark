@@ -211,10 +211,10 @@ while len(args) > i:
 
     while len(args) > i and args[i].startswith("-"):
         name_value = args[i].split("=")
-        if name_value[0] not in problem['info']['args']:
-            print(f"Problem {problem['name']} does not accept argument {name_value[0]}")
+        if name_value[0] not in solver['info']['args']:
+            print(f"Problem {solver['name']} does not accept argument {name_value[0]}")
             sys.exit(-1)
-        problem['params'][name_value[0]] = name_value[1]
+        solver['params'][name_value[0]] = name_value[1]
         i += 1
     
     current_solvers.append(solver.copy())
