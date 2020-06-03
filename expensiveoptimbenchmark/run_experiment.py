@@ -233,7 +233,7 @@ problems = problem['info']['constructor'](problem['params'])
 os.makedirs(out_path, exist_ok=True)
 
 logfile_iters = f"{out_path}experiment_{problem['name']}_{time.time()}_iters.csv"
-logfile_summary = f"{out_path}results/experiment_{problem['name']}_{time.time()}_summ.csv"
+logfile_summary = f"{out_path}experiment_{problem['name']}_{time.time()}_summ.csv"
 
 emit_header = True
 for solver in current_solvers:

@@ -17,11 +17,11 @@ def optimize_IDONE(problem, max_evals, model='advanced'):
     def f(x):
         mon.commit_start_eval()
         r = problem.evaluate(x)
-        mon.commit_end_eval(r)
+        mon.commit_end_eval(x, r)
         return r
     
     mon.start()
     solX, solY, model, logfile = IDONE_minimize(f, x0, lb, ub, max_evals, model_type=model)
     mon.end()
-    
+
     return solX, solY, mon

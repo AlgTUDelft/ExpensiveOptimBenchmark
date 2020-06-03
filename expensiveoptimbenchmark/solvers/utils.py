@@ -17,12 +17,15 @@ class Monitor:
     def __init__(self, solver, problem):
         self.solver = solver
         self.problem = problem
-        self.expuid = f"{time.time()}{random.randint(0, 1<<14)}" 
+        self.expuid = f"{time.time()}{random.randint(0, 1<<14)}".replace(".", "")
         self.time_before_eval = []
         self.time_after_eval = []
         self.iter_fitness = []
+        self.iter_x = []
         self.iter_best_fitness = []
+        self.iter_best_x = []
         self.best_fitness = None
+        self.best_x = None
         self.num_iters = 0
 
     def start(self):
@@ -35,12 +38,16 @@ class Monitor:
     def commit_start_eval(self):
         self.time_before_eval.append(time.time())
 
-    def commit_end_eval(self, r):
+    def commit_end_eval(self, x, r):
         self.time_after_eval.append(time.time())
         self.iter_fitness.append(r)
+        xc = list(x).copy()
+        self.iter_x.append(xc)
         if self.best_fitness is None or r < self.best_fitness:
             self.best_fitness = r
+            self.best_x = xc
         self.iter_best_fitness.append(self.best_fitness)
+        self.iter_best_x.append(self.best_x)
         self.num_iters += 1
 
     def eval_time_gen(self, from_iter=0, to_iter=None):
@@ -67,22 +74,24 @@ class Monitor:
             emit_header = from_iter == 0
         
         if emit_header:
-            file.write("approach,problem,iter_idx,iter_eval_time,iter_model_time,iter_fitness,iter_best_fitness\n")
+            file.write("approach,problem,iter_idx,iter_eval_time,iter_model_time,iter_fitness,iter_x,iter_best_fitness,iter_best_x\n")
 
         to_iter_num = self.num_iters if to_iter is None else to_iter
 
-        for iter_idx, iter_eval_time, iter_model_time, iter_fitness, iter_best_fitness in \
+        for iter_idx, iter_eval_time, iter_model_time, iter_fitness, iter_x, iter_best_fitness, iter_best_x in \
             zip(range(from_iter, to_iter_num),
                 self.eval_time_gen(from_iter=from_iter, to_iter=to_iter),
                 self.model_time_gen(from_iter=from_iter, to_iter=to_iter),
                 self.iter_fitness[from_iter:to_iter],
-                self.iter_best_fitness[from_iter:to_iter]):
-            file.write(f"{csvify(self.solver)},{csvify(self.problem)},{iter_idx},{iter_eval_time},{iter_model_time},{iter_fitness},{iter_best_fitness}\n")
+                self.iter_x[from_iter:to_iter],
+                self.iter_best_fitness[from_iter:to_iter],
+                self.iter_best_x[from_iter:to_iter]):
+            file.write(f"{csvify(self.solver)},{csvify(self.problem)},{self.expuid},{iter_idx},{iter_eval_time},{iter_model_time},{iter_fitness},{csvify(iter_x)},{iter_best_fitness},{csvify(iter_best_x)}\n")
 
     def emit_csv_summary(self, file, emit_header=True):
         if emit_header:
-            file.write("approach,problem,total_time,total_model_time,total_eval_time,best_fitness\n")
+            file.write("approach,problem,exp_id,total_time,total_model_time,total_eval_time,best_fitness,best_x\n")
         total_time = self.time_before_eval[-1] - self.time_after_eval[1]
         total_model_time = sum(self.model_time_gen())
         total_eval_time = sum(self.eval_time_gen())
-        file.write(f"{csvify(self.solver)},{csvify(self.problem)},{total_time},{total_model_time},{total_eval_time},{self.best_fitness}\n")
+        file.write(f"{csvify(self.solver)},{csvify(self.problem)},{self.expuid},{total_time},{total_model_time},{total_eval_time},{self.best_fitness},{csvify(self.best_x)}\n")

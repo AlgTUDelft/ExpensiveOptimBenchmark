@@ -31,7 +31,7 @@ def optimize_hyperopt_tpe(problem, max_evals, rand_evals=3):
     def f(x):
         mon.commit_start_eval()
         r = problem.evaluate(x)
-        mon.commit_end_eval(r)
+        mon.commit_end_eval(x, r)
         return {
             'loss': r,
             'status': STATUS_OK

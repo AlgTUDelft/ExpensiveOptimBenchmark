@@ -49,7 +49,7 @@ def optimize_pyGPGO(problem, max_evals, gp, acq):
         xvec = np.array([v if t == 'cont' else round(v) for (k, v), t in zip(x.items(), problem.vartype())])
         # print(f"Processed vector: {xvec}")
         r = problem.evaluate(xvec)
-        mon.commit_end_eval(r)
+        mon.commit_end_eval(xvec, r)
         return -float(r)
 
     mon.start()
