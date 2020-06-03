@@ -1,29 +1,46 @@
 import sys
 
+from itertools import product
+
+def parse_numerical_range(s):
+    range_ = s.split(":")
+    if len(range_) == 1:
+        return [int(range_[0])]
+    else:
+        return range(int(range_[0]), int(range_[1])+1)
+
+def parse_numerical_ranges(ranges):
+    # Numerical ranges are defined to be
+    # <ranges> = <range>|<range>,<ranges>
+    # <range> = <a:n>|<a:n>:<b:n>
+    # A range produces either a, or all numbers between a and b, including b.
+    # Ranges generates the concatenation of each range contained within.
+    return [int(i) for range_ in ranges.split(",") for i in parse_numerical_range(range_)]
+
 # Specialized argument processing for problems
 # TSP
 from problems.TSP import TSP, load_tsplib, load_explicit_tsp
 def construct_tsp(params):
-    iters = int(params['--iter'])
+    iter_ns = parse_numerical_ranges(params['--iter'])
     if '--tsplib-file' in params:
-        return [load_tsplib(params['--tsplib-file'], iters)]
+        return [load_tsplib(params['--tsplib-file'], iters) for iters in iter_ns]
     elif '--explicit-file' in params:
-        return [load_explicit_tsp(params['--explicit-file'], iters)]
+        return [load_explicit_tsp(params['--explicit-file'], iters) for iters in iter_ns]
     else:
         raise ValueError('No instance file provided for TSP. Specify one using `--tsplib-file` or `--explicit-file`')
 
 # Convex
 from problems.convex import Convex
 def construct_convex(params):
-    d = int(params['-d'])
-    seed = int(params['--seed'])
-    return [Convex(d, seed)]
+    ds = parse_numerical_ranges(params['-d'])
+    seeds = parse_numerical_ranges(params['--seed'])
+    return [Convex(d, seed) for d, seed in product(ds, seeds)]
 
 # IntRosenbrock
 from problems.rosenbrock_int import RosenbrockInt
 def construct_rosen(params):
-    d = int(params['-d'])
-    return [RosenbrockInt(d)]
+    ds = parse_numerical_ranges(params['-d'])
+    return [RosenbrockInt(d) for d in ds]
 
 # Summary of problems and their parameters.
 problems = {
