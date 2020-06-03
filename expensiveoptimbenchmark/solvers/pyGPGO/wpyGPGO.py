@@ -39,7 +39,7 @@ def get_variables(problem):
 def optimize_pyGPGO(problem, max_evals, gp, acq):
     params = get_variables(problem)
     
-    mon = Monitor()
+    mon = Monitor("pyGPGO/GP/matern/EI", problem)
 
     # Note, pyGPGO seems to maximize by default, objective is therefore negated.
     # Furthermore: passing `int` as type seems to be very fragile.

@@ -27,7 +27,7 @@ def get_variables(problem):
 def optimize_hyperopt_tpe(problem, max_evals, rand_evals=3):
     variables = get_variables(problem)
 
-    mon = Monitor()
+    mon = Monitor("hyperopt/tpe", problem)
     def f(x):
         mon.commit_start_eval()
         r = problem.evaluate(x)
@@ -40,7 +40,9 @@ def optimize_hyperopt_tpe(problem, max_evals, rand_evals=3):
     ho_algo = partial(tpe.suggest, n_startup_jobs=rand_evals)
     trials = Trials()
 
+    mon.start()
     ho_result = fmin(f, variables, ho_algo, max_evals=max_evals, trials=trials)
+    mon.end()
 
     best_trial = trials.best_trial
     # print(f"Best trial: {best_trial}")
