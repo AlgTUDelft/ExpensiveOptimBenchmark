@@ -6,6 +6,7 @@ class Convex:
         self.d = d
 
         # Seed the rng that will produce the instance (x_star, A) 
+        self.instance_seed = instance_seed
         rng = np.random.RandomState(seed=instance_seed)
 
         # Generate optimal solution x_star
@@ -35,3 +36,6 @@ class Convex:
 
     def dims(self):
         return self.d
+
+    def __str__(self):
+        return f"Convex(d={self.d}, seed={self.instance_seed})"

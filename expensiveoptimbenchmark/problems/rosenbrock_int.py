@@ -23,3 +23,6 @@ class RosenbrockInt:
 
     def dims(self):
         return self.d
+
+    def __str__(self):
+        return f"RosenbrockInt(d={d})"
