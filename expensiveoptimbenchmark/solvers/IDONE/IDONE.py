@@ -17,7 +17,7 @@ import time
 import numpy as np
 from scipy.optimize import minimize, Bounds
 
-def IDONE_minimize(obj, x0, lb, ub, max_evals, verbose=1, log=False):
+def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, verbose=1, log=False):
 	d = len(x0) # dimension, number of variables
 	current_time = time.time() # time when starting the algorithm
 	next_X = [] # candidate solution presented by the algorithm
@@ -74,31 +74,32 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals, verbose=1, log=False):
 					B.append([-i])
 					
 		# Add basis functions dependent on two subsequent variables
-		for k in range(1,d): 
-			for i in range(lb[k]-ub[k-1],ub[k]-lb[k-1]+1):
-				if i == lb[k]-ub[k-1]:
-					temp = [0]*d
-					temp[k] = 1
-					temp[k-1] = -1
-					W.append(np.copy(temp))
-					B.append([-i])
-				elif i == ub[k]-lb[k-1]:
-					temp = [0]*d
-					temp[k] = -1
-					temp[k-1] = 1
-					W.append(np.copy(temp))
-					B.append([i])
-				else:
-					temp = [0]*d
-					temp[k] = -1
-					temp[k-1] = 1
-					W.append(np.copy(temp))
-					B.append([i])
-					temp = [0]*d
-					temp[k] = 1
-					temp[k-1] = -1
-					W.append(np.copy(temp))
-					B.append([-i])
+		if model_type == 'advanced':
+			for k in range(1,d): 
+				for i in range(lb[k]-ub[k-1],ub[k]-lb[k-1]+1):
+					if i == lb[k]-ub[k-1]:
+						temp = [0]*d
+						temp[k] = 1
+						temp[k-1] = -1
+						W.append(np.copy(temp))
+						B.append([-i])
+					elif i == ub[k]-lb[k-1]:
+						temp = [0]*d
+						temp[k] = -1
+						temp[k-1] = 1
+						W.append(np.copy(temp))
+						B.append([i])
+					else:
+						temp = [0]*d
+						temp[k] = -1
+						temp[k-1] = 1
+						W.append(np.copy(temp))
+						B.append([i])
+						temp = [0]*d
+						temp[k] = 1
+						temp[k-1] = -1
+						W.append(np.copy(temp))
+						B.append([-i])
 				
 		W = np.asarray(W)	
 		B = np.asarray(B)

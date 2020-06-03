@@ -20,6 +20,6 @@ def optimize_IDONE(problem, max_evals, model='advanced'):
         mon.commit_end_eval(r)
         return r
     
-    solX, solY, model, logfile = IDONE_minimize(f, x0, lb, ub, max_evals)
+    solX, solY, model, logfile = IDONE_minimize(f, x0, lb, ub, max_evals, model_type=model)
 
     return solX, solY, mon
