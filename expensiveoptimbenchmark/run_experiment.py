@@ -260,13 +260,16 @@ if len(current_solvers) == 0:
 ## Actually perform the experiment.
 import os
 import time
+import random
 
 problems = problem['info']['constructor'](problem['params'])
 
 os.makedirs(out_path, exist_ok=True)
 
-logfile_iters = f"{out_path}experiment_{problem['name']}_{time.time()}_iters.csv"
-logfile_summary = f"{out_path}experiment_{problem['name']}_{time.time()}_summ.csv"
+t = time.time()
+rnd = random.randint(1, 1<<14)
+logfile_iters = f"{out_path}experiment_{problem['name']}_{t}_{rnd}_iters.csv"
+logfile_summary = f"{out_path}experiment_{problem['name']}_{t}_{rnd}_summ.csv"
 
 loginfo = {
     'file_iters': logfile_iters,
