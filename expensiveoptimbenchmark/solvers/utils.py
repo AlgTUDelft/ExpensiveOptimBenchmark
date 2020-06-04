@@ -99,8 +99,8 @@ class Monitor:
 
     def emit_csv_summary(self, file, emit_header=True):
         if emit_header:
-            file.write("approach,problem,exp_id,total_time,total_model_time,total_eval_time,best_fitness,best_x\n")
+            file.write("approach,problem,exp_id,total_iters,total_time,total_model_time,total_eval_time,best_fitness,best_x\n")
         total_time = self.time_before_eval[-1] - self.time_after_eval[1]
         total_model_time = sum(self.model_time_gen())
         total_eval_time = sum(self.eval_time_gen())
-        file.write(f"{csvify(self.solver)},{csvify(self.problem)},{self.expuid},{total_time},{total_model_time},{total_eval_time},{self.best_fitness},{csvify(self.best_x)}\n")
+        file.write(f"{csvify(self.solver)},{csvify(self.problem)},{self.expuid},{self.num_iters},{total_time},{total_model_time},{total_eval_time},{self.best_fitness},{csvify(self.best_x)}\n")
