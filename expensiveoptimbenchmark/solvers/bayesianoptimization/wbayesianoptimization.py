@@ -38,7 +38,10 @@ def optimize_bayesian_optimization(problem, max_evals, log=None):
         pbounds=get_variables(problem)
     )
 
-    optimizer.maximize(n_iter=max_evals)
+    random_init_points = 5
+    optimizer.maximize(
+        init_points=random_init_points,
+        n_iter=max_evals-random_init_points)
     mon.end()
 
     solX = [v for (k, v) in optimizer.max['params'].items()] 
