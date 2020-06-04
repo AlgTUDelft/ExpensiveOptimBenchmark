@@ -78,10 +78,14 @@ def execute_IDONE(params, problem, max_eval, log):
     return optimize_IDONE(problem, max_eval, model=type_model, log=log)
 
 # Hyperopt TPE
-from solvers.hyperopt.whyperopt import optimize_hyperopt_tpe
+from solvers.hyperopt.whyperopt import optimize_hyperopt_tpe, optimize_hyperopt_rnd
 def execute_hyperopt(params, problem, max_eval, log):
     # TODO: Set number of random evaluations?
     return optimize_hyperopt_tpe(problem, max_eval, log=log)
+
+def execute_hyperopt_rnd(params, problem, max_eval, log):
+    # TODO: Set number of random evaluations?
+    return optimize_hyperopt_rnd(problem, max_eval, log=log)
 
 # pyGPGO
 from solvers.pyGPGO.wpyGPGO import optimize_pyGPGO
@@ -115,6 +119,12 @@ solvers = {
         'defaults': {
         },
         'executor': execute_hyperopt
+    },
+    'randomsearch': {
+        'args': set(),
+        'defaults': {
+        },
+        'executor': execute_hyperopt_rnd
     },
     'pygpgo': {
         'args': {'--acquisition'},
@@ -183,6 +193,10 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print()
     # HyperOpt
     print(f" hyperopt")
+    print(f" (no arguments implemented yet)")
+    print()
+    # HyperOpt / randomsearch
+    print(f" randomsearch")
     print(f" (no arguments implemented yet)")
     print()
     # pyGPGO

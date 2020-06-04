@@ -52,3 +52,32 @@ def optimize_hyperopt_tpe(problem, max_evals, random_init_evals = 3, log=None):
     solY = best_trial['result']['loss']
 
     return solX, solY, mon
+
+def optimize_hyperopt_rnd(problem, max_evals, log=None):
+    variables = get_variables(problem)
+
+    mon = Monitor("hyperopt/randomsearch", problem, log=log)
+    def f(x):
+        mon.commit_start_eval()
+        r = problem.evaluate(x)
+        mon.commit_end_eval(x, r)
+        return {
+            'loss': r,
+            'status': STATUS_OK
+        }
+
+    ho_algo = rand.suggest
+    trials = Trials()
+
+    mon.start()
+    ho_result = fmin(f, variables, ho_algo, max_evals=max_evals, trials=trials)
+    mon.end()
+
+    best_trial = trials.best_trial
+    # print(f"Best trial: {best_trial}")
+
+    solX = [v for (k, v) in ho_result.items()] 
+    # print(f"Best point: {solX}")
+    solY = best_trial['result']['loss']
+
+    return solX, solY, mon
