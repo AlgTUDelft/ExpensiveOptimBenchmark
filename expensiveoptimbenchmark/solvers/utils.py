@@ -14,7 +14,7 @@ def csvify(value):
 
 class Monitor:
 
-    def __init__(self, solver, problem):
+    def __init__(self, solver, problem, log):
         self.solver = solver
         self.problem = problem
         self.expuid = f"{time.time()}{random.randint(0, 1<<14)}".replace(".", "")
@@ -27,6 +27,7 @@ class Monitor:
         self.best_fitness = None
         self.best_x = None
         self.num_iters = 0
+        self.log = log
 
     def start(self):
         self.time_after_eval = [time.time()]
@@ -49,6 +50,14 @@ class Monitor:
         self.iter_best_fitness.append(self.best_fitness)
         self.iter_best_x.append(self.best_x)
         self.num_iters += 1
+
+        # Write logs every `write_every` iterations
+        if self.log['write_every'] is not None and self.num_iters % self.log['write_every'] == 0:
+            from_iter = self.num_iters - self.log['write_every']
+            # to_iter = None is fine as we want to write out everything so far.
+            with open(self.log['file_iters'], 'a') as f:
+                self.emit_csv_iters(f, from_iter=from_iter, emit_header=self.log['emit_header'])
+            self.log['emit_header'] = False
 
     def eval_time_gen(self, from_iter=0, to_iter=None):
         # Note: first after eval is start.

@@ -3,7 +3,7 @@ import numpy as np
 from .IDONE import IDONE_minimize
 from ..utils import Monitor
 
-def optimize_IDONE(problem, max_evals, model='advanced'):
+def optimize_IDONE(problem, max_evals, model='advanced', log=None):
     d = problem.dims()
     lb = problem.lbs()
     ub = problem.ubs()
@@ -13,7 +13,7 @@ def optimize_IDONE(problem, max_evals, model='advanced'):
     
     x0 = np.round(np.random.rand(d)*(ub-lb) + lb)
 
-    mon = Monitor(f"IDONE/{model}", problem)
+    mon = Monitor(f"IDONE/{model}", problem, log=log)
     def f(x):
         mon.commit_start_eval()
         r = problem.evaluate(x)

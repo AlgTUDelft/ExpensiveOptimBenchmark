@@ -69,19 +69,19 @@ problems = {
 
 ## IDONE
 from solvers.IDONE.wIDONE import optimize_IDONE
-def execute_IDONE(params, problem, max_eval):
+def execute_IDONE(params, problem, max_eval, log):
     if params['--model'] not in ['basic', 'advanced']:
         raise ValueError("Valid model types are `basic` and `advanced`")
         
     type_model = params['--model']
 
-    return optimize_IDONE(problem, max_eval, model=type_model)
+    return optimize_IDONE(problem, max_eval, model=type_model, log=log)
 
 # Hyperopt TPE
 from solvers.hyperopt.whyperopt import optimize_hyperopt_tpe
-def execute_hyperopt(params, problem, max_eval):
+def execute_hyperopt(params, problem, max_eval, log):
     # TODO: Set number of random evaluations?
-    return optimize_hyperopt_tpe(problem, max_eval)
+    return optimize_hyperopt_tpe(problem, max_eval, log=log)
 
 # pyGPGO
 from solvers.pyGPGO.wpyGPGO import optimize_pyGPGO
@@ -89,18 +89,18 @@ from pyGPGO.covfunc import matern32
 from pyGPGO.acquisition import Acquisition
 from pyGPGO.surrogates.GaussianProcess import GaussianProcess
 
-def execute_pygpgo(params, problem, max_eval):
+def execute_pygpgo(params, problem, max_eval, log):
     # TODO: Allow picking different values for these?
     cov = matern32()
     gp = GaussianProcess(cov, optimize=True, usegrads=True)
     acq = Acquisition(mode='ExpectedImprovement')
-    return optimize_pyGPGO(problem, max_eval, gp, acq)
+    return optimize_pyGPGO(problem, max_eval, gp, acq, log=log)
 
 # bayesian-optimization
 from solvers.bayesianoptimization.wbayesianoptimization import optimize_bayesian_optimization
-def execute_bayesianoptimization(params, problem, max_eval):
+def execute_bayesianoptimization(params, problem, max_eval, log):
     # TODO: Allow picking different configurations?
-    return optimize_bayesian_optimization(problem, max_eval)
+    return optimize_bayesian_optimization(problem, max_eval, log=log)
 
 solvers = {
     'idone': {
@@ -130,12 +130,13 @@ solvers = {
     }
 }
 
-general_args = {'--repetitions', '--max-eval', '--out-path'}
+general_args = {'--repetitions', '--max-eval', '--out-path', '--write-every'}
 
 # Parse
 general = {
     '--repetitions': 1,
     '--out-path': './results/',
+    '--write-every': 'none',
 }
 problem = {}
 solver = {}
@@ -153,6 +154,9 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print(f"       each of these problems are repeated `repetitions` times.")
     print(f" --max-eval=<int> \t Set the maximum number of evaluations (required)")
     print(f" --out-path=<path> \t Where to place the logfiles. (default: ./results)")
+    print(f" --write-every=<int|none> \t Update logfiles every int iterations (default: none)")
+    print(f" Note: none indicates that the logfile will only be updated once an approach")
+    print(f"       has exhausted its maximum number of evaluations.")
     print()
     print(f"Problems:")
     print()
@@ -165,12 +169,12 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print()
     # Convex
     print(f" convex")
-    print(f" --seed=<int> \t The seed of the convex problem instance (default: 0)")
-    print(f" -d=<int> \t The dimensionality of the convex problem instance")
+    print(f" --seed=<intranges> \t The seed of the convex problem instance (default: 0)")
+    print(f" -d=<intranges> \t The dimensionality of the convex problem instance")
     print()
     # Rosenbrock
     print(f" rosen")
-    print(f" -d=<int> \t The dimensionality of the rosenbrock problem")
+    print(f" -d=<intranges> \t The dimensionality of the rosenbrock problem")
     print()
     print(f"Solvers:")
     # IDONE
@@ -202,6 +206,12 @@ while len(args) > i and args[i].startswith("-"):
 repetitions = int(general['--repetitions'])
 max_eval = int(general['--max-eval'])
 out_path = general['--out-path']
+write_every = None if general['--write-every'] == "none" else int(general['--write-every'])
+
+if write_every is not None and write_every <= 0:
+    print(f"`--write-every should have a value > 1.")
+    sys.exit(-1)
+
 if out_path[-1] != '/':
     out_path = out_path + '/'
 
@@ -258,13 +268,22 @@ os.makedirs(out_path, exist_ok=True)
 logfile_iters = f"{out_path}experiment_{problem['name']}_{time.time()}_iters.csv"
 logfile_summary = f"{out_path}experiment_{problem['name']}_{time.time()}_summ.csv"
 
-emit_header = True
+loginfo = {
+    'file_iters': logfile_iters,
+    'file_summary': logfile_summary,
+    'write_every': write_every,
+    'emit_header': True
+}
+
 for solver in current_solvers:
     for problem_instance in problems:
         for r in range(repetitions):
-            solY, solX, monitor = solver['info']['executor'](solver['params'], problem_instance, max_eval)
+            solY, solX, monitor = solver['info']['executor'](solver['params'], problem_instance, max_eval, log=loginfo)
             with open(logfile_iters, 'a') as f:
-                monitor.emit_csv_iters(f, emit_header=emit_header)
+                from_iter = 0
+                if write_every is not None:
+                    from_iter = monitor.num_iters - (monitor.num_iters % write_every)
+                monitor.emit_csv_iters(f, from_iter=from_iter, emit_header=loginfo['emit_header'])
             with open(logfile_summary, 'a') as f:
-                monitor.emit_csv_summary(f, emit_header=emit_header)
-            emit_header = False
+                monitor.emit_csv_summary(f, emit_header=loginfo['emit_header'])
+            loginfo['emit_header'] = False

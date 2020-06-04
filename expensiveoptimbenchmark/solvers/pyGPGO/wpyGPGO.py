@@ -36,10 +36,10 @@ def get_variables(problem):
 
 # Note: one has to specify a Gaussian Process and Acquisition function
 # for pyGPGO.
-def optimize_pyGPGO(problem, max_evals, gp, acq):
+def optimize_pyGPGO(problem, max_evals, gp, acq, log=None):
     params = get_variables(problem)
     
-    mon = Monitor("pyGPGO/GP/matern/EI", problem)
+    mon = Monitor("pyGPGO/GP/matern/EI", problem, log=log)
 
     # Note, pyGPGO seems to maximize by default, objective is therefore negated.
     # Furthermore: passing `int` as type seems to be very fragile.

@@ -24,10 +24,10 @@ def get_variables(problem):
         get_variable(problem, i) for i in range(problem.dims())
     ]
 
-def optimize_hyperopt_tpe(problem, max_evals, rand_evals=3):
+def optimize_hyperopt_tpe(problem, max_evals, rand_evals=3, log=None):
     variables = get_variables(problem)
 
-    mon = Monitor("hyperopt/tpe", problem)
+    mon = Monitor("hyperopt/tpe", problem, log=log)
     def f(x):
         mon.commit_start_eval()
         r = problem.evaluate(x)

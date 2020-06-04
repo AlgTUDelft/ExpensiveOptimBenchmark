@@ -17,10 +17,10 @@ def get_variables(problem):
         for i in range(problem.dims())
     }
 
-def optimize_bayesian_optimization(problem, max_evals):
+def optimize_bayesian_optimization(problem, max_evals, log=None):
     variables = get_variables(problem)
 
-    mon = Monitor("bayesianoptimization", problem)
+    mon = Monitor("bayesianoptimization", problem, log=log)
     def f(**x):
         # As with pyGPGO, bayesianoptimisation does not naturally support integer variables.
         # As such we round them.
