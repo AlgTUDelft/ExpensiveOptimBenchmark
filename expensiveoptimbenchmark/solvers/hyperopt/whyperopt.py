@@ -37,11 +37,11 @@ def optimize_hyperopt_tpe(problem, max_evals, random_init_evals = 3, log=None):
             'status': STATUS_OK
         }
 
-    ho_algo = partial(tpe.suggest, n_startup_jobs=rand_evals)
+    ho_algo = partial(tpe.suggest, n_startup_jobs=random_init_evals)
     trials = Trials()
 
     mon.start()
-    ho_result = fmin(f, variables, ho_algo, max_evals=max_evals - random_init_evals, trials=trials)
+    ho_result = fmin(f, variables, ho_algo, max_evals=max_evals, trials=trials)
     mon.end()
 
     best_trial = trials.best_trial
