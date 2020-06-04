@@ -36,7 +36,7 @@ def get_variables(problem):
 
 # Note: one has to specify a Gaussian Process and Acquisition function
 # for pyGPGO.
-def optimize_pyGPGO(problem, max_evals, gp, acq, log=None):
+def optimize_pyGPGO(problem, max_evals, gp, acq, random_init_evals = 3, log=None):
     params = get_variables(problem)
     
     mon = Monitor("pyGPGO/GP/matern/EI", problem, log=log)
@@ -54,7 +54,7 @@ def optimize_pyGPGO(problem, max_evals, gp, acq, log=None):
 
     mon.start()
     gpgo = GPGO(gp, acq, f, params)
-    gpgo.run(max_iter = max_evals)
+    gpgo.run(max_iter = max_evals - random_init_evals, init_evals=random_init_evals)
     mon.end()
     solX, solY = gpgo.getResult()
 

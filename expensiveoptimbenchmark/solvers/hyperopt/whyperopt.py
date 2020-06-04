@@ -24,7 +24,7 @@ def get_variables(problem):
         get_variable(problem, i) for i in range(problem.dims())
     ]
 
-def optimize_hyperopt_tpe(problem, max_evals, rand_evals=3, log=None):
+def optimize_hyperopt_tpe(problem, max_evals, random_init_evals = 3, log=None):
     variables = get_variables(problem)
 
     mon = Monitor("hyperopt/tpe", problem, log=log)
@@ -41,7 +41,7 @@ def optimize_hyperopt_tpe(problem, max_evals, rand_evals=3, log=None):
     trials = Trials()
 
     mon.start()
-    ho_result = fmin(f, variables, ho_algo, max_evals=max_evals, trials=trials)
+    ho_result = fmin(f, variables, ho_algo, max_evals=max_evals - random_init_evals, trials=trials)
     mon.end()
 
     best_trial = trials.best_trial
