@@ -83,7 +83,7 @@ class Monitor:
             emit_header = from_iter == 0
         
         if emit_header:
-            file.write("approach,problem,iter_idx,iter_eval_time,iter_model_time,iter_fitness,iter_x,iter_best_fitness,iter_best_x\n")
+            file.write("approach,problem,exp_id,iter_idx,iter_eval_time,iter_model_time,iter_fitness,iter_x,iter_best_fitness,iter_best_x\n")
 
         to_iter_num = self.num_iters if to_iter is None else to_iter
 
