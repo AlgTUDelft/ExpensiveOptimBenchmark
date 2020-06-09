@@ -47,8 +47,8 @@ def optimize_smac(problem, max_evals, log=None):
         "run_obj": "quality",
         "runcount-limit": max_evals,
         "cs": get_variables(problem),
-        # "use_pynisher": False,
         "output_dir": None,
+        "limit_resources": False, # Limiting resources stops the Monitor from working...
         # "deterministic": False # FIXME: Assume noise by default?
     })
     # smac = SMAC4HPO(scenario=sc, tae_runner=f)
@@ -61,7 +61,7 @@ def optimize_smac(problem, max_evals, log=None):
 
     # print(f"Best trial: {best_trial}")
 
-    solX = [v for (k, v) in result.items()] 
+    solX = [result[k] for k in result] 
     # print(f"Best point: {solX}")
     # Note, this runs the function again, just to compute the fitness again.
     # solY = f(solX)
