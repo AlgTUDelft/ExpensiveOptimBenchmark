@@ -10,6 +10,7 @@ class RosenbrockInt:
         self.scaling = d*(100*((self.ub-self.lb**2)**2)+(self.ub-1)**2)
 
     def evaluate(self, x):
+        assert length(x) == self.d
         return rosen(x)/self.scaling
 
     def lbs(self):
