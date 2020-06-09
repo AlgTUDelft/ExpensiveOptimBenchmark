@@ -19,8 +19,8 @@ def parse_numerical_ranges(ranges):
 
 # Specialized argument processing for problems
 # TSP
-from problems.TSP import TSP, load_tsplib, load_explicit_tsp
 def construct_tsp(params):
+    from problems.TSP import TSP, load_tsplib, load_explicit_tsp
     iter_ns = parse_numerical_ranges(params['--iter'])
     if '--tsplib-file' in params:
         return [load_tsplib(params['--tsplib-file'], iters) for iters in iter_ns]
@@ -30,15 +30,15 @@ def construct_tsp(params):
         raise ValueError('No instance file provided for TSP. Specify one using `--tsplib-file` or `--explicit-file`')
 
 # Convex
-from problems.convex import Convex
 def construct_convex(params):
+    from problems.convex import Convex
     ds = parse_numerical_ranges(params['-d'])
     seeds = parse_numerical_ranges(params['--seed'])
     return [Convex(d, seed) for d, seed in product(ds, seeds)]
 
 # IntRosenbrock
-from problems.rosenbrock_int import RosenbrockInt
 def construct_rosen(params):
+    from problems.rosenbrock_int import RosenbrockInt
     ds = parse_numerical_ranges(params['-d'])
     return [RosenbrockInt(d) for d in ds]
 
@@ -68,8 +68,8 @@ problems = {
 }
 
 ## IDONE
-from solvers.IDONE.wIDONE import optimize_IDONE
 def execute_IDONE(params, problem, max_eval, log):
+    from solvers.IDONE.wIDONE import optimize_IDONE
     if params['--model'] not in ['basic', 'advanced']:
         raise ValueError("Valid model types are `basic` and `advanced`")
         
@@ -78,22 +78,22 @@ def execute_IDONE(params, problem, max_eval, log):
     return optimize_IDONE(problem, max_eval, model=type_model, log=log)
 
 # Hyperopt TPE
-from solvers.hyperopt.whyperopt import optimize_hyperopt_tpe, optimize_hyperopt_rnd
 def execute_hyperopt(params, problem, max_eval, log):
+    from solvers.hyperopt.whyperopt import optimize_hyperopt_tpe
     # TODO: Set number of random evaluations?
     return optimize_hyperopt_tpe(problem, max_eval, log=log)
 
 def execute_hyperopt_rnd(params, problem, max_eval, log):
+    from solvers.hyperopt.whyperopt import optimize_hyperopt_rnd
     # TODO: Set number of random evaluations?
     return optimize_hyperopt_rnd(problem, max_eval, log=log)
 
 # pyGPGO
-from solvers.pyGPGO.wpyGPGO import optimize_pyGPGO
-from pyGPGO.covfunc import matern32
-from pyGPGO.acquisition import Acquisition
-from pyGPGO.surrogates.GaussianProcess import GaussianProcess
-
 def execute_pygpgo(params, problem, max_eval, log):
+    from solvers.pyGPGO.wpyGPGO import optimize_pyGPGO
+    from pyGPGO.covfunc import matern32
+    from pyGPGO.acquisition import Acquisition
+    from pyGPGO.surrogates.GaussianProcess import GaussianProcess
     # TODO: Allow picking different values for these?
     cov = matern32()
     gp = GaussianProcess(cov, optimize=True, usegrads=True)
@@ -101,10 +101,14 @@ def execute_pygpgo(params, problem, max_eval, log):
     return optimize_pyGPGO(problem, max_eval, gp, acq, log=log)
 
 # bayesian-optimization
-from solvers.bayesianoptimization.wbayesianoptimization import optimize_bayesian_optimization
 def execute_bayesianoptimization(params, problem, max_eval, log):
+    from solvers.bayesianoptimization.wbayesianoptimization import optimize_bayesian_optimization
     # TODO: Allow picking different configurations?
     return optimize_bayesian_optimization(problem, max_eval, log=log)
+
+def execute_smac(params, problem, max_eval, log):
+    from solvers.smac.wsmac import optimize_smac
+    return optimize_smac(problem, max_eval, log=log)
 
 solvers = {
     'idone': {
@@ -137,6 +141,12 @@ solvers = {
         'defaults': {
         },
         'executor': execute_bayesianoptimization
+    },
+    'smac': {
+        'args': set(),
+        'defaults': {
+        },
+        'executor': execute_smac
     }
 }
 
