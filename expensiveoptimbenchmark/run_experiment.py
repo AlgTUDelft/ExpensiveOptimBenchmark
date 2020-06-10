@@ -77,6 +77,16 @@ def execute_IDONE(params, problem, max_eval, log):
 
     return optimize_IDONE(problem, max_eval, model=type_model, log=log)
 
+def execute_MVRSM(params, problem, max_eval, log):
+    from solvers.MVRSM.wMVRSM import optimize_MVRSM
+    if params['--model'] not in ['basic', 'advanced']:
+        raise ValueError("Valid model types are `basic` and `advanced`")
+        
+    type_model = params['--model']
+
+    return optimize_MVRSM(problem, max_eval, model=type_model, log=log)
+
+
 # Hyperopt TPE
 def execute_hyperopt(params, problem, max_eval, log):
     from solvers.hyperopt.whyperopt import optimize_hyperopt_tpe
@@ -117,6 +127,13 @@ solvers = {
             '--model': 'advanced'
         },
         'executor': execute_IDONE
+    },
+    'mvrsm': {
+        'args': {'--model'},
+        'defaults': {
+            '--model': 'advanced'
+        },
+        'executor': execute_MVRSM
     },
     'hyperopt': {
         'args': set(),
