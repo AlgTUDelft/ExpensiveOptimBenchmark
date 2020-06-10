@@ -67,6 +67,9 @@ problems = {
     }
 }
 
+def nop(*x, **y):
+    pass
+
 ## IDONE
 def execute_IDONE(params, problem, max_eval, log):
     from solvers.IDONE.wIDONE import optimize_IDONE
@@ -120,50 +123,61 @@ def execute_smac(params, problem, max_eval, log):
     from solvers.smac.wsmac import optimize_smac
     return optimize_smac(problem, max_eval, log=log)
 
+def check_smac():
+    from solvers.smac.wsmac import optimize_smac
+    pass
+
 solvers = {
     'idone': {
         'args': {'--model'},
         'defaults': {
             '--model': 'advanced'
         },
-        'executor': execute_IDONE
+        'executor': execute_IDONE,
+        'check': nop
     },
     'mvrsm': {
         'args': {'--model'},
         'defaults': {
             '--model': 'advanced'
         },
-        'executor': execute_MVRSM
+        'executor': execute_MVRSM,
+        'check': nop
     },
     'hyperopt': {
         'args': set(),
         'defaults': {
         },
-        'executor': execute_hyperopt
+        'executor': execute_hyperopt,
+        'check': nop
     },
     'randomsearch': {
         'args': set(),
         'defaults': {
         },
-        'executor': execute_hyperopt_rnd
+        'executor': execute_hyperopt_rnd,
+        'check': nop
     },
     'pygpgo': {
         'args': {'--acquisition'},
         'defaults': {
         },
-        'executor': execute_pygpgo
+        'executor': execute_pygpgo,
+        'check': nop
     },
     'bayesianoptimization': {
         'args': set(),
         'defaults': {
         },
-        'executor': execute_bayesianoptimization
+        'executor': execute_bayesianoptimization,
+        'check': nop
     },
     'smac': {
         'args': set(),
         'defaults': {
         },
-        'executor': execute_smac
+        'executor': execute_smac,
+        'check': check_smac
     }
 }
 
@@ -281,6 +295,14 @@ while len(args) > i:
     solver['info'] = solvers[args[i]]
     solver['params'] = solver['info']['defaults'].copy()
 
+    # Perform imports before running so that we do not run
+    # into surprises later
+    try:
+        solver['info']['check']()
+    except:
+        print(f"Dependencies for {solver['name']} seem to be missing.")
+        print(f"Did you install the relevant extras?")
+        sys.exit(-1)
     i += 1
 
     while len(args) > i and args[i].startswith("-"):
