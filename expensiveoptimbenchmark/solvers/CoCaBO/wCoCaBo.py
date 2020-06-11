@@ -53,6 +53,7 @@ def optimize_CoCaBO(problem, max_evals, init_points=24, log=None):
     # The number of categories for each categorical variable.
     # Why doesn't CoCaBO simply do this:
     C = [len(var['domain']) for var in variables if var['type'] == 'categorical']
+    Cmap = [var['domain'] for var in variables if var['type'] == 'categorical']
     # I do not know.
     assert len(C) < d, "CoCaBO requires at least one variable to be continuous."
     # assert len(C) > 0, "CoCaBO on continuous variables only..."
@@ -79,7 +80,7 @@ def optimize_CoCaBO(problem, max_evals, init_points=24, log=None):
         # CoCaBO reorders the input so that categorical comes first
         # continuous second.
         # We need to reconstruct the vector...
-        xvec = np.concatenate([cat, cont])[invperm]
+        xvec = np.concatenate([[Cmap[i][cv] for i, cv in enumerate(cat)], cont])[invperm]
         print(xvec)
         mon.commit_start_eval()
         r = problem.evaluate(xvec)
