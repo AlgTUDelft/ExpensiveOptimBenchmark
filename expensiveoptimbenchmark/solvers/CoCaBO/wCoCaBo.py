@@ -29,9 +29,9 @@ def get_variable_domain(problem, varidx):
     ubs = problem.ubs()
 
     if vartype == 'cont':
-        return tuple(lbs[varidx], ubs[varidx])
+        return (lbs[varidx], ubs[varidx])
     elif vartype == 'int':
-        return tuple(i for i in range(lbs[varidx], ubs[varidx] + 1))
+        return tuple(i for i in range(lbs[varidx].astype(int), ubs[varidx].astype(int) + 1))
     else:
         raise ValueError(f'Variable of type {vartype} supported by CoCaBO.')
 
@@ -96,8 +96,14 @@ def optimize_CoCaBO(problem, max_evals, init_points=24, log=None):
     # Normally this is set by run trails...
     optim.trial_num = 1
     seed = 0
-    df = optim.runOptim(max_eval_budget, seed)
-    mon.end()
+    try:
+        df = optim.runOptim(max_eval_budget, seed)
+        mon.end()
 
-    _lbtch, _trls, _li, solY, solX = optim.best_val_list[-1]
+        _lbtch, _trls, _li, solY, solX = optim.best_val_list[-1]
+    except e:
+        mon.end()
+        print("An error has occurred while using CoCaBO, terminating early...")
+        return None, None, mon
+        
     return solX, solY, mon
