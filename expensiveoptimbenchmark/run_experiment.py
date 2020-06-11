@@ -42,6 +42,11 @@ def construct_rosen(params):
     ds = parse_numerical_ranges(params['-d'])
     return [RosenbrockInt(d) for d in ds]
 
+# Linear MIVABO Function
+def construct_linearmivabo(params):
+    from problems.linear_MIVABOfunction import Linear
+    return [Linear()]
+
 # Summary of problems and their parameters.
 problems = {
     'tsp': {
@@ -64,6 +69,12 @@ problems = {
             '--seed': '0'
         },
         'constructor': construct_convex
+    },
+    'linearmivabo': {
+        'args': set(), # TODO: make this approach configurable.
+        'defaults': {
+        },
+        'constructor': construct_linearmivabo
     }
 }
 
