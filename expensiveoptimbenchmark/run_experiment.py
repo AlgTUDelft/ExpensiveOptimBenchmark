@@ -127,6 +127,11 @@ def check_smac():
     from solvers.smac.wsmac import optimize_smac
     pass
 
+# CoCaBO
+def execute_cocabo(params, problem, max_eval, log):
+    from solvers.CoCaBO.wCoCaBo import optimize_CoCaBO
+    return optimize_CoCaBO(problem, max_eval, log=log)
+
 solvers = {
     'idone': {
         'args': {'--model'},
@@ -178,6 +183,13 @@ solvers = {
         },
         'executor': execute_smac,
         'check': check_smac
+    },
+    'cocabo': {
+        'args': set(),
+        'defaults': {
+        },
+        'executor': execute_cocabo,
+        'check': nop
     }
 }
 
@@ -246,6 +258,10 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print()
     # bayesianoptimization
     print(f" bayesianoptimization")
+    print(f" (no arguments implemented yet)")
+    print()
+    # CoCaBO
+    print(f" cocabo")
     print(f" (no arguments implemented yet)")
     print()
     sys.exit(0)
