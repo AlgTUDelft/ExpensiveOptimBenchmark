@@ -80,7 +80,7 @@ def optimize_CoCaBO(problem, max_evals, init_points=24, log=None):
         # CoCaBO reorders the input so that categorical comes first
         # continuous second.
         # We need to reconstruct the vector...
-        xvec = np.concatenate([[Cmap[i][cv] for i, cv in enumerate(cat)], cont])[invperm]
+        xvec = np.concatenate([[Cmap[i][cv] if Cv else Cmap[i][0] for i, cv in enumerate(cat)], cont])[invperm]
         print(xvec)
         mon.commit_start_eval()
         r = problem.evaluate(xvec)
