@@ -170,9 +170,9 @@ def func2C(x):
     # X is a continuous variable
     X = x[2:]
 
-    assert len(ht_list) == 2
-    ht1 = ht_list[0]
-    ht2 = ht_list[1]
+    # assert len(ht_list) == 2
+    ht1 = int(x[0])
+    ht2 = int(x[1])
 
     if ht1 == 0:  # rosenbrock
         f = myrosenbrock(X)
@@ -202,10 +202,10 @@ def func3C(x):
     # ht is a categorical index
     # X is a continuous variable
     X = np.atleast_2d(x[3:])
-    assert len(ht_list) == 3
-    ht1 = ht_list[0]
-    ht2 = ht_list[1]
-    ht3 = ht_list[2]
+    # assert len(ht_list) == 3
+    ht1 = int(x[0])
+    ht2 = int(x[1])
+    ht3 = int(x[2])
 
     X = X * 2
     if ht1 == 0:  # rosenbrock
