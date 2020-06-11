@@ -119,6 +119,7 @@ def execute_bayesianoptimization(params, problem, max_eval, log):
     # TODO: Allow picking different configurations?
     return optimize_bayesian_optimization(problem, max_eval, log=log)
 
+# smac
 def execute_smac(params, problem, max_eval, log):
     from solvers.smac.wsmac import optimize_smac
     return optimize_smac(problem, max_eval, log=log)
@@ -244,6 +245,10 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print(f" idone")
     print(f" --model=<basic|advanced> \t The kind of model IDONE should utilize (default: advanced)")
     print()
+    # MVRSM
+    print(f" mvrsm")
+    print(f" --model=<basic|advanced> \t The kind of model MVRSM should utilize (default: advanced)")
+    print()
     # HyperOpt
     print(f" hyperopt")
     print(f" (no arguments implemented yet)")
@@ -258,6 +263,10 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print()
     # bayesianoptimization
     print(f" bayesianoptimization")
+    print(f" (no arguments implemented yet)")
+    print()
+    # smac
+    print(f" smac")
     print(f" (no arguments implemented yet)")
     print()
     # CoCaBO
