@@ -75,8 +75,24 @@ problems = {
         'defaults': {
         },
         'constructor': construct_linearmivabo
-    }
+    },
 }
+
+def generate_construct_synthetic(fn):
+    def generate_synthetic(args):
+        return [fn]
+    return generate_synthetic
+
+# Add syntheticfunctions.
+from problems.syntheticfunctions import fns
+problems.update({
+    fn.name: {
+        'args': set(),
+        'defaults': {},
+        'constructor': generate_construct_synthetic(fn)
+    }
+    for fn in fns
+})
 
 def nop(*x, **y):
     pass
