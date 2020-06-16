@@ -20,6 +20,8 @@ def get_variable(problem, varidx, params):
             return hp.quniform(f'v{varidx}', lb, ub, 1)
         else:
             raise ValueError(f'Unknown int conversion rule. Try using `quniform` or `randint`.')
+    elif vartype == 'cat':
+        return hp.randint(f'v{varidx}', ub - lb + 1)
     else:
         raise ValueError(f'Variable of type {vartype} supported by HyperOpt (or not added to the converter yet).')
 
@@ -36,6 +38,9 @@ def optimize_hyperopt_tpe(problem, max_evals, random_init_evals = 3, cparams={},
     if cparams.get('int_conversion_mode') == 'randint':
         idxs = problem.vartype() == 'int'
         shift[idxs] = problem.lbs()[idxs]
+
+    idxs = problem.vartype() == 'cat'
+    shift[idxs] = problem.lbs()[idxs]
 
     mon = Monitor("hyperopt/tpe", problem, log=log)
     def f(x):

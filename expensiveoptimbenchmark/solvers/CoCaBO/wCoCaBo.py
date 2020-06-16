@@ -69,7 +69,7 @@ def optimize_CoCaBO(problem, max_evals, init_points=24, log=None):
     #       cause.
     perm = list(range(d))
     vartypes = problem.vartype()
-    perm.sort(key=lambda i: 0 if vartypes[i] == "int" else 1)
+    perm.sort(key=lambda i: 0 if vartypes[i] == "int" or vartypes[i] == "cat" else 1)
     perm = np.asarray(perm)
     invperm = np.zeros(d, dtype=int)
     for i, p in enumerate(perm):

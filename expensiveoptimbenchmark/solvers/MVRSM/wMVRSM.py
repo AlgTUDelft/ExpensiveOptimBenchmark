@@ -12,7 +12,7 @@ def optimize_MVRSM(problem, max_evals, model='advanced', log=None):
     # Find the permutation that lists integers first.
     # And its inverse.
     perm = list(range(d))
-    perm.sort(key=lambda i: 0 if vartypes[i] == "int" else 1)
+    perm.sort(key=lambda i: 0 if vartypes[i] == "int" or vartypes[i] == "cat" else 1)
     perm = np.asarray(perm)
     invperm = np.zeros(d, dtype=int)
     for i, p in enumerate(perm):

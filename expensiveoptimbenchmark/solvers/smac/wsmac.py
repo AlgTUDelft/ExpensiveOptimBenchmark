@@ -3,7 +3,7 @@ import math
 
 # Variable types
 from smac.configspace import ConfigurationSpace
-from ConfigSpace.hyperparameters import UniformFloatHyperparameter, UniformIntegerHyperparameter
+from ConfigSpace.hyperparameters import UniformFloatHyperparameter, UniformIntegerHyperparameter, CategoricalHyperparameter
 
 # 
 from smac.facade.smac_hpo_facade import SMAC4HPO
@@ -22,6 +22,8 @@ def get_variable(problem, varidx):
         return UniformFloatHyperparameter(f'v{varidx:0{nlog10}}', lb, ub) 
     elif vartype == 'int':
         return UniformIntegerHyperparameter(f'v{varidx:0{nlog10}}', lb, ub) 
+    elif vartype == 'cat':
+        return CategoricalHyperparameter(f'v{varidx:0{nlog10}}', choices=[i for i in range(int(lb), int(ub)+1)])
     else:
         raise ValueError(f'Variable of type {vartype} supported by SMAC (or not added to the converter yet).')
 

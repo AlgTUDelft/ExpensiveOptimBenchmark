@@ -9,7 +9,7 @@ def get_variable_type(problem, varidx):
     
     if vartype == 'cont':
         return 'cont'
-    elif vartype == 'int':
+    elif vartype == 'int' or vartype == 'cat':
         # Note: integer support is wonky with pyGPGO.
         # Additional steps (eg. rounding) in objective function may be required.
         return 'cont'
