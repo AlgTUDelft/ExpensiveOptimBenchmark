@@ -16,13 +16,14 @@ from scipy.optimize import rosen
 # Wrapper
 
 class MixedFunction:
-    def __init__(self, name, f, n_vars_d, n_vars_c, lbs, ubs):
+    def __init__(self, name, f, n_vars_d, n_vars_c, lbs, ubs, is_discrete_categorical):
         self.name = name
         self.f = f
         self.n_vars_d = n_vars_d
         self.n_vars_c = n_vars_c
         self.lb = lbs
         self.ub = ubs
+        self.is_discrete_categorical = is_discrete_categorical
         self.d = n_vars_d + n_vars_c
         assert len(lbs) == int(self.d), \
 			f"Function {name} has a different number of lower bounds ({len(lbs)}) to its dimensionality ({self.d})"
@@ -39,7 +40,11 @@ class MixedFunction:
         return self.ub
 
     def vartype(self):
-        return np.array(['int'] * self.n_vars_d + ['cont'] * self.n_vars_c)
+        if type(self.is_discrete_categorical) is np.ndarray:
+            assert len(self.is_discrete_categorical) == self.n_vars_d
+            return np.array(['cat' if c else 'int' for c in self.is_discrete_categorical] + ['cont'] * self.n_vars_c)
+        else:
+            return np.array(['cat' if self.is_discrete_categorical else 'int'] * self.n_vars_d + ['cont'] * self.n_vars_c)
 
     def dims(self):
         return self.n_vars_d + self.n_vars_c
@@ -73,7 +78,8 @@ def highdimRosenbrock(x):
 
 SFhighdimRosenbrock = MixedFunction('highdimRosenbrock', highdimRosenbrock, 5, 20,
     np.concatenate([np.zeros(5), np.ones(20) * -2]),
-    np.concatenate([np.ones(5), np.ones(20) * 2]))
+    np.concatenate([np.ones(5), np.ones(20) * 2]),
+    False)
 fns.append(SFhighdimRosenbrock)
 
 #
@@ -84,7 +90,8 @@ def dim10Rosenbrock(x):
 
 SFDim10Rosenbrock = MixedFunction('dim10Rosenbrock', dim10Rosenbrock, 3, 10-3, 
     np.concatenate([np.zeros(3), np.ones(10-3) * -2]),
-    np.concatenate([np.ones(3), np.ones(10-3) * 2]))
+    np.concatenate([np.ones(3), np.ones(10-3) * 2]),
+    False)
 fns.append(SFDim10Rosenbrock)
 
 #
@@ -95,7 +102,8 @@ def dim53Rosenbrock(x):
 
 SFDim53Rosenbrock = MixedFunction('dim53Rosenbrock', dim53Rosenbrock, 50, 3, 
     np.concatenate([np.zeros(50), np.ones(3) * -2]),
-    np.concatenate([np.ones(50), np.ones(3) * 2]))
+    np.concatenate([np.ones(50), np.ones(3) * 2]),
+    False)
 fns.append(SFDim53Rosenbrock)
 
 #
@@ -106,7 +114,8 @@ def dim238Rosenbrock(x):
 
 SFDim238Rosenbrock = MixedFunction('dim238Rosenbrock', dim238Rosenbrock, 119, 119, 
     np.concatenate([np.zeros(119), np.ones(119) * -2]),
-    np.concatenate([np.ones(119) * 4, np.ones(119) * 2]))
+    np.concatenate([np.ones(119) * 4, np.ones(119) * 2]),
+    False)
 fns.append(SFDim238Rosenbrock)
 
 #
@@ -116,14 +125,15 @@ def dim53Ackley(x):
     a = 20
     b = 0.2
     c = 2*np.pi
-    sum_sq_term = -a * np.exp(-b * np.sqrt(np.sum(np.square(XX))/53))
-    cos_term = -1*np.exp(np.sum(np.cos(c*np.copy(XX))/53))
+    sum_sq_term = -a * np.exp(-b * np.sqrt(np.sum(np.square(x))/53))
+    cos_term = -1*np.exp(np.sum(np.cos(c*np.copy(x))/53))
     result = a + np.exp(1) + sum_sq_term + cos_term
     return result + 1e-6 * np.random.rand()
 
 SFDim53Ackley = MixedFunction('dim53Ackley', dim53Ackley, 50, 3, 
     np.concatenate([np.zeros(50), np.ones(3) * -1]),
-    np.concatenate([np.ones(50), np.ones(3) * 1]))
+    np.concatenate([np.ones(50), np.ones(3) * 1]),
+    False)
 fns.append(SFDim53Ackley)
 #/Adapted
 
@@ -193,7 +203,8 @@ def func2C(x):
 
 SFFunc2C = MixedFunction('func2C', func2C, 2, 2,
     np.asarray([0, 0, -1, -1]),
-    np.asarray([2, 4, 1, 1])
+    np.asarray([2, 4, 1, 1]),
+    True
 )
 fns.append(SFFunc2C)
 
@@ -235,6 +246,7 @@ def func3C(x):
 
 SFFunc3C = MixedFunction('func3C', func3C, 3, 2,
     np.asarray([0, 0, 0, -1, -1]),
-    np.asarray([2, 4, 3, 1, 1])
+    np.asarray([2, 4, 3, 1, 1]), 
+    True
 )
 fns.append(SFFunc3C)
