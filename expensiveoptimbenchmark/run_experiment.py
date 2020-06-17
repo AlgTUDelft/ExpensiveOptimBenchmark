@@ -94,6 +94,16 @@ problems.update({
     for fn in fns
 })
 
+from problems.DockerCFDBenchmark import dockersimbenches
+problems.update({
+    dockerproblem.name.lower(): {
+        'args': set(),
+        'defaults': {},
+        'constructor': generate_construct_synthetic(dockerproblem)
+    }
+    for dockerproblem in dockersimbenches
+})
+
 def nop(*x, **y):
     pass
 
@@ -273,6 +283,17 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print(f" rosen")
     print(f" -d=<intranges> \t The dimensionality of the rosenbrock problem")
     print()
+    # Predefined: Synthetic
+    print(", ".join(fn.name for fn in fns))
+    print(f" (for all: no arguments)")
+    print()
+    # Predefined: Synthetic
+    print(", ".join(fn.name.lower() for fn in dockersimbenches))
+    print(f" (for all: no arguments)")
+    print(f" (Note: Running these requires docker to be installed.)")
+    print()
+
+    # Predefined: CFD Test Problems
     print(f"Solvers:")
     # IDONE
     print(f" idone")
