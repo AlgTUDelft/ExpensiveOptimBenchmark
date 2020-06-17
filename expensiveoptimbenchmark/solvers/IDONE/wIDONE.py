@@ -8,7 +8,7 @@ def optimize_IDONE(problem, max_evals, model='advanced', log=None):
     lb = problem.lbs()
     ub = problem.ubs()
 
-    if not all(np.logical_or(problem.vartype() == 'int', problem.vartype() == 'cat')):
+    if not (np.logical_or(problem.vartype() == 'int', problem.vartype() == 'cat')).all():
         raise ValueError(f'Variable of type {vartype} supported by IDONE.')
     
     x0 = np.round(np.random.rand(d)*(ub-lb) + lb)
