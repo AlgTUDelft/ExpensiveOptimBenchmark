@@ -69,14 +69,23 @@ def optimize_hyperopt_tpe(problem, max_evals, random_init_evals = 3, cparams={},
 
     return solX, solY, mon
 
-def optimize_hyperopt_rnd(problem, max_evals, log=None):
-    variables = get_variables(problem)
+def optimize_hyperopt_rnd(problem, max_evals, cparams={}, log=None):
+    variables = get_variables(problem, cparams)
+
+    shift = np.zeros(problem.dims())
+    if cparams.get('int_conversion_mode') == 'randint':
+        idxs = problem.vartype() == 'int'
+        shift[idxs] = problem.lbs()[idxs]
+
+    idxs = problem.vartype() == 'cat'
+    shift[idxs] = problem.lbs()[idxs]
 
     mon = Monitor("hyperopt/randomsearch", problem, log=log)
     def f(x):
+        xalt = x + shift
         mon.commit_start_eval()
-        r = problem.evaluate(x)
-        mon.commit_end_eval(x, r)
+        r = problem.evaluate(xalt)
+        mon.commit_end_eval(xalt, r)
         return {
             'loss': r,
             'status': STATUS_OK
