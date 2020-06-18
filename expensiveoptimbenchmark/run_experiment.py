@@ -215,6 +215,7 @@ solvers = {
     'randomsearch': {
         'args': set(),
         'defaults': {
+            '--int-conversion-mode': 'quniform'
         },
         'executor': execute_hyperopt_rnd,
         'check': nop
