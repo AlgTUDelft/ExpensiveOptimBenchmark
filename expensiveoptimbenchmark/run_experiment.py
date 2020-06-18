@@ -126,6 +126,12 @@ def execute_MVRSM(params, problem, max_eval, log):
 
     return optimize_MVRSM(problem, max_eval, model=type_model, log=log)
 
+# SA
+def execute_SA(params, problem, max_eval, log):
+    from solvers.SA.wSA import optimize_SA
+
+    return optimize_SA(problem, max_eval, log=log)
+
 
 # Hyperopt TPE
 def execute_hyperopt(params, problem, max_eval, log):
@@ -190,6 +196,12 @@ solvers = {
             '--model': 'advanced'
         },
         'executor': execute_MVRSM,
+        'check': nop
+    },
+    'sa': {
+        'args': set(),
+        'defaults': {},
+        'executor': execute_SA,
         'check': nop
     },
     'hyperopt': {
