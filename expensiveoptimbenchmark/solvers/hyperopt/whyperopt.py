@@ -69,8 +69,8 @@ def optimize_hyperopt_tpe(problem, max_evals, random_init_evals = 3, cparams={},
 
     return solX, solY, mon
 
-def optimize_hyperopt_rnd(problem, max_evals, log=None):
-    variables = get_variables(problem)
+def optimize_hyperopt_rnd(problem, max_evals, cparams={}, log=None):
+    variables = get_variables(problem, cparams)
 
     mon = Monitor("hyperopt/randomsearch", problem, log=log)
     def f(x):

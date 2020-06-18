@@ -147,7 +147,10 @@ def execute_hyperopt(params, problem, max_eval, log):
 def execute_hyperopt_rnd(params, problem, max_eval, log):
     from solvers.hyperopt.whyperopt import optimize_hyperopt_rnd
     # TODO: Set number of random evaluations?
-    return optimize_hyperopt_rnd(problem, max_eval, log=log)
+    conversion_params = {
+        'int_conversion_mode': params.get('--int-conversion-mode')
+    }
+    return optimize_hyperopt_rnd(problem, max_eval, cparams=conversion_params, log=log)
 
 # pyGPGO
 def execute_pygpgo(params, problem, max_eval, log):
@@ -213,8 +216,9 @@ solvers = {
         'check': nop
     },
     'randomsearch': {
-        'args': set(),
+        'args': {'--int-conversion-mode'},
         'defaults': {
+            '--int-conversion-mode': 'randint'
         },
         'executor': execute_hyperopt_rnd,
         'check': nop
