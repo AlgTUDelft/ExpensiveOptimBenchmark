@@ -30,7 +30,9 @@ def optimize_bayesian_optimization(problem, max_evals, random_init_evals = 5, lo
         mon.commit_end_eval(xvec, r)
         # Negate because bayesianoptimization maximizes by default.
         # And optimizer.minimize does not actually exist.
-        return -r
+        # Include some random noise to avoid issues if all samples are the same.
+        eps = 1e-4
+        return -r + np.random.standard_normal() * eps
 
     mon.start()
     optimizer = BayesianOptimization(
