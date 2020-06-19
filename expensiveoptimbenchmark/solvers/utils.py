@@ -141,8 +141,8 @@ class Binarizer:
 
     def binarize(self, x):
         xv = np.matmul(x + self.shift, self.W)
-        xv[self.out_mask] = np.floor(xv[self.out_mask])
-        return xv % self.m
+        xv[self.out_mask] = np.floor(xv[self.out_mask]) % self.m[self.out_mask]
+        return xv 
 
     def unbinarize(self, x):
         return np.clip(np.matmul(x, self.Winv) - self.shift, self.lb, self.ub)

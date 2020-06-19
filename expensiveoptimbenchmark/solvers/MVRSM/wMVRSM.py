@@ -20,7 +20,6 @@ def optimize_MVRSM(problem, max_evals, model='advanced', binarize_categorical=Fa
 
     counted = Counter(vartypes)
     num_int = counted["int"] + counted["cat"]
-    assert num_int == d
 
     # Bounds are reordered
     lb = problem.lbs()[perm]

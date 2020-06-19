@@ -124,10 +124,13 @@ def execute_MVRSM(params, problem, max_eval, log):
     from solvers.MVRSM.wMVRSM import optimize_MVRSM
     if params['--model'] not in ['basic', 'advanced']:
         raise ValueError("Valid model types are `basic` and `advanced`")
-        
-    type_model = params['--model']
+    if params['--binarize_categorical'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
+        raise ValueError("--binarize_categorical should be a boolean.")
 
-    return optimize_MVRSM(problem, max_eval, model=type_model, log=log)
+    type_model = params['--model']
+    binarize_categorical = params['--binarize_categorical'] in ['true','t', 'yes', 'y']
+
+    return optimize_MVRSM(problem, max_eval, model=type_model, binarize_categorical=binarize_categorical, log=log)
 
 
 # Hyperopt TPE
@@ -194,9 +197,10 @@ solvers = {
         'check': nop
     },
     'mvrsm': {
-        'args': {'--model'},
+        'args': {'--model', '--binarize_categorical'},
         'defaults': {
-            '--model': 'advanced'
+            '--model': 'advanced',
+            '--binarize_categorical': 'false'
         },
         'executor': execute_MVRSM,
         'check': nop
@@ -210,7 +214,7 @@ solvers = {
         'check': nop
     },
     'randomsearch': {
-        'args': set(),
+        'args': {'--int-conversion-mode'},
         'defaults': {
             '--int-conversion-mode': 'quniform'
         },
