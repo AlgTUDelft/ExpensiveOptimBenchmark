@@ -112,11 +112,11 @@ def execute_IDONE(params, problem, max_eval, log):
     from solvers.IDONE.wIDONE import optimize_IDONE
     if params['--model'] not in ['basic', 'advanced']:
         raise ValueError("Valid model types are `basic` and `advanced`")
-    if params['--binarize_categorical'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
-        raise ValueError("--binarize_categorical should be a boolean.")
+    if params['--binarize-categorical'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
+        raise ValueError("--binarize-categorical should be a boolean.")
         
     type_model = params['--model']
-    binarize_categorical = params['--binarize_categorical'] in ['true','t', 'yes', 'y']
+    binarize_categorical = params['--binarize-categorical'] in ['true','t', 'yes', 'y']
 
     return optimize_IDONE(problem, max_eval, model=type_model, binarize_categorical=binarize_categorical, log=log)
 
@@ -124,11 +124,11 @@ def execute_MVRSM(params, problem, max_eval, log):
     from solvers.MVRSM.wMVRSM import optimize_MVRSM
     if params['--model'] not in ['basic', 'advanced']:
         raise ValueError("Valid model types are `basic` and `advanced`")
-    if params['--binarize_categorical'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
-        raise ValueError("--binarize_categorical should be a boolean.")
+    if params['--binarize-categorical'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
+        raise ValueError("--binarize-categorical should be a boolean.")
 
     type_model = params['--model']
-    binarize_categorical = params['--binarize_categorical'] in ['true','t', 'yes', 'y']
+    binarize_categorical = params['--binarize-categorical'] in ['true','t', 'yes', 'y']
 
     return optimize_MVRSM(problem, max_eval, model=type_model, binarize_categorical=binarize_categorical, log=log)
 
@@ -188,19 +188,19 @@ def execute_cocabo(params, problem, max_eval, log):
 
 solvers = {
     'idone': {
-        'args': {'--model', '--binarize_categorical'},
+        'args': {'--model', '--binarize-categorical'},
         'defaults': {
             '--model': 'advanced',
-            '--binarize_categorical': 'false'
+            '--binarize-categorical': 'false'
         },
         'executor': execute_IDONE,
         'check': nop
     },
     'mvrsm': {
-        'args': {'--model', '--binarize_categorical'},
+        'args': {'--model', '--binarize-categorical'},
         'defaults': {
             '--model': 'advanced',
-            '--binarize_categorical': 'false'
+            '--binarize-categorical': 'false'
         },
         'executor': execute_MVRSM,
         'check': nop
@@ -312,10 +312,12 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     # IDONE
     print(f" idone")
     print(f" --model=<basic|advanced> \t The kind of model IDONE should utilize (default: advanced)")
+    print(f" --binarize-categorical=<t|true|f|false> \t Whether to binarize categorical variables. (default: false)")
     print()
     # MVRSM
     print(f" mvrsm")
     print(f" --model=<basic|advanced> \t The kind of model MVRSM should utilize (default: advanced)")
+    print(f" --binarize-categorical=<t|true|f|false> \t Whether to binarize categorical variables. (default: false)")
     print()
     # HyperOpt
     print(f" hyperopt")
