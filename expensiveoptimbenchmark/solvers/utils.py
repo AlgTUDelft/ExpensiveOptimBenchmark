@@ -104,3 +104,51 @@ class Monitor:
         total_model_time = sum(self.model_time_gen())
         total_eval_time = sum(self.eval_time_gen())
         file.write(f"{csvify(self.solver)},{csvify(self.problem)},{self.expuid},{self.num_iters},{total_time},{total_model_time},{total_eval_time},{self.best_fitness},{csvify(self.best_x)}\n")
+
+import numpy as np
+class Binarizer:
+    def __init__(self, mask, lb, ub):
+        self.din = len(lb)
+        self.lb = lb
+        self.ub = ub
+        self.in_mask = mask
+        # One-to-one mapping to begin with.
+        vars_each = np.ones(self.din, np.int)
+        self.shift = np.zeros(self.din)
+        self.shift[mask] = -lb[mask]
+        # Binarization requires ceil(log2(range + 1)) new variables. 
+        vars_each[mask] = np.ceil(np.log2(ub[mask] - lb[mask] + 1))
+        self.dout = sum(vars_each)
+        self.out_mask = np.asarray([False] * self.dout)
+        # Construct binarization weight matrices
+        self.W = np.zeros((self.din, self.dout))
+        self.Winv = np.zeros((self.dout, self.din))
+        self.m = np.ones(self.dout) * np.inf
+        # Bounds for binarized vector.
+        self.blb = np.zeros((self.dout))
+        self.bub = np.zeros((self.dout))
+        cvars_each = np.cumsum(vars_each)
+        for i_in in range(self.din):
+            start = cvars_each[i_in - 1] if i_in != 0 else 0
+            end = cvars_each[i_in]
+            for idx, i_out in enumerate(range(start, end)):
+                self.W[i_in, i_out] = 2.0 ** -idx
+                self.Winv[i_out, i_in] = 2.0 ** idx
+                self.m[i_out] = 2.0 if vars_each[i_in] != 1 else np.inf
+                self.out_mask[i_out] = self.in_mask[i_in]
+                self.blb[i_out] = 0.0 if vars_each[i_in] != 1 else self.lb[i_in]
+                self.bub[i_out] = 1.0 if vars_each[i_in] != 1 else self.ub[i_in]
+
+    def binarize(self, x):
+        xv = np.matmul(x + self.shift, self.W)
+        xv[self.out_mask] = np.floor(xv[self.out_mask]) % self.m[self.out_mask]
+        return xv 
+
+    def unbinarize(self, x):
+        return np.clip(np.matmul(x, self.Winv) - self.shift, self.lb, self.ub)
+
+    def ubs(self):
+        return self.bub
+
+    def lbs(self):
+        return self.blb

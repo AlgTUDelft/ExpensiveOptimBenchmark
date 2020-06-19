@@ -1,23 +1,39 @@
 import numpy as np
 
 from .IDONE import IDONE_minimize
-from ..utils import Monitor
+from ..utils import Monitor, Binarizer
 
-def optimize_IDONE(problem, max_evals, model='advanced', log=None):
+def optimize_IDONE(problem, max_evals, model='advanced', binarize_categorical=False, log=None):
     d = problem.dims()
     lb = problem.lbs()
     ub = problem.ubs()
 
-    if not (np.logical_or(problem.vartype() == 'int', problem.vartype() == 'cat')).all():
-        raise ValueError(f'Variable of type {vartype} supported by IDONE.')
+    supported = (np.logical_or(problem.vartype() == 'int', problem.vartype() == 'cat'))
+
+    if not (supported).all():
+        raise ValueError(f'Variable of types {np.unique(problem.vartype()[np.logical_not(supported)])} are not supported by IDONE.')
     
     x0 = np.round(np.random.rand(d)*(ub-lb) + lb)
 
-    mon = Monitor(f"IDONE/{model}", problem, log=log)
+    # Don't enable binarization if there is nothing to binarize.
+    binarize_categorical = binarize_categorical and (problem.vartype() == 'cat').any()
+    
+    if binarize_categorical:
+        b = Binarizer(problem.vartype() == 'cat', lb, ub)
+        x0 = b.binarize(x0)
+        # Get new bounds.
+        lb = b.lbs()
+        ub = b.ubs()
+
+    mon = Monitor(f"IDONE/{model}{'/binarized' if binarize_categorical else ''}", problem, log=log)
     def f(x):
         mon.commit_start_eval()
-        r = problem.evaluate(x)
-        mon.commit_end_eval(x, r)
+        if binarize_categorical:
+            xalt = b.unbinarize(x)
+        else:
+            xalt = x
+        r = problem.evaluate(xalt)
+        mon.commit_end_eval(xalt, r)
         return r
     
     mon.start()
