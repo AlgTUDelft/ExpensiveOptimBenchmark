@@ -127,7 +127,7 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, verbose=1, log=False)
 		D = len(B) # Number of basis functions
 		c = np.ones((D,1)) # Model weights, to be trained with recursive least squares (RLS)
 		c[0] = 0 # Start out with no model offset
-		reg = 1e-8 # Regularization parameter. 1e-8 is good for the noiseless case, change to something like 1e-3 if there is noise.
+		reg = 1e-3 # Regularization parameter. 1e-8 is good for the noiseless case, change to something like 1e-3 if there is noise.
 		P = np.diag(np.ones(D))/reg # RLS covariance matrix
 		model = {'W':W, 'B':B, 'ReLU':ReLU, 'ReLUderiv':ReLUderiv, 'Z':Z, 'Zderiv':Zderiv, 'D':D, 'c':c, 'reg':reg, 'P':P} # Store model variables in a dictionary
 		
