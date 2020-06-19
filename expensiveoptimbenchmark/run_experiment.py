@@ -112,10 +112,13 @@ def execute_IDONE(params, problem, max_eval, log):
     from solvers.IDONE.wIDONE import optimize_IDONE
     if params['--model'] not in ['basic', 'advanced']:
         raise ValueError("Valid model types are `basic` and `advanced`")
+    if params['--binarize_categorical'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
+        raise ValueError("--binarize_categorical should be a boolean.")
         
     type_model = params['--model']
+    binarize_categorical = params['--binarize_categorical'] in ['true','t', 'yes', 'y']
 
-    return optimize_IDONE(problem, max_eval, model=type_model, log=log)
+    return optimize_IDONE(problem, max_eval, model=type_model, binarize_categorical=binarize_categorical, log=log)
 
 def execute_MVRSM(params, problem, max_eval, log):
     from solvers.MVRSM.wMVRSM import optimize_MVRSM
@@ -182,9 +185,10 @@ def execute_cocabo(params, problem, max_eval, log):
 
 solvers = {
     'idone': {
-        'args': {'--model'},
+        'args': {'--model', '--binarize_categorical'},
         'defaults': {
-            '--model': 'advanced'
+            '--model': 'advanced',
+            '--binarize_categorical': 'false'
         },
         'executor': execute_IDONE,
         'check': nop

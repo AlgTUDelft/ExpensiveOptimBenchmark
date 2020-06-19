@@ -124,6 +124,9 @@ class Binarizer:
         self.W = np.zeros((self.din, self.dout))
         self.Winv = np.zeros((self.dout, self.din))
         self.m = np.ones(self.dout) * np.inf
+        # Bounds for binarized vector.
+        self.blb = np.zeros((self.dout))
+        self.bub = np.zeros((self.dout))
         cvars_each = np.cumsum(vars_each)
         for i_in in range(self.din):
             start = cvars_each[i_in - 1] if i_in != 0 else 0
@@ -132,12 +135,20 @@ class Binarizer:
                 self.W[i_in, i_out] = 2.0 ** -idx
                 self.Winv[i_out, i_in] = 2.0 ** idx
                 self.m[i_out] = 2.0 if vars_each[i_in] != 1 else np.inf
-                self.out_mask[i_out] = self.in_mask[i_in] 
+                self.out_mask[i_out] = self.in_mask[i_in]
+                self.blb[i_out] = 0.0 if vars_each[i_in] != 1 else self.lb[i_in]
+                self.bub[i_out] = 1.0 if vars_each[i_in] != 1 else self.ub[i_in]
 
     def binarize(self, x):
         xv = np.matmul(x + self.shift, self.W)
         xv[self.out_mask] = np.floor(xv[self.out_mask])
-        return xv % b.m
+        return xv % self.m
 
     def unbinarize(self, x):
         return np.clip(np.matmul(x, self.Winv) - self.shift, self.lb, self.ub)
+
+    def ubs(self):
+        return self.bub
+
+    def lbs(self):
+        return self.blb
