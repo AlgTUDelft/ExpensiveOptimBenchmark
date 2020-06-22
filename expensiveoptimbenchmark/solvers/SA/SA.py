@@ -1,9 +1,10 @@
 import numpy as np
 import math
 
-def SA_minimize(f, x0, lb, ub, N = 1000, perc = 0.2, Tf = None, T0 = None, seed=None):
+def SA_minimize(f, x0, lb, ub, N = 1000, perc = None, Tf = None, T0 = None, seed=None):
     d = len(x0)
     # Defaults for temperature.
+    perc = 1 / d if perc is None else perc
     T0 = -1/math.log(0.8) if T0 is None else T0
     Tf = ((1e-8)/T0)**(1/N) if Tf is None else Tf
     
