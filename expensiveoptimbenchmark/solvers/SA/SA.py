@@ -26,7 +26,7 @@ def SA_minimize(f, x0, lb, ub, N = 1000, perc = None, Tf = None, T0 = None, seed
 
     for i in range(1, N):
         # Modify every dimension with probability perc
-        altered = rng.uniform(size=d) > perc
+        altered = rng.uniform(size=d) < perc
         # Avoid going past boundaries.
         is_upperbounded = current_X == ub
         is_lowerbounded = current_X == lb
@@ -59,7 +59,7 @@ def SA_minimize(f, x0, lb, ub, N = 1000, perc = None, Tf = None, T0 = None, seed
 
         # Update temperature.
         T = T * Tf
-        # print(f"Completed iteration. {r}. Temperature: {T}. Current X: {current_X}, best y: {Ybest[0, i]}")
+        # print(f"Completed iteration. {r}. Temperature: {T}. Evaluated Y: {Yeval[0, i]}, X: {next_X}, Current X: {current_X}, best y: {Ybest[0, i]}")
 
     # Get best result from history.
 
