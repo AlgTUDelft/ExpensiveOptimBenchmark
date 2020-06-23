@@ -37,10 +37,15 @@ def construct_convex(params):
     return [Convex(d, seed) for d, seed in product(ds, seeds)]
 
 # IntRosenbrock
-def construct_rosen(params):
+def construct_rosen_int(params):
     from problems.rosenbrock_int import RosenbrockInt
     ds = parse_numerical_ranges(params['-d'])
     return [RosenbrockInt(d) for d in ds]
+
+def construct_rosen_cont(params):
+    from problems.rosenbrock_cont import RosenbrockCont
+    ds = parse_numerical_ranges(params['-d'])
+    return [RosenbrockCont(d) for d in ds]
 
 # Linear MIVABO Function
 def construct_linearmivabo(params):
@@ -56,12 +61,27 @@ problems = {
         },
         'constructor': construct_tsp
     },
+    # Have rosen-int under the name rosen for backwards compat.
     'rosen': {
         'args': {'-d'},
         'defaults': {
             '-d': '2'
         },
-        'constructor': construct_rosen
+        'constructor': construct_rosen_int
+    },
+    'rosen-int': {
+        'args': {'-d'},
+        'defaults': {
+            '-d': '2'
+        },
+        'constructor': construct_rosen_int
+    },
+    'rosen-cont': {
+        'args': {'-d'},
+        'defaults': {
+            '-d': '2'
+        },
+        'constructor': construct_rosen_cont
     },
     'convex': {
         'args': {'--seed', '-d'},

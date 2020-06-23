@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.optimize import rosen
 
-class Rosenbrock:
+class RosenbrockCont:
 
     def __init__(self, d):
         self.ub = 10.0
