@@ -177,16 +177,16 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, verbose=1, log=False)
 			# This is better for exploitation and prevents the algorithm from getting stuck at the boundary.
 			y0 = y
 			def scale(y):
-				if abs(y0)>1e-8:
-					y = (y-y0)/abs(y0)
-				else:
-					y = (y-y0)
+				# if abs(y0)>1e-8:
+					# y = (y-y0)/abs(y0)
+				# else:
+					# y = (y-y0)
 				return y
 			def inv_scale(y):
-				if abs(y0)>1e-8:
-					y = y*abs(y0)+y0
-				else:
-					y = y+y0
+				# if abs(y0)>1e-8:
+					# y = y*abs(y0)+y0
+				# else:
+					# y = y+y0
 				return y
 					
 			y = scale(y)
