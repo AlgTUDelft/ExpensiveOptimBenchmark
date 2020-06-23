@@ -132,6 +132,21 @@ def execute_MVRSM(params, problem, max_eval, log):
 
     return optimize_MVRSM(problem, max_eval, model=type_model, binarize_categorical=binarize_categorical, log=log)
 
+def execute_DONEjl(params, problem, max_eval, log):
+    from solvers.DONEjl.wDONEjl import optimize_DONEjl
+
+    hyperparams = {
+        # Number of basis functions.
+        'n_basis': int(params["--n-basis"]),
+        # Variance of generated basis function coefficients.
+        'sigma_coeff': float(params["--sigma-coeff"]),
+        # Variational parameters.
+        'sigma_s': float(params["--sigma-s"]),
+        'sigma_f': float(params["--sigma-f"])
+        # TODO: More parameters
+    }
+
+    return optimize_DONEjl(problem, max_eval, hyperparams, log=log)
 
 # Hyperopt TPE
 def execute_hyperopt(params, problem, max_eval, log):
@@ -203,6 +218,17 @@ solvers = {
             '--binarize-categorical': 'false'
         },
         'executor': execute_MVRSM,
+        'check': nop
+    },
+    'donejl': {
+        'args': {'--n-basis'},
+        'defaults': {
+            '--n-basis': '1000',
+            '--sigma-coeff': '0.1',
+            '--sigma-s': '0.1',
+            '--sigma-f': '0.1',
+        },
+        'executor': execute_DONEjl,
         'check': nop
     },
     'hyperopt': {

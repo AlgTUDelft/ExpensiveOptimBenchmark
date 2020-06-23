@@ -274,6 +274,17 @@ version = "0.15.1"
 
 [[package]]
 category = "main"
+description = "Julia/Python bridge with IPython support."
+name = "julia"
+optional = false
+python-versions = "*"
+version = "0.5.3"
+
+[package.extras]
+test = ["numpy", "ipython", "pytest (>=4.4)", "mock"]
+
+[[package]]
+category = "main"
 description = "A fast implementation of the Cassowary constraint solver"
 name = "kiwisolver"
 optional = false
@@ -780,7 +791,7 @@ setuptools = ">=41.2"
 smac = ["smac"]
 
 [metadata]
-content-hash = "c6aedb6a47319cf784f9e35135dfcc1b4d5dbee94c3b5ba4bb3c886d05f0444c"
+content-hash = "f8deeeecf0460b29362fc85477702249dd457effe59afe73685ce87552f12787"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -943,6 +954,10 @@ jedi = [
 joblib = [
     {file = "joblib-0.15.1-py3-none-any.whl", hash = "sha256:6825784ffda353cc8a1be573118085789e5b5d29401856b35b756645ab5aecb5"},
     {file = "joblib-0.15.1.tar.gz", hash = "sha256:61e49189c84b3c5d99a969d314853f4d1d263316cc694bec17548ebaa9c47b6e"},
+]
+julia = [
+    {file = "julia-0.5.3-py2.py3-none-any.whl", hash = "sha256:1c31c6641dec14a29d275ab6c4335b27e09903f464ec99948c342fd72ba6cc8e"},
+    {file = "julia-0.5.3.tar.gz", hash = "sha256:b13207125709fdba069a25c4e54ff366f0bc308807b2aa0f3b66924101799c58"},
 ]
 kiwisolver = [
     {file = "kiwisolver-1.2.0-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:443c2320520eda0a5b930b2725b26f6175ca4453c61f739fef7a5847bd262f74"},
