@@ -10,6 +10,7 @@ class TSP:
         self.d = W.shape[0] - 2
         self.W = W
         self.n_iter = n_iter
+        self.noise_seed = noise_seed
         self.noise_rng = np.random.RandomState(seed=noise_seed)
         self.noise_factor = noise_factor
 
@@ -49,15 +50,15 @@ class TSP:
         return self.d
 
     def __str__(self):
-        return f"TSP(name={self.name},iterations={self.n_iter})"
+        return f"TSP(name={self.name},iterations={self.n_iter},noise_seed={self.noise_seed})"
 
 
-def load_explicit_tsp(path, iters=100):
+def load_explicit_tsp(path, iters=100, noise_seed=0):
     with open(path) as f:
         W = np.array([list(map(lambda x: float(x.strip()))) for line in f.readlines()])
-        return TSP(os.path.basename(path), W, iters)
+        return TSP(os.path.basename(path), W, iters, noise_seed=noise_seed)
 
-def load_tsplib(path, iters=100):
+def load_tsplib(path, iters=100, noise_seed=0):
     instance = tsplib95.load(path)
     W = networkx.to_numpy_matrix(instance.get_graph())
-    return TSP(instance.name, W, iters)
+    return TSP(instance.name, W, iters, noise_seed=noise_seed)

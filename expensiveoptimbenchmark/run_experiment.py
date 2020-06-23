@@ -22,10 +22,11 @@ def parse_numerical_ranges(ranges):
 def construct_tsp(params):
     from problems.TSP import TSP, load_tsplib, load_explicit_tsp
     iter_ns = parse_numerical_ranges(params['--iter'])
+    noise_seeds = parse_numerical_ranges(params['--noise-seed']) if params['--noise-seed'] != "random" else [None]
     if '--tsplib-file' in params:
-        return [load_tsplib(params['--tsplib-file'], iters) for iters in iter_ns]
+        return [load_tsplib(params['--tsplib-file'], iters, noise_seed) for (iters, noise_seed) in product(iter_ns, noise_seeds)]
     elif '--explicit-file' in params:
-        return [load_explicit_tsp(params['--explicit-file'], iters) for iters in iter_ns]
+        return [load_explicit_tsp(params['--explicit-file'], iters, noise_seed) for (iters, noise_seed) in product(iter_ns, noise_seeds)]
     else:
         raise ValueError('No instance file provided for TSP. Specify one using `--tsplib-file` or `--explicit-file`')
 
@@ -50,9 +51,10 @@ def construct_linearmivabo(params):
 # Summary of problems and their parameters.
 problems = {
     'tsp': {
-        'args': {'--tsplib-file', '--explicit-file', '--iter'},
+        'args': {'--tsplib-file', '--explicit-file', '--iter', '--noise-seed'},
         'defaults': {
-            '--iter': '100'
+            '--iter': '100',
+            '--noise-seed': '0'
         },
         'constructor': construct_tsp
     },
