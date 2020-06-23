@@ -2,7 +2,9 @@ import subprocess
 import re
 import sys
 import os.path
+import julia
 
+julia.install()
 
 pathrgx = re.compile(b"Path:[\t ]*([^\r\n]*)")
 envinfo = subprocess.check_output("poetry env info", shell=True)
@@ -17,6 +19,7 @@ fenvpath = envpath.replace("\\", "\\\\")
 rebuild_pycall = f"""
 import Pkg
 ENV["PYTHON"]="{fenvpath}"
+Pkg.add(["Distributions", "NLopt"])
 Pkg.build("PyCall")
 """.splitlines()
 
