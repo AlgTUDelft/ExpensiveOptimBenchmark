@@ -17,7 +17,7 @@ import time
 import numpy as np
 from scipy.optimize import minimize, Bounds
 
-def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, verbose=1, log=False):
+def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, enable_scaling=False, verbose=1, log=False):
 	d = len(x0) # dimension, number of variables
 	current_time = time.time() # time when starting the algorithm
 	next_X = [] # candidate solution presented by the algorithm
@@ -188,10 +188,13 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, verbose=1, log=False)
 				else:
 					y = y+y0
 				return y
-					
-			y = scale(y)
+			
+			if enable_scaling:
+				y = scale(y)
 		else:
-			y = scale(obj(x)) # Evaluate the objective and scale it
+			y = obj(x) # Evaluate the objective
+			if enable_scaling:
+				y = scale(y)
 		
 		
 		# Keep track of the best found objective value and candidate solution so far
@@ -247,7 +250,13 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, verbose=1, log=False)
 		
 		# If even after exploration x does not change, go to a completely random x
 		#if np.allclose(next_X,x):
-		#	next_X = np.round(np.random.rand(d)*(ub-lb) + lb) 
+		#	next_X = np.round(np.random.rand(d)*(ub-lb) + lb)
+
+		def maybe_inv_scale(y):
+			if enable_scaling:
+				return inv_scale(y)
+			else:
+				return y
 		
 		# Save data to log file
 		filename = 'log_IDONE_'+ str(current_time) + ".log"
@@ -257,14 +266,14 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, verbose=1, log=False)
 				print('Time spent training the model:				 ', update_time, file=f)
 				print('Time spent finding the minimum of the model: ', minimization_time, file=f)
 				print('Current time: ', time.time(), file=f)
-				print('Evaluated data point and evaluation:						   ', np.copy(x).astype(int),  ', ',  inv_scale(y), file=f)
-				print('Best found data point and evaluation so far:				   ', np.copy(best_X).astype(int),  ', ',  inv_scale(best_y), file=f)
-				print('Best data point according to the model and predicted value:    ', next_X_before_exploration, ', ', inv_scale(model['out'](next_X_before_exploration)), file=f)
-				print('Suggested next data point and predicted value:			       ', next_X,   ', ',  inv_scale(model['out'](next_X)), file=f)
+				print('Evaluated data point and evaluation:						   ', np.copy(x).astype(int),  ', ',  maybe_inv_scale(y), file=f)
+				print('Best found data point and evaluation so far:				   ', np.copy(best_X).astype(int),  ', ',  maybe_inv_scale(best_y), file=f)
+				print('Best data point according to the model and predicted value:    ', next_X_before_exploration, ', ', maybe_inv_scale(model['out'](next_X_before_exploration)), file=f)
+				print('Suggested next data point and predicted value:			       ', next_X,   ', ',  maybe_inv_scale(model['out'](next_X)), file=f)
 				if ii>=max_evals-1:
 					print('Model parameters: ', np.transpose(model['c']), file=f)
 	
-	return best_X, inv_scale(best_y), model, filename
+	return best_X, maybe_inv_scale(best_y), model, filename
 
 
 # Read data from log file (this reads the best found objective values at each iteration)

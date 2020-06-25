@@ -3,7 +3,7 @@ import numpy as np
 from .IDONE import IDONE_minimize
 from ..utils import Monitor, Binarizer
 
-def optimize_IDONE(problem, max_evals, model='advanced', binarize_categorical=False, log=None):
+def optimize_IDONE(problem, max_evals, model='advanced', binarize_categorical=False, enable_scaling=False, log=None):
     d = problem.dims()
     lb = problem.lbs()
     ub = problem.ubs()
@@ -25,7 +25,7 @@ def optimize_IDONE(problem, max_evals, model='advanced', binarize_categorical=Fa
         lb = b.lbs()
         ub = b.ubs()
 
-    mon = Monitor(f"IDONE/{model}{'/binarized' if binarize_categorical else ''}", problem, log=log)
+    mon = Monitor(f"IDONE/{model}{'/scaled' if enable_scaling else ''}{'/binarized' if binarize_categorical else ''}", problem, log=log)
     def f(x):
         mon.commit_start_eval()
         if binarize_categorical:
@@ -37,7 +37,7 @@ def optimize_IDONE(problem, max_evals, model='advanced', binarize_categorical=Fa
         return r
     
     mon.start()
-    solX, solY, model, logfile = IDONE_minimize(f, x0, lb, ub, max_evals, model_type=model)
+    solX, solY, model, logfile = IDONE_minimize(f, x0, lb, ub, max_evals, enable_scaling=enable_scaling, model_type=model)
     mon.end()
 
     return solX, solY, mon

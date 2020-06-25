@@ -116,11 +116,14 @@ def execute_IDONE(params, problem, max_eval, log):
         raise ValueError("Valid model types are `basic` and `advanced`")
     if params['--binarize-categorical'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
         raise ValueError("--binarize-categorical should be a boolean.")
+    if params['--scaling'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
+        raise ValueError("--scaling should be a boolean.")
         
     type_model = params['--model']
     binarize_categorical = params['--binarize-categorical'] in ['true','t', 'yes', 'y']
+    enable_scaling = params['--scaling'] in ['true','t', 'yes', 'y']
 
-    return optimize_IDONE(problem, max_eval, model=type_model, binarize_categorical=binarize_categorical, log=log)
+    return optimize_IDONE(problem, max_eval, model=type_model, binarize_categorical=binarize_categorical, enable_scaling=enable_scaling, log=log)
 
 def execute_MVRSM(params, problem, max_eval, log):
     from solvers.MVRSM.wMVRSM import optimize_MVRSM
@@ -190,10 +193,11 @@ def execute_cocabo(params, problem, max_eval, log):
 
 solvers = {
     'idone': {
-        'args': {'--model', '--binarize-categorical'},
+        'args': {'--model', '--binarize-categorical', '--scaling'},
         'defaults': {
             '--model': 'advanced',
-            '--binarize-categorical': 'false'
+            '--binarize-categorical': 'false',
+            '--scaling': 'false'
         },
         'executor': execute_IDONE,
         'check': nop
@@ -315,6 +319,7 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print(f" idone")
     print(f" --model=<basic|advanced> \t The kind of model IDONE should utilize (default: advanced)")
     print(f" --binarize-categorical=<t|true|f|false> \t Whether to binarize categorical variables. (default: false)")
+    print(f" --scaling=<t|true|f|false> \t Whether scaling is applied. (default: false)")
     print()
     # MVRSM
     print(f" mvrsm")
