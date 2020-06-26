@@ -1,13 +1,14 @@
 import subprocess
+import numpy as np
 
 class DockerCFDBenchmarkProblem:
 
     def __init__(self, name, d, lbs, ubs, vartype, direction, errval):
         self.name = name
         self.d = d
-        self.lb = lbs
-        self.ub = ubs
-        self.vt = vartype
+        self.lb = np.asarray(lbs)
+        self.ub = np.asarray(ubs)
+        self.vt = np.asarray(vartype)
         self.direction = 1 if direction == "min" else -1
         self.errval = errval
     
