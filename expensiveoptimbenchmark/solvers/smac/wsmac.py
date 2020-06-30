@@ -7,7 +7,9 @@ from ConfigSpace.hyperparameters import UniformFloatHyperparameter, UniformInteg
 
 # 
 from smac.facade.smac_hpo_facade import SMAC4HPO
+# from smac.facade.smac_hpo_facade import SMAC4AC
 from smac.scenario.scenario import Scenario
+from smac.initial_design.random_configuration_design import RandomConfigurations
 
 from ..utils import Monitor
 
@@ -35,27 +37,29 @@ def get_variables(problem):
 
     return cs
 
-def optimize_smac(problem, max_evals, log=None):
+def optimize_smac(problem, max_evals, rand_evals=1, log=None):
 
     mon = Monitor("smac", problem, log=log)
     def f(cfg):
         xvec = np.array([cfg[k] for k, t in zip(cfg, problem.vartype())])
         mon.commit_start_eval()
-        r = problem.evaluate(xvec)
+        r = float(problem.evaluate(xvec))
         mon.commit_end_eval(xvec, r)
         return r
+
+    cs = get_variables(problem)
 
     sc = Scenario({
         "run_obj": "quality",
         "runcount-limit": max_evals,
-        "cs": get_variables(problem),
+        "cs": cs,
         "output_dir": None,
         "limit_resources": False, # Limiting resources stops the Monitor from working...
-        # "deterministic": False # FIXME: Assume noise by default?
+        # "deterministic": True
     })
     # smac = SMAC4HPO(scenario=sc, tae_runner=f)
-    smac = SMAC4HPO(scenario=sc, tae_runner=f)
-
+    smac = SMAC4HPO(scenario=sc, initial_design=RandomConfigurations, initial_design_kwargs={'init_budget': rand_evals}, tae_runner=f)
+    # smac = SMAC4AC(scenario=sc, initial_design=RandomConfigurations, initial_design_kwargs={'init_budget': rand_evals}, tae_runner=f)
 
     mon.start()
     result = smac.optimize()

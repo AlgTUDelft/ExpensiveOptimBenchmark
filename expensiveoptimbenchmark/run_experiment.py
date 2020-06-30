@@ -189,7 +189,8 @@ def execute_bayesianoptimization(params, problem, max_eval, log):
 # smac
 def execute_smac(params, problem, max_eval, log):
     from solvers.smac.wsmac import optimize_smac
-    return optimize_smac(problem, max_eval, log=log)
+    rand_evals = int(params['--rand-evals'])
+    return optimize_smac(problem, max_eval, rand_evals=rand_evals, log=log)
 
 def check_smac():
     from solvers.smac.wsmac import optimize_smac
@@ -258,8 +259,9 @@ solvers = {
         'check': nop
     },
     'smac': {
-        'args': set(),
+        'args': {'--rand-evals'},
         'defaults': {
+            '--rand-evals': '1'
         },
         'executor': execute_smac,
         'check': check_smac
@@ -366,7 +368,7 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print()
     # smac
     print(f" smac")
-    print(f" (no arguments implemented yet)")
+    print(f" --rand-evals=<int> \t Number of random evaluations. (default: 1)")
     print()
     # CoCaBO
     print(f" cocabo")
