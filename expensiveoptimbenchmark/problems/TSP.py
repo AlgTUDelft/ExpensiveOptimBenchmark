@@ -20,21 +20,22 @@ class TSP:
         for iteration in range(self.n_iter):
             current = 0
             unvisited = list(range(1, self.d+2))
+            total_route_length = 0.0
 
             for di, i in enumerate(x):
                 next_up = unvisited.pop(int(round(i)))
-                robust_total_route_length += self.W[current, next_up]
-                robust_total_route_length += self.noise_rng.random() * self.noise_factor
+                total_route_length += self.W[current, next_up]
+                total_route_length += self.noise_rng.random() * self.noise_factor
                 current = next_up
 
             last = unvisited.pop()
-            robust_total_route_length += self.W[current, last]
-            robust_total_route_length += self.noise_rng.random() * self.noise_factor
-            robust_total_route_length += self.W[last, 0]
-            robust_total_route_length += self.noise_rng.random() * self.noise_factor
-        
-        # robust_total_route_length += self.noise_rng.random() * self.n_iter * (self.d + 2) * self.noise_factor
+            total_route_length += self.W[current, last]
+            total_route_length += self.noise_rng.random() * self.noise_factor
+            total_route_length += self.W[last, 0]
+            total_route_length += self.noise_rng.random() * self.noise_factor
 
+            robust_total_route_length = max(total_route_length, robust_total_route_length)
+        
         return robust_total_route_length
 
     def lbs(self):
