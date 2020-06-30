@@ -122,7 +122,8 @@ def execute_IDONE(params, problem, max_eval, log):
     type_model = params['--model']
     binarize_categorical = params['--binarize-categorical'] in ['true','t', 'yes', 'y']
     enable_scaling = params['--scaling'] in ['true','t', 'yes', 'y']
-    rand_evals = int(params['--rand-evals'])
+    rand_evals = int(params['--rand-evals']) - 1
+    assert rand_evals >= 0, "IDONE requires at least one initial random evaluation."
 
     return optimize_IDONE(problem, max_eval, rand_evals=rand_evals, model=type_model, binarize_categorical=binarize_categorical, enable_scaling=enable_scaling, log=log)
 
@@ -138,7 +139,8 @@ def execute_MVRSM(params, problem, max_eval, log):
     type_model = params['--model']
     binarize_categorical = params['--binarize-categorical'] in ['true','t', 'yes', 'y']
     enable_scaling = params['--scaling'] in ['true','t', 'yes', 'y']
-    rand_evals = int(params['--rand-evals'])
+    rand_evals = int(params['--rand-evals']) - 1
+    assert rand_evals >= 0, "MVRSM requires at least one initial random evaluation."
 
     return optimize_MVRSM(problem, max_eval, rand_evals=rand_evals, model=type_model, binarize_categorical=binarize_categorical, enable_scaling=enable_scaling, log=log)
 
@@ -202,7 +204,7 @@ solvers = {
         'defaults': {
             '--model': 'advanced',
             '--binarize-categorical': 'false',
-            '--rand-evals': '0',
+            '--rand-evals': '1',
             '--scaling': 'false'
         },
         'executor': execute_IDONE,
@@ -213,7 +215,7 @@ solvers = {
         'defaults': {
             '--model': 'advanced',
             '--binarize-categorical': 'false',
-            '--rand-evals': '0',
+            '--rand-evals': '1',
             '--scaling': 'true'
         },
         'executor': execute_MVRSM,
@@ -328,14 +330,14 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print(f" --model=<basic|advanced> \t The kind of model IDONE should utilize (default: advanced)")
     print(f" --binarize-categorical=<t|true|f|false> \t Whether to binarize categorical variables. (default: false)")
     print(f" --scaling=<t|true|f|false> \t Whether scaling is applied. (default: false)")
-    print(f" --rand-evals=<int> \t Number of random evaluations (does NOT include x0). (default: 0)")
+    print(f" --rand-evals=<int> \t Number of random evaluations. (default: 1)")
     print()
     # MVRSM
     print(f" mvrsm")
     print(f" --model=<basic|advanced> \t The kind of model MVRSM should utilize (default: advanced)")
     print(f" --binarize-categorical=<t|true|f|false> \t Whether to binarize categorical variables. (default: false)")
     print(f" --scaling=<t|true|f|false> \t Whether scaling is applied. (default: true)")
-    print(f" --rand-evals=<int> \t Number of random evaluations (does NOT include x0). (default: 0)")
+    print(f" --rand-evals=<int> \t Number of random evaluations. (default: 1)")
     print()
     # HyperOpt
     print(f" hyperopt")
