@@ -362,7 +362,7 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print()
     # bayesianoptimization
     print(f" bayesianoptimization")
-    print(f" (no arguments implemented yet)")
+    print(f" --rand-evals=<int> \t Number of random evaluations. (default: 5)")
     print()
     # smac
     print(f" smac")
@@ -370,7 +370,7 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print()
     # CoCaBO
     print(f" cocabo")
-    print(f" (no arguments implemented yet)")
+    print(f" --rand-evals=<int> \t Number of random evaluations. (default: 24)")
     print()
     sys.exit(0)
 
