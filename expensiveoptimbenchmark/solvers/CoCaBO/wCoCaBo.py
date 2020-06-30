@@ -15,11 +15,13 @@ def get_variable_type(problem, varidx):
     
     if vartype == 'cont':
         return 'continuous'
-    elif vartype == 'int':
-        # No integer support?
+    elif vartype == 'cat':
+        return 'categorical'
+    elif vartype == 'int' :
+        # No integer support.
         return 'categorical'
     else:
-        raise ValueError(f'Variable of type {vartype} supported by CoCaBO.')
+        raise ValueError(f'Variable of type {vartype} is not supported by CoCaBO.')
 
 def get_variable_domain(problem, varidx):
     # Vartype can be 'cont' or 'int'
@@ -30,10 +32,10 @@ def get_variable_domain(problem, varidx):
 
     if vartype == 'cont':
         return (lbs[varidx], ubs[varidx])
-    elif vartype == 'int':
+    elif vartype == 'cat' or vartype == 'int':
         return tuple(i for i in range(lbs[varidx].astype(int), ubs[varidx].astype(int) + 1))
     else:
-        raise ValueError(f'Variable of type {vartype} supported by CoCaBO.')
+        raise ValueError(f'Variable of type {vartype} is not supported by CoCaBO.')
 
 
 def get_variables(problem):
