@@ -197,7 +197,8 @@ def check_smac():
 # CoCaBO
 def execute_cocabo(params, problem, max_eval, log):
     from solvers.CoCaBO.wCoCaBo import optimize_CoCaBO
-    return optimize_CoCaBO(problem, max_eval, log=log)
+    rand_evals = int(params['--rand-evals'])
+    return optimize_CoCaBO(problem, max_eval, init_points=rand_evals, log=log)
 
 solvers = {
     'idone': {
@@ -262,8 +263,9 @@ solvers = {
         'check': check_smac
     },
     'cocabo': {
-        'args': set(),
+        'args': {'--rand-evals'},
         'defaults': {
+            '--rand-evals': '24'
         },
         'executor': execute_cocabo,
         'check': nop

@@ -60,7 +60,7 @@ def optimize_CoCaBO(problem, max_evals, init_points=24, log=None):
     assert len(C) < d, "CoCaBO requires at least one variable to be continuous."
     # assert len(C) > 0, "CoCaBO on continuous variables only..."
     max_eval_budget = max_evals - init_points
-    assert max_eval_budget > 0
+    assert max_eval_budget > 0, "CoCaBo requires at least one non-random evaluation."
 
     # Compute the permutation and its inverse
     # CoCaBO reorders such that categorical (int) comes first
