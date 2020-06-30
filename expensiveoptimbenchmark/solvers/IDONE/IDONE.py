@@ -17,7 +17,7 @@ import time
 import numpy as np
 from scipy.optimize import minimize, Bounds
 
-def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, n_rand=0, enable_scaling=False, verbose=1, log=False):
+def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, rand_evals=0, enable_scaling=False, verbose=1, log=False):
 	d = len(x0) # dimension, number of variables
 	current_time = time.time() # time when starting the algorithm
 	next_X = [] # candidate solution presented by the algorithm
