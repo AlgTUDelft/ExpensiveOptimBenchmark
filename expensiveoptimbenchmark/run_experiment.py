@@ -144,6 +144,12 @@ def execute_MVRSM(params, problem, max_eval, log):
 
     return optimize_MVRSM(problem, max_eval, rand_evals=rand_evals, model=type_model, binarize_categorical=binarize_categorical, enable_scaling=enable_scaling, log=log)
 
+# SA
+def execute_SA(params, problem, max_eval, log):
+    from solvers.SA.wSA import optimize_SA
+
+    return optimize_SA(problem, max_eval, log=log)
+
 
 # Hyperopt TPE
 def execute_hyperopt(params, problem, max_eval, log):
@@ -223,6 +229,12 @@ solvers = {
             '--scaling': 'true'
         },
         'executor': execute_MVRSM,
+        'check': nop
+    },
+    'sa': {
+        'args': set(),
+        'defaults': {},
+        'executor': execute_SA,
         'check': nop
     },
     'hyperopt': {
