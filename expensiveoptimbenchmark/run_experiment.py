@@ -182,8 +182,9 @@ def execute_pygpgo(params, problem, max_eval, log):
 # bayesian-optimization
 def execute_bayesianoptimization(params, problem, max_eval, log):
     from solvers.bayesianoptimization.wbayesianoptimization import optimize_bayesian_optimization
+    rand_evals = int(params['--rand-evals'])
     # TODO: Allow picking different configurations?
-    return optimize_bayesian_optimization(problem, max_eval, log=log)
+    return optimize_bayesian_optimization(problem, max_eval, random_init_evals=rand_evals, log=log)
 
 # smac
 def execute_smac(params, problem, max_eval, log):
@@ -249,8 +250,9 @@ solvers = {
         'check': nop
     },
     'bayesianoptimization': {
-        'args': set(),
+        'args': {'--rand-evals'},
         'defaults': {
+            '--rand-evals': '5'
         },
         'executor': execute_bayesianoptimization,
         'check': nop
