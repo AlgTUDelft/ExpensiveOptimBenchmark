@@ -274,7 +274,7 @@ solvers = {
     }
 }
 
-general_args = {'--repetitions', '--max-eval', '--out-path', '--write-every'}
+general_args = {'--repetitions', '--max-eval', '--out-path', '--write-every', '--rand-eval-all'}
 
 # Parse
 general = {
@@ -386,6 +386,7 @@ repetitions = int(general['--repetitions'])
 max_eval = int(general['--max-eval'])
 out_path = general['--out-path']
 write_every = None if general['--write-every'] == "none" else int(general['--write-every'])
+rand_evals_default = general.get('--rand-eval-all')
 
 if write_every is not None and write_every <= 0:
     print(f"`--write-every should have a value > 1.")
@@ -418,6 +419,9 @@ while len(args) > i:
     solver['name'] = args[i]
     solver['info'] = solvers[args[i]]
     solver['params'] = solver['info']['defaults'].copy()
+
+    if rand_evals_default is not None:
+        solver['--rand-evals'] = rand_evals_default
 
     # Perform imports before running so that we do not run
     # into surprises later
