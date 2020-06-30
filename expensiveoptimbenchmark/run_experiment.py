@@ -171,11 +171,13 @@ def execute_pygpgo(params, problem, max_eval, log):
     from pyGPGO.covfunc import matern32
     from pyGPGO.acquisition import Acquisition
     from pyGPGO.surrogates.GaussianProcess import GaussianProcess
+    rand_evals = int(params['--rand-evals'])
+
     # TODO: Allow picking different values for these?
     cov = matern32()
     gp = GaussianProcess(cov, optimize=True, usegrads=True)
     acq = Acquisition(mode='ExpectedImprovement')
-    return optimize_pyGPGO(problem, max_eval, gp, acq, log=log)
+    return optimize_pyGPGO(problem, max_eval, gp, acq, random_init_evals=rand_evals, log=log)
 
 # bayesian-optimization
 def execute_bayesianoptimization(params, problem, max_eval, log):
@@ -238,8 +240,9 @@ solvers = {
         'check': nop
     },
     'pygpgo': {
-        'args': {'--acquisition'},
+        'args': {'--rand-evals'},
         'defaults': {
+            '--rand-evals': '3',
         },
         'executor': execute_pygpgo,
         'check': nop
@@ -351,7 +354,7 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print()
     # pyGPGO
     print(f" pygpgo")
-    print(f" (no arguments implemented yet)")
+    print(f" --rand-evals=<int> \t Number of random evaluations. (default: 3)")
     print()
     # bayesianoptimization
     print(f" bayesianoptimization")
