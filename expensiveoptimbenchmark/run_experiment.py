@@ -148,17 +148,16 @@ def execute_MVRSM(params, problem, max_eval, log):
 # Hyperopt TPE
 def execute_hyperopt(params, problem, max_eval, log):
     from solvers.hyperopt.whyperopt import optimize_hyperopt_tpe
-    # TODO: Set number of random evaluations?
+    rand_evals = int(params['--rand-evals'])
 
     conversion_params = {
         'int_conversion_mode': params.get('--int-conversion-mode')
     }
 
-    return optimize_hyperopt_tpe(problem, max_eval, cparams=conversion_params, log=log)
+    return optimize_hyperopt_tpe(problem, max_eval, random_init_evals=rand_evals, cparams=conversion_params, log=log)
 
 def execute_hyperopt_rnd(params, problem, max_eval, log):
     from solvers.hyperopt.whyperopt import optimize_hyperopt_rnd
-    # TODO: Set number of random evaluations?
 
     conversion_params = {
         'int_conversion_mode': params.get('--int-conversion-mode')
@@ -222,9 +221,10 @@ solvers = {
         'check': nop
     },
     'hyperopt': {
-        'args': {'--int-conversion-mode'},
+        'args': {'--int-conversion-mode', '--rand-evals'},
         'defaults': {
-            '--int-conversion-mode': 'quniform'
+            '--int-conversion-mode': 'quniform',
+            '--rand-evals': '3'
         },
         'executor': execute_hyperopt,
         'check': nop
@@ -342,6 +342,8 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     # HyperOpt
     print(f" hyperopt")
     print(f" --int-conversion-mode=<quniform|randint> \t The default conversion mode for integers for hyperopt (default: quniform)")
+    print(f" --rand-evals=<int> \t Number of random evaluations. (default: 3)")
+
     print()
     # HyperOpt / randomsearch
     print(f" randomsearch")
