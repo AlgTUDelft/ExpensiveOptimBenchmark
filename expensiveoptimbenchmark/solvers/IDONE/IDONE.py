@@ -17,10 +17,11 @@ import time
 import numpy as np
 from scipy.optimize import minimize, Bounds
 
-def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, enable_scaling=False, verbose=1, log=False):
+def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, n_rand=0, enable_scaling=False, verbose=1, log=False):
 	d = len(x0) # dimension, number of variables
 	current_time = time.time() # time when starting the algorithm
 	next_X = [] # candidate solution presented by the algorithm
+	rng = np.random.default_rng()
 	
 	## Initialize the surrogate model
 	def initializeModel():
@@ -177,24 +178,24 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, enable_scaling=False,
 			# This is better for exploitation and prevents the algorithm from getting stuck at the boundary.
 			y0 = y
 			def scale(y):
-				if abs(y0)>1e-8:
-					y = (y-y0)/abs(y0)
-				else:
-					y = (y-y0)
+				if enable_scaling:
+					if abs(y0)>1e-8:
+						y = (y-y0)/abs(y0)
+					else:
+						y = (y-y0)
 				return y
 			def inv_scale(y):
-				if abs(y0)>1e-8:
-					y = y*abs(y0)+y0
-				else:
-					y = y+y0
+				if enable_scaling:
+					if abs(y0)>1e-8:
+						y = y*abs(y0)+y0
+					else:
+						y = y+y0
 				return y
 			
-			if enable_scaling:
-				y = scale(y)
+			y = scale(y)
 		else:
 			y = obj(x) # Evaluate the objective
-			if enable_scaling:
-				y = scale(y)
+			y = scale(y)
 		
 		
 		# Keep track of the best found objective value and candidate solution so far
@@ -208,55 +209,54 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, enable_scaling=False,
 		model = updateModel(x,y, model)
 		update_time = time.time()-time_start # Time used to update the model
 		
-		## Minimization of the surrogate model
-		time_start = time.time()
-		temp = minimize(model['out'], x, method='L-BFGS-B', bounds = Bounds(lb, ub), jac=model['outderiv'], options={'maxiter':20,'maxfun':20})
-		minimization_time = time.time()-time_start # Time used to find the minimum of the model
-		next_X = np.copy(temp.x)
-		next_X = np.round(next_X) # Round to nearest integer point
-		next_X = [int(x) for x in next_X]
-	
-		
-		# Just to be sure, clip to the bounds
-		np.clip(next_X, lb, ub)
-		
-		# Check if minimizer really gives better result
-		if model['out'](next_X) > model['out'](x) + 1e-8:
-			print('Warning: minimization of the surrogate model in IDONE yielded a worse solution, maybe something went wrong.')
-		
-		## Exploration step (else the algorithm gets stuck in the local minimum of the surrogate model)
-		next_X_before_exploration = np.copy(next_X)
-		next_X = np.copy(next_X)
-		if ii<max_evals-2: # Skip exploration before the last iteration, to end at the exact minimum of the surrogate model.
-			for j in range(0,d):
-				r = random.random()
-				a = next_X[j]
-				prob = 1/d # Probability for each variable to increase or decrease
-				if r < prob:
-					if a==lb[j] and a<ub[j]: 
-						a += 1 # Explore to the right
-					elif a==ub[j] and a>lb[j]:
-						a -= 1 # Explore to the left
-					elif a>lb[j] and a<ub[j]:
-						r2 = random.random() # Explore left or right
-						if r2<0.5:
-							a += 1
-						else:
-							a -= 1
-				next_X[j]=a
-				
-		# Just to be sure, clip to the bounds again
-		np.clip(next_X, lb, ub)		
+		# Should the next sample be chosen using the surrogate model?
+		if ii >= n_rand:
+			## Minimization of the surrogate model
+			time_start = time.time()
+			temp = minimize(model['out'], x, method='L-BFGS-B', bounds = Bounds(lb, ub), jac=model['outderiv'], options={'maxiter':20,'maxfun':20})
+			minimization_time = time.time()-time_start # Time used to find the minimum of the model
+			next_X = np.copy(temp.x)
+			next_X = np.round(next_X) # Round to nearest integer point
+			next_X = [int(x) for x in next_X]
+
+			
+			# Just to be sure, clip to the bounds
+			np.clip(next_X, lb, ub)
+			
+			# Check if minimizer really gives better result
+			if model['out'](next_X) > model['out'](x) + 1e-8:
+				print('Warning: minimization of the surrogate model in IDONE yielded a worse solution, maybe something went wrong.')
+			
+			## Exploration step (else the algorithm gets stuck in the local minimum of the surrogate model)
+			next_X_before_exploration = np.copy(next_X)
+			next_X = np.copy(next_X)
+			if ii<max_evals-2: # Skip exploration before the last iteration, to end at the exact minimum of the surrogate model.
+				for j in range(0,d):
+					r = random.random()
+					a = next_X[j]
+					prob = 1/d # Probability for each variable to increase or decrease
+					if r < prob:
+						if a==lb[j] and a<ub[j]:
+							a += 1 # Explore to the right
+						elif a==ub[j] and a>lb[j]:
+							a -= 1 # Explore to the left
+						elif a>lb[j] and a<ub[j]:
+							r2 = random.random() # Explore left or right
+							if r2<0.5:
+								a += 1
+							else:
+								a -= 1
+					next_X[j]=a
+			
+			# Just to be sure, clip to the bounds again
+			np.clip(next_X, lb, ub)
+		else:
+			# Random sample otherwise!
+			next_X = rng.integers(lb, ub, i, endpoint=True)
 		
 		# If even after exploration x does not change, go to a completely random x
 		#if np.allclose(next_X,x):
 		#	next_X = np.round(np.random.rand(d)*(ub-lb) + lb)
-
-		def maybe_inv_scale(y):
-			if enable_scaling:
-				return inv_scale(y)
-			else:
-				return y
 		
 		# Save data to log file
 		filename = 'log_IDONE_'+ str(current_time) + ".log"
@@ -266,14 +266,14 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, enable_scaling=False,
 				print('Time spent training the model:				 ', update_time, file=f)
 				print('Time spent finding the minimum of the model: ', minimization_time, file=f)
 				print('Current time: ', time.time(), file=f)
-				print('Evaluated data point and evaluation:						   ', np.copy(x).astype(int),  ', ',  maybe_inv_scale(y), file=f)
-				print('Best found data point and evaluation so far:				   ', np.copy(best_X).astype(int),  ', ',  maybe_inv_scale(best_y), file=f)
-				print('Best data point according to the model and predicted value:    ', next_X_before_exploration, ', ', maybe_inv_scale(model['out'](next_X_before_exploration)), file=f)
-				print('Suggested next data point and predicted value:			       ', next_X,   ', ',  maybe_inv_scale(model['out'](next_X)), file=f)
+				print('Evaluated data point and evaluation:						   ', np.copy(x).astype(int),  ', ',  inv_scale(y), file=f)
+				print('Best found data point and evaluation so far:				   ', np.copy(best_X).astype(int),  ', ',  inv_scale(best_y), file=f)
+				print('Best data point according to the model and predicted value:    ', next_X_before_exploration, ', ', inv_scale(model['out'](next_X_before_exploration)), file=f)
+				print('Suggested next data point and predicted value:			       ', next_X,   ', ',  inv_scale(model['out'](next_X)), file=f)
 				if ii>=max_evals-1:
 					print('Model parameters: ', np.transpose(model['c']), file=f)
 	
-	return best_X, maybe_inv_scale(best_y), model, filename
+	return best_X, inv_scale(best_y), model, filename
 
 
 # Read data from log file (this reads the best found objective values at each iteration)
