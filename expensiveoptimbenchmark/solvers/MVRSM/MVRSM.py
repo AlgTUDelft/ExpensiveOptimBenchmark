@@ -21,10 +21,11 @@ import numpy as np
 
 from scipy.optimize import minimize, Bounds
 
-def MVRSM_minimize(obj, x0, lb, ub, num_int, max_evals, rand_evals=0, model_type='advanced'):
+def MVRSM_minimize(obj, x0, lb, ub, num_int, max_evals, rand_evals=0, enable_scaling=True, model_type='advanced'):
 	d = len(x0) # dimension, number of variables
 	current_time = time.time() # time when starting the algorithm
 	next_X = [] # candidate solution presented by the algorithm
+	rng = np.random.default_rng()
 	
 	## Initialize the surrogate model
 	def initializeModel():
@@ -217,16 +218,18 @@ def MVRSM_minimize(obj, x0, lb, ub, num_int, max_evals, rand_evals=0, model_type
 			# This is better for exploitation and prevents the algorithm from getting stuck at the boundary.
 			y0 = y
 			def scale(y):
-				if abs(y0)>1e-8:
-					y = (y-y0)/abs(y0)
-				else:
-					y = (y-y0)
+				if enable_scaling:
+					if abs(y0)>1e-8:
+						y = (y-y0)/abs(y0)
+					else:
+						y = (y-y0)
 				return y
 			def inv_scale(y):
-				if abs(y0)>1e-8:
-					y = y*abs(y0)+y0
-				else:
-					y = y+y0
+				if enable_scaling:
+					if abs(y0)>1e-8:
+						y = y*abs(y0)+y0
+					else:
+						y = y+y0
 				return y
 			model['inv_scale'] = inv_scale		
 			y = scale(y)
@@ -245,111 +248,120 @@ def MVRSM_minimize(obj, x0, lb, ub, num_int, max_evals, rand_evals=0, model_type
 		model = updateModel(x,y, model)
 		update_time = time.time()-time_start # Time used to update the model
 		
-		## Minimization of the surrogate model
-		time_start = time.time()
-		temp = minimize(model['out'], best_X, method='L-BFGS-B', bounds = Bounds(lb, ub), jac=model['outderiv'], options={'maxiter':20,'maxfun':20})
-		minimization_time = time.time()-time_start # Time used to find the minimum of the model
-		next_X = np.copy(temp.x)
-		#print('minimum of surrogate: ', next_X)
-		next_X_before_rounding = np.copy(next_X)
-		for j in range(num_int):
-					next_X[j] = np.round(next_X[j]) # Round integer variables to nearest integer point
-					#next_X = [int(x) for x in next_X]
-	
-		
-		
-		
-		
-		## Visualize model
-		
-		# if ii > max_evals/2:
-			
-			# import matplotlib.pyplot as plt
-			# # print('Hoi', len(xxxx))
-			# # print(len(toplot))
-			# # plt.plot(xxxx,toplot)
-			# # #plt.plot(jjjj,toplot[iiii],'*')
-			# # titlestr = ['Dimension ', iiii]
-			# # plt.title(titlestr)
-			# # plt.show()
-			
-			
-			# from mpl_toolkits.mplot3d import Axes3D
-			# from matplotlib import cm
-			# from matplotlib.ticker import LinearLocator, FormatStrFormatter
-			# #XX = np.arange(next_X[0]-0.5, next_X[0]+0.5, 0.01)
-			# #XX = np.arange(lb[0], ub[0], 0.05)
-			# #YY = np.arange(lb[1], ub[1], 0.05)
-			# XX = np.arange(-2, 4, 0.05)
-			# YY = np.arange(-2, 4, 0.05)
-			# XXX, YYY = np.meshgrid(XX, YY)
-			# R = []
-			# for XXXX in XX:
-				# temp = []
-				# for YYYY in YY:
-					# #print(next_X)
-					# temp.append(model['out']([XXXX,YYYY]))
-				# R.append(temp)
-			# R = np.copy(R)
-			
-			# fig = plt.figure()
-			# ax = fig.gca(projection='3d')
-			# surf = ax.plot_surface(XXX, YYY, R, cmap=cm.coolwarm,
-				   # linewidth=0, antialiased=False)
-			# fig.colorbar(surf, shrink=0.5, aspect=5)
-			# plt.show()
-		
-		
-	
-		
-		# Just to be sure, clip to the bounds
-		np.clip(next_X, lb, ub)
-		
-		# Check if minimizer really gives better result
-		#if model['out'](next_X) > model['out'](x) + 1e-8:
-			#print('Warning: minimization of the surrogate model in MVRSM yielded a worse solution, maybe something went wrong.')
-		
-		## Exploration step (else the algorithm gets stuck in the local minimum of the surrogate model)
-		next_X_before_exploration = np.copy(next_X)
-		next_X = np.copy(next_X)
-		if ii<max_evals-2: # Skip exploration before the last iteration, to end at the exact minimum of the surrogate model.
-			# Discrete exploration
-			for j in range(0,num_int):
-				r = random.random()
-				r2 = random.random() # Used to choose whether to explore left or right
-				a = next_X[j]
-				prob = 1/d # Probability for each variable to increase or decrease
-				while r < prob:
-					if a==lb[j] and a<ub[j]: 
-						a += 1 # Explore to the right
-					elif a==ub[j] and a>lb[j]:
-						a -= 1 # Explore to the left
-					elif a>lb[j] and a<ub[j]:
-						if r2<0.5:
-							a += 1
-						else:
-							a -= 1
-					r = r*2
-				next_X[j]=a
-			# Continuous exploration
-			for j in range(num_int, d):
-				r = np.random.normal()*(ub[j]-lb[j])*0.1*1/(math.sqrt(d)) #choose a variance that scales inversely with the total number of variables
-				a = next_X[j]
-				while a+r>ub[j] or a+r<lb[j]:
-					r = np.random.normal()*(ub[j]-lb[j])*0.1*1/(math.sqrt(d)) #out of bounds so repeat
-				a += r
-				next_X[j]=a
-					
-		
-		
-		# Just to be sure, clip to the bounds again
-		np.clip(next_X, lb, ub)		
 
-
+		minimization_time = 0.0
+		# Set to avoid random iterations from messing things up...
+		next_X_before_rounding = x
+		next_X_before_exploration = x
+		# Usually we find a minimizer of the model apply exploration on that.
 		# For the first few iterations, just do random search instead (overwrites next_X)
-		if ii<rand_evals: 
-			next_X[0:num_int] = np.round(np.random.rand(num_int)*(ub[0:num_int]-lb[0:num_int]) + lb[0:num_int]) # Random guess (integer)
-			next_X[num_int:d] = np.random.rand(d-num_int)*(ub[num_int:d]-lb[num_int:d]) + lb[num_int:d] # Random guess (continuous)
+		if ii >= rand_evals:
+			## Minimization of the surrogate model
+			time_start = time.time()
+			temp = minimize(model['out'], best_X, method='L-BFGS-B', bounds = Bounds(lb, ub), jac=model['outderiv'], options={'maxiter':20,'maxfun':20})
+			minimization_time = time.time()-time_start # Time used to find the minimum of the model
+			next_X = np.copy(temp.x)
+			#print('minimum of surrogate: ', next_X)
+			next_X_before_rounding = np.copy(next_X)
+			for j in range(num_int):
+				next_X[j] = np.round(next_X[j]) # Round integer variables to nearest integer point
+				#next_X = [int(x) for x in next_X]
+		
+			
+			
+			
+			
+			## Visualize model
+			
+			# if ii > max_evals/2:
+				
+				# import matplotlib.pyplot as plt
+				# # print('Hoi', len(xxxx))
+				# # print(len(toplot))
+				# # plt.plot(xxxx,toplot)
+				# # #plt.plot(jjjj,toplot[iiii],'*')
+				# # titlestr = ['Dimension ', iiii]
+				# # plt.title(titlestr)
+				# # plt.show()
+				
+				
+				# from mpl_toolkits.mplot3d import Axes3D
+				# from matplotlib import cm
+				# from matplotlib.ticker import LinearLocator, FormatStrFormatter
+				# #XX = np.arange(next_X[0]-0.5, next_X[0]+0.5, 0.01)
+				# #XX = np.arange(lb[0], ub[0], 0.05)
+				# #YY = np.arange(lb[1], ub[1], 0.05)
+				# XX = np.arange(-2, 4, 0.05)
+				# YY = np.arange(-2, 4, 0.05)
+				# XXX, YYY = np.meshgrid(XX, YY)
+				# R = []
+				# for XXXX in XX:
+					# temp = []
+					# for YYYY in YY:
+						# #print(next_X)
+						# temp.append(model['out']([XXXX,YYYY]))
+					# R.append(temp)
+				# R = np.copy(R)
+				
+				# fig = plt.figure()
+				# ax = fig.gca(projection='3d')
+				# surf = ax.plot_surface(XXX, YYY, R, cmap=cm.coolwarm,
+					# linewidth=0, antialiased=False)
+				# fig.colorbar(surf, shrink=0.5, aspect=5)
+				# plt.show()
+			
+			
+		
+			
+			# Just to be sure, clip to the bounds
+			np.clip(next_X, lb, ub)
+			
+			# Check if minimizer really gives better result
+			#if model['out'](next_X) > model['out'](x) + 1e-8:
+				#print('Warning: minimization of the surrogate model in MVRSM yielded a worse solution, maybe something went wrong.')
+			
+			## Exploration step (else the algorithm gets stuck in the local minimum of the surrogate model)
+			next_X_before_exploration = np.copy(next_X)
+			next_X = np.copy(next_X)
+			if ii<max_evals-2: # Skip exploration before the last iteration, to end at the exact minimum of the surrogate model.
+				# Discrete exploration
+				for j in range(0,num_int):
+					r = random.random()
+					r2 = random.random() # Used to choose whether to explore left or right
+					a = next_X[j]
+					prob = 1/d # Probability for each variable to increase or decrease
+					while r < prob:
+						if a==lb[j] and a<ub[j]: 
+							a += 1 # Explore to the right
+						elif a==ub[j] and a>lb[j]:
+							a -= 1 # Explore to the left
+						elif a>lb[j] and a<ub[j]:
+							if r2<0.5:
+								a += 1
+							else:
+								a -= 1
+						r = r*2
+					next_X[j]=a
+				# Continuous exploration
+				for j in range(num_int, d):
+					r = np.random.normal()*(ub[j]-lb[j])*0.1*1/(math.sqrt(d)) #choose a variance that scales inversely with the total number of variables
+					a = next_X[j]
+					while a+r>ub[j] or a+r<lb[j]:
+						r = np.random.normal()*(ub[j]-lb[j])*0.1*1/(math.sqrt(d)) #out of bounds so repeat
+					a += r
+					next_X[j]=a
+						
+			
+			
+			# Just to be sure, clip to the bounds again
+			np.clip(next_X, lb, ub)
+		else:
+			print("Yahoo")
+			print(f"{next_X}")
+			next_X[0:num_int] = rng.integers(lb[0:num_int], ub[0:num_int], endpoint=True) # Random guess (integer)
+			next_X[num_int:d] = rng.uniform(lb[num_int:d], ub[num_int:d]) # Random guess (continuous)
+			print(f"{next_X}")
+			
 
 		time_per_iteration = time.time() - time_start1
 		

@@ -210,7 +210,9 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, rand_evals=0, enable_
 		update_time = time.time()-time_start # Time used to update the model
 		
 		# Should the next sample be chosen using the surrogate model?
-		if ii >= n_rand:
+		minimization_time = 0.0
+		next_X_before_exploration = x
+		if ii >= rand_evals:
 			## Minimization of the surrogate model
 			time_start = time.time()
 			temp = minimize(model['out'], x, method='L-BFGS-B', bounds = Bounds(lb, ub), jac=model['outderiv'], options={'maxiter':20,'maxfun':20})
@@ -252,7 +254,7 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, rand_evals=0, enable_
 			np.clip(next_X, lb, ub)
 		else:
 			# Random sample otherwise!
-			next_X = rng.integers(lb, ub, i, endpoint=True)
+			next_X = rng.integers(lb, ub, endpoint=True)
 		
 		# If even after exploration x does not change, go to a completely random x
 		#if np.allclose(next_X,x):
