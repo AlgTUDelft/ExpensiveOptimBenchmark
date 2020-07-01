@@ -52,7 +52,12 @@ def construct_linearmivabo(params):
 def construct_windwake(params):
     from problems.windwake import WindWakeLayout
     sim_info_file = params['--file']
-    return [WindWakeLayout(sim_info_file)]
+    wind_seed = int(params['--wind-seed'])
+    n_turbines = int(params['-n'])
+    width = int(params['-w'])
+    height = int(params['-h'])
+
+    return [WindWakeLayout(sim_info_file, n_turbines=n_turbines, wind_seed=wind_seed, width=width, height=height)]
 
 # Summary of problems and their parameters.
 problems = {
@@ -85,8 +90,13 @@ problems = {
         'constructor': construct_linearmivabo
     },
     'windwake': {
-        'args': {'--file'},
-        'defaults': {},
+        'args': {'--file', '-n', '-w', '-h', '--wind-seed'},
+        'defaults': {
+            '-n': '3',
+            '-w': '1000',
+            '-h': '1000',
+            '--wind-seed': '0'
+        },
         'constructor': construct_windwake
     }
 }
