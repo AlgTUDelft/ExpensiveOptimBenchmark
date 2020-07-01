@@ -4,7 +4,7 @@ from .MVRSM import MVRSM_minimize
 from ..utils import Monitor, Binarizer
 from collections import Counter
 
-def optimize_MVRSM(problem, max_evals, model='advanced', binarize_categorical=False, log=None):
+def optimize_MVRSM(problem, max_evals, rand_evals=0, enable_scaling=True, model='advanced', binarize_categorical=False, log=None):
     d = problem.dims()
 
     vartypes = problem.vartype()
@@ -52,7 +52,7 @@ def optimize_MVRSM(problem, max_evals, model='advanced', binarize_categorical=Fa
         return r
     
     mon.start()
-    solX, solY, model, logfile = MVRSM_minimize(f, x0, lb, ub, num_int, max_evals, model_type=model)
+    solX, solY, model, logfile = MVRSM_minimize(f, x0, lb, ub, num_int, max_evals, rand_evals=rand_evals, enable_scaling=enable_scaling, model_type=model)
     mon.end()
 
     return solX[invperm], solY, mon

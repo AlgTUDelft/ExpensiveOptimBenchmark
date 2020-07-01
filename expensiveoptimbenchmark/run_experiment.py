@@ -22,10 +22,11 @@ def parse_numerical_ranges(ranges):
 def construct_tsp(params):
     from problems.TSP import TSP, load_tsplib, load_explicit_tsp
     iter_ns = parse_numerical_ranges(params['--iter'])
+    noise_seeds = parse_numerical_ranges(params['--noise-seed']) if params['--noise-seed'] != "random" else [None]
     if '--tsplib-file' in params:
-        return [load_tsplib(params['--tsplib-file'], iters) for iters in iter_ns]
+        return [load_tsplib(params['--tsplib-file'], iters, noise_seed) for (iters, noise_seed) in product(iter_ns, noise_seeds)]
     elif '--explicit-file' in params:
-        return [load_explicit_tsp(params['--explicit-file'], iters) for iters in iter_ns]
+        return [load_explicit_tsp(params['--explicit-file'], iters, noise_seed) for (iters, noise_seed) in product(iter_ns, noise_seeds)]
     else:
         raise ValueError('No instance file provided for TSP. Specify one using `--tsplib-file` or `--explicit-file`')
 
@@ -52,12 +53,19 @@ def construct_linearmivabo(params):
     from problems.linear_MIVABOfunction import Linear
     return [Linear()]
 
+# floris wake simulator
+def construct_windwake(params):
+    from problems.windwake import WindWakeLayout
+    sim_info_file = params['--file']
+    return [WindWakeLayout(sim_info_file)]
+
 # Summary of problems and their parameters.
 problems = {
     'tsp': {
-        'args': {'--tsplib-file', '--explicit-file', '--iter'},
+        'args': {'--tsplib-file', '--explicit-file', '--iter', '--noise-seed'},
         'defaults': {
-            '--iter': '100'
+            '--iter': '100',
+            '--noise-seed': '0'
         },
         'constructor': construct_tsp
     },
@@ -96,6 +104,11 @@ problems = {
         },
         'constructor': construct_linearmivabo
     },
+    'windwake': {
+        'args': {'--file'},
+        'defaults': {},
+        'constructor': construct_windwake
+    }
 }
 
 def generate_construct_synthetic(fn):
@@ -134,11 +147,16 @@ def execute_IDONE(params, problem, max_eval, log):
         raise ValueError("Valid model types are `basic` and `advanced`")
     if params['--binarize-categorical'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
         raise ValueError("--binarize-categorical should be a boolean.")
+    if params['--scaling'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
+        raise ValueError("--scaling should be a boolean.")
         
     type_model = params['--model']
     binarize_categorical = params['--binarize-categorical'] in ['true','t', 'yes', 'y']
+    enable_scaling = params['--scaling'] in ['true','t', 'yes', 'y']
+    rand_evals = int(params['--rand-evals']) - 1
+    assert rand_evals >= 0, "IDONE requires at least one initial random evaluation."
 
-    return optimize_IDONE(problem, max_eval, model=type_model, binarize_categorical=binarize_categorical, log=log)
+    return optimize_IDONE(problem, max_eval, rand_evals=rand_evals, model=type_model, binarize_categorical=binarize_categorical, enable_scaling=enable_scaling, log=log)
 
 def execute_MVRSM(params, problem, max_eval, log):
     from solvers.MVRSM.wMVRSM import optimize_MVRSM
@@ -146,11 +164,22 @@ def execute_MVRSM(params, problem, max_eval, log):
         raise ValueError("Valid model types are `basic` and `advanced`")
     if params['--binarize-categorical'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
         raise ValueError("--binarize-categorical should be a boolean.")
+    if params['--scaling'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
+        raise ValueError("--scaling should be a boolean.")
 
     type_model = params['--model']
     binarize_categorical = params['--binarize-categorical'] in ['true','t', 'yes', 'y']
+    enable_scaling = params['--scaling'] in ['true','t', 'yes', 'y']
+    rand_evals = int(params['--rand-evals']) - 1
+    assert rand_evals >= 0, "MVRSM requires at least one initial random evaluation."
 
-    return optimize_MVRSM(problem, max_eval, model=type_model, binarize_categorical=binarize_categorical, log=log)
+    return optimize_MVRSM(problem, max_eval, rand_evals=rand_evals, model=type_model, binarize_categorical=binarize_categorical, enable_scaling=enable_scaling, log=log)
+
+# SA
+def execute_SA(params, problem, max_eval, log):
+    from solvers.SA.wSA import optimize_SA
+
+    return optimize_SA(problem, max_eval, log=log)
 
 def execute_DONEjl(params, problem, max_eval, log):
     from solvers.DONEjl.wDONEjl import optimize_DONEjl
@@ -171,17 +200,16 @@ def execute_DONEjl(params, problem, max_eval, log):
 # Hyperopt TPE
 def execute_hyperopt(params, problem, max_eval, log):
     from solvers.hyperopt.whyperopt import optimize_hyperopt_tpe
-    # TODO: Set number of random evaluations?
+    rand_evals = int(params['--rand-evals'])
 
     conversion_params = {
         'int_conversion_mode': params.get('--int-conversion-mode')
     }
 
-    return optimize_hyperopt_tpe(problem, max_eval, cparams=conversion_params, log=log)
+    return optimize_hyperopt_tpe(problem, max_eval, random_init_evals=rand_evals, cparams=conversion_params, log=log)
 
 def execute_hyperopt_rnd(params, problem, max_eval, log):
     from solvers.hyperopt.whyperopt import optimize_hyperopt_rnd
-    # TODO: Set number of random evaluations?
 
     conversion_params = {
         'int_conversion_mode': params.get('--int-conversion-mode')
@@ -195,22 +223,26 @@ def execute_pygpgo(params, problem, max_eval, log):
     from pyGPGO.covfunc import matern32
     from pyGPGO.acquisition import Acquisition
     from pyGPGO.surrogates.GaussianProcess import GaussianProcess
+    rand_evals = int(params['--rand-evals'])
+
     # TODO: Allow picking different values for these?
     cov = matern32()
     gp = GaussianProcess(cov, optimize=True, usegrads=True)
     acq = Acquisition(mode='ExpectedImprovement')
-    return optimize_pyGPGO(problem, max_eval, gp, acq, log=log)
+    return optimize_pyGPGO(problem, max_eval, gp, acq, random_init_evals=rand_evals, log=log)
 
 # bayesian-optimization
 def execute_bayesianoptimization(params, problem, max_eval, log):
     from solvers.bayesianoptimization.wbayesianoptimization import optimize_bayesian_optimization
+    rand_evals = int(params['--rand-evals'])
     # TODO: Allow picking different configurations?
-    return optimize_bayesian_optimization(problem, max_eval, log=log)
+    return optimize_bayesian_optimization(problem, max_eval, random_init_evals=rand_evals, log=log)
 
 # smac
 def execute_smac(params, problem, max_eval, log):
     from solvers.smac.wsmac import optimize_smac
-    return optimize_smac(problem, max_eval, log=log)
+    rand_evals = int(params['--rand-evals'])
+    return optimize_smac(problem, max_eval, rand_evals=rand_evals, log=log)
 
 def check_smac():
     from solvers.smac.wsmac import optimize_smac
@@ -219,23 +251,28 @@ def check_smac():
 # CoCaBO
 def execute_cocabo(params, problem, max_eval, log):
     from solvers.CoCaBO.wCoCaBo import optimize_CoCaBO
-    return optimize_CoCaBO(problem, max_eval, log=log)
+    rand_evals = int(params['--rand-evals'])
+    return optimize_CoCaBO(problem, max_eval, init_points=rand_evals, log=log)
 
 solvers = {
     'idone': {
-        'args': {'--model', '--binarize-categorical'},
+        'args': {'--model', '--binarize-categorical', '--rand-evals', '--scaling'},
         'defaults': {
             '--model': 'advanced',
-            '--binarize-categorical': 'false'
+            '--binarize-categorical': 'false',
+            '--rand-evals': '1',
+            '--scaling': 'false'
         },
         'executor': execute_IDONE,
         'check': nop
     },
     'mvrsm': {
-        'args': {'--model', '--binarize-categorical'},
+        'args': {'--model', '--binarize-categorical', '--rand-evals', '--scaling'},
         'defaults': {
             '--model': 'advanced',
-            '--binarize-categorical': 'false'
+            '--binarize-categorical': 'false',
+            '--rand-evals': '1',
+            '--scaling': 'true'
         },
         'executor': execute_MVRSM,
         'check': nop
@@ -251,10 +288,17 @@ solvers = {
         'executor': execute_DONEjl,
         'check': nop
     },
+    'sa': {
+        'args': set(),
+        'defaults': {},
+        'executor': execute_SA,
+        'check': nop
+    },
     'hyperopt': {
-        'args': {'--int-conversion-mode'},
+        'args': {'--int-conversion-mode', '--rand-evals'},
         'defaults': {
-            '--int-conversion-mode': 'quniform'
+            '--int-conversion-mode': 'quniform',
+            '--rand-evals': '3'
         },
         'executor': execute_hyperopt,
         'check': nop
@@ -268,36 +312,40 @@ solvers = {
         'check': nop
     },
     'pygpgo': {
-        'args': {'--acquisition'},
+        'args': {'--rand-evals'},
         'defaults': {
+            '--rand-evals': '3',
         },
         'executor': execute_pygpgo,
         'check': nop
     },
     'bayesianoptimization': {
-        'args': set(),
+        'args': {'--rand-evals'},
         'defaults': {
+            '--rand-evals': '5'
         },
         'executor': execute_bayesianoptimization,
         'check': nop
     },
     'smac': {
-        'args': set(),
+        'args': {'--rand-evals'},
         'defaults': {
+            '--rand-evals': '1'
         },
         'executor': execute_smac,
         'check': check_smac
     },
     'cocabo': {
-        'args': set(),
+        'args': {'--rand-evals'},
         'defaults': {
+            '--rand-evals': '24'
         },
         'executor': execute_cocabo,
         'check': nop
     }
 }
 
-general_args = {'--repetitions', '--max-eval', '--out-path', '--write-every'}
+general_args = {'--repetitions', '--max-eval', '--out-path', '--write-every', '--rand-eval-all'}
 
 # Parse
 general = {
@@ -359,15 +407,21 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print(f" idone")
     print(f" --model=<basic|advanced> \t The kind of model IDONE should utilize (default: advanced)")
     print(f" --binarize-categorical=<t|true|f|false> \t Whether to binarize categorical variables. (default: false)")
+    print(f" --scaling=<t|true|f|false> \t Whether scaling is applied. (default: false)")
+    print(f" --rand-evals=<int> \t Number of random evaluations. (default: 1)")
     print()
     # MVRSM
     print(f" mvrsm")
     print(f" --model=<basic|advanced> \t The kind of model MVRSM should utilize (default: advanced)")
     print(f" --binarize-categorical=<t|true|f|false> \t Whether to binarize categorical variables. (default: false)")
+    print(f" --scaling=<t|true|f|false> \t Whether scaling is applied. (default: true)")
+    print(f" --rand-evals=<int> \t Number of random evaluations. (default: 1)")
     print()
     # HyperOpt
     print(f" hyperopt")
     print(f" --int-conversion-mode=<quniform|randint> \t The default conversion mode for integers for hyperopt (default: quniform)")
+    print(f" --rand-evals=<int> \t Number of random evaluations. (default: 3)")
+
     print()
     # HyperOpt / randomsearch
     print(f" randomsearch")
@@ -375,19 +429,19 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print()
     # pyGPGO
     print(f" pygpgo")
-    print(f" (no arguments implemented yet)")
+    print(f" --rand-evals=<int> \t Number of random evaluations. (default: 3)")
     print()
     # bayesianoptimization
     print(f" bayesianoptimization")
-    print(f" (no arguments implemented yet)")
+    print(f" --rand-evals=<int> \t Number of random evaluations. (default: 5)")
     print()
     # smac
     print(f" smac")
-    print(f" (no arguments implemented yet)")
+    print(f" --rand-evals=<int> \t Number of random evaluations. (default: 1)")
     print()
     # CoCaBO
     print(f" cocabo")
-    print(f" (no arguments implemented yet)")
+    print(f" --rand-evals=<int> \t Number of random evaluations. (default: 24)")
     print()
     sys.exit(0)
 
@@ -403,6 +457,7 @@ repetitions = int(general['--repetitions'])
 max_eval = int(general['--max-eval'])
 out_path = general['--out-path']
 write_every = None if general['--write-every'] == "none" else int(general['--write-every'])
+rand_evals_default = general.get('--rand-eval-all')
 
 if write_every is not None and write_every <= 0:
     print(f"`--write-every should have a value > 1.")
@@ -435,6 +490,9 @@ while len(args) > i:
     solver['name'] = args[i]
     solver['info'] = solvers[args[i]]
     solver['params'] = solver['info']['defaults'].copy()
+
+    if rand_evals_default is not None:
+        solver['--rand-evals'] = rand_evals_default
 
     # Perform imports before running so that we do not run
     # into surprises later

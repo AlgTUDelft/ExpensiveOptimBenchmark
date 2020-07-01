@@ -1,19 +1,20 @@
 import subprocess
+import numpy as np
 
 class DockerCFDBenchmarkProblem:
 
     def __init__(self, name, d, lbs, ubs, vartype, direction, errval):
         self.name = name
         self.d = d
-        self.lb = lbs
-        self.ub = ubs
-        self.vt = vartype
+        self.lb = np.asarray(lbs)
+        self.ub = np.asarray(ubs)
+        self.vt = np.asarray(vartype)
         self.direction = 1 if direction == "min" else -1
         self.errval = errval
     
     def evaluate(self, xs):
         evalCommand = f"docker run --rm frehbach/cfd-test-problem-suite ./dockerCall.sh {self.name}"
-        parsedCandidate = ",".join(["%.8f" % x for x in xs])
+        parsedCandidate = ",".join(["%.8f" % x if xvt == 'cont' else "%i" % x for (x, xvt) in zip(xs, self.vt)])
         cmd = f"{evalCommand} '{parsedCandidate}'"
         # print(f"Running '{cmd}'")
         # res = subprocess.check_output(cmd, shell=True)
@@ -41,7 +42,7 @@ class DockerCFDBenchmarkProblem:
         return f"DockerCFDBenchmark(name={self.name})"
 
 # TODO: Verify that the ESP problem is indeed a minimization problem.
-ESP = DockerCFDBenchmarkProblem("ESP", 49, [0] * 49, [7] * 49, ['int'] * 49, "min", 1.0)
+ESP = DockerCFDBenchmarkProblem("ESP", 49, [0] * 49, [7] * 49, ['cat'] * 49, "min", 1.0)
 
 PitzDaily = DockerCFDBenchmarkProblem("PitzDaily",
     10,

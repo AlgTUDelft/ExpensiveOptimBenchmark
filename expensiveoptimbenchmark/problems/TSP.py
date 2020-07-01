@@ -10,6 +10,7 @@ class TSP:
         self.d = W.shape[0] - 2
         self.W = W
         self.n_iter = n_iter
+        self.noise_seed = noise_seed
         self.noise_rng = np.random.RandomState(seed=noise_seed)
         self.noise_factor = noise_factor
 
@@ -19,21 +20,22 @@ class TSP:
         for iteration in range(self.n_iter):
             current = 0
             unvisited = list(range(1, self.d+2))
+            total_route_length = 0.0
 
             for di, i in enumerate(x):
                 next_up = unvisited.pop(int(round(i)))
-                robust_total_route_length += self.W[current, next_up]
-                robust_total_route_length += self.noise_rng.random() * self.noise_factor
+                total_route_length += self.W[current, next_up]
+                total_route_length += self.noise_rng.random() * self.noise_factor
                 current = next_up
 
             last = unvisited.pop()
-            robust_total_route_length += self.W[current, last]
-            robust_total_route_length += self.noise_rng.random() * self.noise_factor
-            robust_total_route_length += self.W[last, 0]
-            robust_total_route_length += self.noise_rng.random() * self.noise_factor
-        
-        # robust_total_route_length += self.noise_rng.random() * self.n_iter * (self.d + 2) * self.noise_factor
+            total_route_length += self.W[current, last]
+            total_route_length += self.noise_rng.random() * self.noise_factor
+            total_route_length += self.W[last, 0]
+            total_route_length += self.noise_rng.random() * self.noise_factor
 
+            robust_total_route_length = max(total_route_length, robust_total_route_length)
+        
         return robust_total_route_length
 
     def lbs(self):
@@ -49,15 +51,15 @@ class TSP:
         return self.d
 
     def __str__(self):
-        return f"TSP(name={self.name},iterations={self.n_iter})"
+        return f"TSP(name={self.name},iterations={self.n_iter},noise_seed={self.noise_seed})"
 
 
-def load_explicit_tsp(path, iters=100):
+def load_explicit_tsp(path, iters=100, noise_seed=0):
     with open(path) as f:
         W = np.array([list(map(lambda x: float(x.strip()))) for line in f.readlines()])
-        return TSP(os.path.basename(path), W, iters)
+        return TSP(os.path.basename(path), W, iters, noise_seed=noise_seed)
 
-def load_tsplib(path, iters=100):
+def load_tsplib(path, iters=100, noise_seed=0):
     instance = tsplib95.load(path)
     W = networkx.to_numpy_matrix(instance.get_graph())
-    return TSP(instance.name, W, iters)
+    return TSP(instance.name, W, iters, noise_seed=noise_seed)
