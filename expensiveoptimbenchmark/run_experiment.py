@@ -48,6 +48,12 @@ def construct_linearmivabo(params):
     from problems.linear_MIVABOfunction import Linear
     return [Linear()]
 
+# floris wake simulator
+def construct_windwake(params):
+    from problems.windwake import WindWakeLayout
+    sim_info_file = params['--file']
+    return [WindWakeLayout(sim_info_file)]
+
 # Summary of problems and their parameters.
 problems = {
     'tsp': {
@@ -78,6 +84,11 @@ problems = {
         },
         'constructor': construct_linearmivabo
     },
+    'windwake': {
+        'args': {'--file'},
+        'defaults': {},
+        'constructor': construct_windwake
+    }
 }
 
 def generate_construct_synthetic(fn):

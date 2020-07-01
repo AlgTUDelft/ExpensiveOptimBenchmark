@@ -19,6 +19,7 @@ tsplib95 = "^0.7.1"
 bayesian-optimization = "^1.2.0"
 gpy = "^1.9.9"
 pandas = "^1.0.4"
+floris = {version="^2.1.1"}
 
 [tool.poetry.dev-dependencies]
 ipython = "^7.15.0"
