@@ -21,6 +21,7 @@ gpy = "^1.9.9"
 pandas = "^1.0.4"
 julia = {version="^0.5.3", optional=true}
 floris = {version="^2.1.1"}
+tqdm = "^4.47.0"
 
 [tool.poetry.dev-dependencies]
 ipython = "^7.15.0"

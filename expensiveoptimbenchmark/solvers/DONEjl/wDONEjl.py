@@ -1,5 +1,6 @@
 import numpy as np
 from julia import Main
+from tqdm import tqdm
 
 Main.include("./expensiveoptimbenchmark/solvers/DONEjl/vendor/DONEs.jl")
 DONEs = Main.DONEs
@@ -14,7 +15,7 @@ def minimize_DONEjl(f, lb, ub, max_evals, hyperparams):
     done = DONEs.DONE(rfe, lb.astype(float), ub.astype(float), sigma_s, sigma_f)
     best_x = None
     best_y = np.inf
-    for i in range(max_evals):
+    for i in tqdm(range(max_evals)):
         xi = DONEs.new_input(done)
         yi = f(xi)
         if yi < best_y:
