@@ -1,5 +1,6 @@
 import subprocess
 import numpy as np
+import os
 
 class DockerCFDBenchmarkProblem:
 
@@ -11,14 +12,17 @@ class DockerCFDBenchmarkProblem:
         self.vt = np.asarray(vartype)
         self.direction = 1 if direction == "min" else -1
         self.errval = errval
+        if os.path.exists("./evaluate.sh"):
+            self.evalCommand = ["./evaluate.sh", self.name]
+        else:
+            self.evalCommand = ["docker", "run", "--rm", "frehbach/cfd-test-problem-suite", "./dockerCall.sh", self.name]
     
     def evaluate(self, xs):
-        evalCommand = f"docker run --rm frehbach/cfd-test-problem-suite ./dockerCall.sh {self.name}"
         parsedCandidate = ",".join(["%.8f" % x if xvt == 'cont' else "%i" % x for (x, xvt) in zip(xs, self.vt)])
-        cmd = f"{evalCommand} '{parsedCandidate}'"
+        cmd = f"{self.evalCommand + [parsedCandidate]}"
         # print(f"Running '{cmd}'")
         # res = subprocess.check_output(cmd, shell=True)
-        res = subprocess.check_output(["docker", "run", "--rm", "frehbach/cfd-test-problem-suite", "./dockerCall.sh", self.name, parsedCandidate])
+        res = subprocess.check_output(self.evalCommand + [parsedCandidate])
         reslast = res.strip().split(b"\n")[-1]
         # print(f"Result: {res}")
         try:
