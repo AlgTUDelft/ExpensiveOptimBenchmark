@@ -1,0 +1,26 @@
+This folder contains modified versions of the problem suite found at https://bitbucket.org/arahat/cfd-test-problem-suite/src/master/
+The original licence of the code can be found in this folder under `LICENSE`. 
+Unless listed below the files have identical names to their originals.
+- `createBafflesDict2.py` is based upon `createBafflesDict.py`
+- `evaluateSimulation2.py` is based upon `evaluateSimulation.py`
+
+As such these modifications add a new variant of the ESP problem (hereafter named ESP2),
+as an example of a mixed type problem.
+This variant requires a dicrete choice for picking the kind of plate (None, Closed, Perforated, Angled).
+With the latter utilising a new continuous variable that determines the angle for each plate.
+
+One needs to copy the files to the right place:
+- `dockerCall.sh` and `dockerCall.py` go into the default working directory of the container.
+- `createBafflesDict2.py` and `evaluateSimulation2.py` go into `./Exeter_CFD_Problems/ESP`
+
+
+After doing so ESP2 can be ran in the container as follows:
+```
+dockerCall.sh ESP2 <baffleConfiguration>
+```
+where `<baffleConfiguration>` is a string of `<int in [0, 3]>,<float in [28, 146]>` for each of the 49 baffles, concatenated together and separated using commas.
+
+Example:
+```
+dockerCall.sh ESP2 1,112.3923452319455,2,99.12607837645398,0,92.29621559363383,3,77.99126632199076,0,104.21550534186542,2,79.63529092899772,0,133.22921409228542,3,141.71220573912146,3,73.24609922144177,0,121.42355449375442,3,90.40960053084274,0,95.029258209084,0,137.220403318534,0,36.38225486735066,0,38.2812573647818,2,30.385770897958434,3,126.24914177465668,0,119.82249661208236,3,130.66143349312466,2,143.47696438346617,3,122.30071057757338,3,82.45456474584596,1,120.10244280180174,1,41.95638225253412,1,103.51068051664781,0,44.91568791426748,1,139.47093221185088,1,89.57810196650846,1,76.93010891888179,3,59.21756222834598,0,119.35957535323756,3,81.82573920155272,1,95.07520596650052,2,30.217196451489908,0,100.8809886549535,1,100.22729528124573,2,100.79821163122132,0,139.36227326472567,2,108.45479529421104,0,70.42193226770675,1,79.56977054832228,3,110.32048111941725,2,35.10660565225384,2,106.67847242258878,1,107.13526861494282,0,52.825142206713224,3,43.21330312327269,1,65.2205454090537,1,70.91787097122946
+```
