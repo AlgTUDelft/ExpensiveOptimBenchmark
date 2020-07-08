@@ -166,3 +166,5 @@ $RECYCLE.BIN/
 
 # Singularity Images (put them under a release instead)
 *.sif
+
+.vscode/settings.json
