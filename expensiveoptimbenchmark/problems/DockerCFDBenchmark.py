@@ -60,7 +60,7 @@ KaplanDuct = DockerCFDBenchmarkProblem("KaplanDuct", 4,
     [3609.0, -390.0, 3609.0,  450.0], 
     ['cont'] * 4, "max", 1.0)
 
-dockersimbenches = [ESP, PitzDaily, KaplanDuct]
+dockersimbenches = [ESP, ESP2, PitzDaily, KaplanDuct]
 # Note: HeatExchanger is a 28 dimensional problem, all continuous, unlike previous problems.
 # lb: [ -1, -1, -1, -1,  0,  0,  0,  0, 0, 0, -1, -1,  0,  0,  0,  0, 0, 0, -1, -1,  0,  0,  0,  0, 0, 0, -1, -1]
 # ub: [  1,  1,  1,  1, 10, 10, 10, 10, 1, 1,  1,  1, 10, 10, 10, 10, 1, 1,  1,  1, 10, 10, 10, 10, 1, 1,  1,  1]
