@@ -45,8 +45,9 @@ class DockerCFDBenchmarkProblem:
     def __str__(self):
         return f"DockerCFDBenchmark(name={self.name})"
 
-# TODO: Verify that the ESP problem is indeed a minimization problem.
 ESP = DockerCFDBenchmarkProblem("ESP", 49, [0] * 49, [7] * 49, ['cat'] * 49, "min", 1.0)
+
+ESP2 = DockerCFDBenchmarkProblem("ESP2", 49, [0, 28.0] * 49, [3, 146.0] * 49, ['cat', 'cont'] * 49, "min", 1.0)
 
 PitzDaily = DockerCFDBenchmarkProblem("PitzDaily",
     10,
