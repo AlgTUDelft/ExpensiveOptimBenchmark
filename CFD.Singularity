@@ -15,6 +15,7 @@ python3.7 -m pip install --upgrade pip &&\
 python3.7 -m pip install --upgrade cython setuptools wheel
 python3.7 -m pip install -r requirements_eob.txt
 
+bash ./expensiveoptimbenchmark/problems/ESP2/patch.sh
 ln -s ./dockerCall.sh ./evaluate.sh
 
 %runscript

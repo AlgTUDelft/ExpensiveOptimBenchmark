@@ -1,0 +1,1 @@
+sudo docker build -t cfdbench . -f ./CFD.Dockerfile
