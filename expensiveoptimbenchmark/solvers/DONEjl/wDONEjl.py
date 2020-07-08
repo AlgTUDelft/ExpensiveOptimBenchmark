@@ -6,10 +6,14 @@ Main.include("./expensiveoptimbenchmark/solvers/DONEjl/vendor/DONEs.jl")
 DONEs = Main.DONEs
 
 def minimize_DONEjl(f, lb, ub, max_evals, hyperparams):
-    n_basis     = hyperparams.get('n_basis', 1000)
-    sigma_coeff = hyperparams.get('sigma_coeff', 0.1)
-    sigma_s     = hyperparams.get('sigma_s', 0.1)
-    sigma_f     = hyperparams.get('sigma_f', 0.1)
+    n_vars      = len(lb)
+    n_basis     = hyperparams.get('n_basis', 1000) # larger with more n_vars (high dim)
+    sigma_coeff = hyperparams.get('sigma_coeff', 0.1) # / sqrt(n_vars)
+    # 0.1 for n_vars < 10
+    # after that, scale with square root.
+    sigma_def   = np.minimum(0.1, 0.1 / np.sqrt(n_vars) * np.sqrt(10))
+    sigma_s     = hyperparams.get('sigma_s', sigma_def)
+    sigma_f     = hyperparams.get('sigma_f', sigma_def)
 
     rfe = DONEs.RFE(n_basis, len(lb), sigma_coeff)
     done = DONEs.DONE(rfe, lb.astype(float), ub.astype(float), sigma_s, sigma_f)
