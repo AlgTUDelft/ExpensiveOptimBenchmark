@@ -19,6 +19,10 @@ import numpy as np
 import os
 from subprocess import call
 
+# To avoid tkinter errors.
+import matplotlib
+matplotlib.use('agg')
+
 seed = 1435
 np.random.seed(seed)
 
