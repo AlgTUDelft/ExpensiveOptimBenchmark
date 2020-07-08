@@ -4,11 +4,11 @@ Stage: spython-base
 
 %files
 ./requirements.txt ./requirements_eob.txt
-expensiveoptimbenchmark ./expensiveoptimbenchmark
-./expensiveoptimbenchmark/problems/ESP2/dockerCall.py .
-./expensiveoptimbenchmark/problems/ESP2/dockerCall.sh .
-./expensiveoptimbenchmark/problems/ESP2/createBafflesDict2.py ./Exeter_CFD_Problems/ESP/createBafflesDict2.py
-./expensiveoptimbenchmark/problems/ESP2/evaluateSimulation2.py ./Exeter_CFD_Problems/ESP/evaluateSimulation2.py
+expensiveoptimbenchmark /home/openfoam/expensiveoptimbenchmark
+./expensiveoptimbenchmark/problems/ESP2/dockerCall.py /home/openfoam/cfd-test-problem-suite/
+./expensiveoptimbenchmark/problems/ESP2/dockerCall.sh /home/openfoam/cfd-test-problem-suite/
+./expensiveoptimbenchmark/problems/ESP2/createBafflesDict2.py /home/openfoam/cfd-test-problem-suite/Exeter_CFD_Problems/ESP/createBafflesDict2.py
+./expensiveoptimbenchmark/problems/ESP2/evaluateSimulation2.py /home/openfoam/cfd-test-problem-suite/Exeter_CFD_Problems/ESP/evaluateSimulation2.py
 
 %post
 
@@ -21,7 +21,7 @@ python3.7 -m pip install --upgrade cython setuptools wheel
 python3.7 -m pip install -r requirements_eob.txt
 
 # bash ./expensiveoptimbenchmark/problems/ESP2/patch.sh
-ln -s ./dockerCall.sh ./evaluate.sh
+ln -s /home/openfoam/cfd-test-problem-suite/dockerCall.sh /evaluate.sh
 
 %runscript
 exec /bin/bash -l -c "$@"
