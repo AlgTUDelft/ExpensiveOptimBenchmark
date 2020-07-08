@@ -14,7 +14,7 @@ class DockerCFDBenchmarkProblem:
         self.errval = errval
         if os.path.exists("./evaluate.sh"):
             self.evalCommand = ["./evaluate.sh", self.name]
-        elif if os.path.exists("/evaluate.sh"):
+        elif os.path.exists("/evaluate.sh"):
             self.evalCommand = ["/evaluate.sh", self.name]
         else:
             self.evalCommand = ["docker", "run", "--rm", "frehbach/cfd-test-problem-suite", "./dockerCall.sh", self.name]
