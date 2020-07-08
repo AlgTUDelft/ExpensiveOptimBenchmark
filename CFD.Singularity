@@ -5,6 +5,11 @@ Stage: spython-base
 %files
 ./requirements.txt ./requirements_eob.txt
 expensiveoptimbenchmark ./expensiveoptimbenchmark
+./expensiveoptimbenchmark/problems/ESP2/dockerCall.py .
+./expensiveoptimbenchmark/problems/ESP2/dockerCall.sh .
+./expensiveoptimbenchmark/problems/ESP2/createBafflesDict2.py ./Exeter_CFD_Problems/ESP/createBafflesDict2.py
+./expensiveoptimbenchmark/problems/ESP2/evaluateSimulation2.py ./Exeter_CFD_Problems/ESP/evaluateSimulation2.py
+
 %post
 
 apt-get install -y software-properties-common &&\
@@ -15,7 +20,7 @@ python3.7 -m pip install --upgrade pip &&\
 python3.7 -m pip install --upgrade cython setuptools wheel
 python3.7 -m pip install -r requirements_eob.txt
 
-bash ./expensiveoptimbenchmark/problems/ESP2/patch.sh
+# bash ./expensiveoptimbenchmark/problems/ESP2/patch.sh
 ln -s ./dockerCall.sh ./evaluate.sh
 
 %runscript
