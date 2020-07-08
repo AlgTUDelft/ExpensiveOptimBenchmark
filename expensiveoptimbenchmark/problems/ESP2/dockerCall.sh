@@ -1,4 +1,10 @@
 #!/bin/bash
+
+orig=$(pwd)
+locshfile=$(readlink -f $0)
+locdir=$(dirname $locshfile)
+cd $locdir
+
 source /opt/openfoam4/etc/bashrc
 res=$(python3 dockerCall.py -p $1 $2 2>&1)
 #python3 dockerCall.py -p $1 $2
@@ -23,3 +29,5 @@ else
     echo $res | grep -Eo '[+-]?[0-9]+([.][0-9]+)?(e-[0-9]+)?'
   fi
 fi
+
+cd $orig

@@ -4,6 +4,7 @@ Stage: spython-base
 
 %environment
 export PYTHONPATH=$PYTHONPATH:/home/openfoam/cfd-test-problem-suite/Exeter_CFD_Problems/:/home/openfoam/cfd-test-problem-suite/Exeter_CFD_Problems/data
+export WM_MPLIB=SYSTEMOPENMPI
 
 %files
 ./requirements.txt ./requirements_eob.txt
@@ -25,6 +26,8 @@ python3.7 -m pip install -r requirements_eob.txt
 
 # bash ./expensiveoptimbenchmark/problems/ESP2/patch.sh
 ln -s /home/openfoam/cfd-test-problem-suite/dockerCall.sh /evaluate.sh
+
+chmod -R o+rwX /home/openfoam
 
 %runscript
 exec /bin/bash -l -c "$@"
