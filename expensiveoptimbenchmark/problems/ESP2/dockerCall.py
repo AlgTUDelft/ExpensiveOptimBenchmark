@@ -95,3 +95,7 @@ if __name__=='__main__':
         print('Demonstration of the ESP2 test problem.')
         res = os.system('python Exeter_CFD_Problems/ESP/evaluateSimulation2.py ' + allArgs[-1])
         sys.exit(res)
+    elif problem_name == 'ESP3':
+        print('Demonstration of the ESP3 test problem.')
+        res = os.system('python Exeter_CFD_Problems/ESP/evaluateSimulation3.py ' + allArgs[-1])
+        sys.exit(res)
