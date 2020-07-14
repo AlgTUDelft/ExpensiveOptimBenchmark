@@ -51,7 +51,7 @@ def write(name,val):
     elif val==2:
         write7(name,val)
     else:
-        writeFromArray(name, val-2, poreousnesses[val-2])
+        writeFromArray(name, val-3, poreousnesses[val-3])
 
 def write0(name,val):
     createBafflesDictFile.write("//" + name + " Auswahl: " + str(val) + "\n")
