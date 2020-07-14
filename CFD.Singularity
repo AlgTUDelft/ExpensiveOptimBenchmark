@@ -13,6 +13,8 @@ expensiveoptimbenchmark /home/openfoam/expensiveoptimbenchmark
 ./expensiveoptimbenchmark/problems/ESP2/dockerCall.sh /home/openfoam/cfd-test-problem-suite/
 ./expensiveoptimbenchmark/problems/ESP2/createBafflesDict2.py /home/openfoam/cfd-test-problem-suite/Exeter_CFD_Problems/ESP/createBafflesDict2.py
 ./expensiveoptimbenchmark/problems/ESP2/evaluateSimulation2.py /home/openfoam/cfd-test-problem-suite/Exeter_CFD_Problems/ESP/evaluateSimulation2.py
+./expensiveoptimbenchmark/problems/ESP2/createBafflesDict3.py /home/openfoam/cfd-test-problem-suite/Exeter_CFD_Problems/ESP/createBafflesDict3.py
+./expensiveoptimbenchmark/problems/ESP2/evaluateSimulation3.py /home/openfoam/cfd-test-problem-suite/Exeter_CFD_Problems/ESP/evaluateSimulation3.py
 
 %post
 
