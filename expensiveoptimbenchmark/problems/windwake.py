@@ -13,6 +13,19 @@ class WindWakeLayout:
         self.wd, self.ws, self.freq = self._gen_random_wind(wind_seed)
         # self.loggerclass = logging.getLoggerClass()
         self.fi = wfct.floris_interface.FlorisInterface(self.file)
+        # Set number of turbines
+        rand_layout_x = np.random.uniform(0.0, self.width, size=n_turbines)
+        rand_layout_y = np.random.uniform(0.0, self.height, size=n_turbines)
+
+        self.fi.reinitialize_flow_field(layout_array=(rand_layout_x, rand_layout_y))
+
+        # Default polygon (covers entire area)
+        self.boundaries = [[0.0, 0.0], [width, 0.0], [width, height], [0.0, height]]
+        # Scaling factor, set to 1 in order to avoid scaling.
+        aep_initial = 1
+        self.lo = wfct.optimization.scipy.layout.LayoutOptimization(self.fi, self.boundaries, self.wd, self.ws, self.freq, aep_initial)
+        # Use the default minimum distance that floris themselves use.
+        self.min_dist = self.lo.min_dist
         # logging.setLoggerClass(self.loggerclass)
 
     def _gen_random_wind(self, seed):
@@ -24,22 +37,22 @@ class WindWakeLayout:
         return wd, ws, freq
 
     def evaluate(self, x):
-        x_wrapped = x.reshape((self.n_turbines, 2))
-        layout_x = x_wrapped[:, 0]
-        layout_y = x_wrapped[:, 1]
-        self.fi.reinitialize_flow_field(layout_array=(layout_x, layout_y))
+        c1 = self.lo._space_constraint(x, self.min_dist)
+        c2 = self.lo._distance_from_boundaries(x, self.boundaries)
 
-        annual_energy_production = self.fi.get_farm_AEP(self.wd, self.ws, self.freq)
-        # Reset logger.
-        # logging.setLoggerClass(self.loggerclass)
-        # Note: maximize production!
-        return -1 * annual_energy_production
+        # No power produced when constraints are violated.
+        if c1 < 0 or c2 < 0:
+            return 0.0
+
+        obj = self.lo._AEP_layout_opt(x)
+        return obj
 
     def lbs(self):
         return np.zeros(2 * self.n_turbines, dtype=float)
 
     def ubs(self):
-        return (np.asarray([[self.width, self.height]]) * np.ones((self.n_turbines, 1), dtype=float)).ravel()
+        # return (np.asarray([[self.width, self.height]]) * np.ones((self.n_turbines, 1), dtype=float)).ravel()
+        return np.ones(2 * self.n_turbines, dtype=float)
 
     def vartype(self):
         return np.array(['cont'] * self.dims())
