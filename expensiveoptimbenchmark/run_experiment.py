@@ -59,6 +59,15 @@ def construct_windwake(params):
 
     return [WindWakeLayout(sim_info_file, n_turbines=n_turbines, wind_seed=wind_seed, width=width, height=height)]
 
+# MaxCut function
+def construct_maxcut(params):
+    from problems.maxcut import MaxCut
+    ds = parse_numerical_ranges(params['-d'])
+    graph_seeds = parse_numerical_ranges(params['--graph-seed'])
+
+    return [MaxCut(d, graph_seed=graph_seed) for d, graph_seed in product(ds, graph_seeds)]
+
+
 # Summary of problems and their parameters.
 problems = {
     'tsp': {
@@ -98,6 +107,14 @@ problems = {
             '--wind-seed': '0'
         },
         'constructor': construct_windwake
+    },
+    'maxcut': {
+        'args': {'-d', '--graph-seed'},
+        'defaults': {
+            '-d': '147', # This is 3 times 49, which corresponds to binarisation of ESP
+            '--graph-seed': '42'
+        },
+        'constructor': construct_maxcut
     }
 }
 
@@ -354,6 +371,11 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     # Rosenbrock
     print(f" rosen")
     print(f" -d=<intranges> \t The dimensionality of the rosenbrock problem")
+    print()
+    # MaxCut
+    print(f" maxcut")
+    print(f" -d=<intranges> \t The dimensionality of the maxcut problem (default: 147)")
+    print(f" --graph-seed=<intranges> \t The seed of constructing the graph instance (default: 42)")
     print()
     # Predefined: Synthetic
     print(", ".join(fn.name for fn in fns))
