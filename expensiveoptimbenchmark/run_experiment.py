@@ -52,9 +52,10 @@ def construct_rosen(params):
 def construct_linearmivabo(params):
     from problems.linear_MIVABOfunction import Linear
 
-    seed = params.get('--seed')
+    maybe_seed = params.get('--seed')
+    seeds = parse_numerical_ranges(maybe_seed) if maybe_seed is not None else [None]
 
-    return [Linear(seed=seed)]
+    return [Linear(seed=seed) for seed in seeds]
 
 # floris wake simulator
 def construct_windwake(params):
