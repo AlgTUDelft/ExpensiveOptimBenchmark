@@ -1,6 +1,11 @@
+import os
 import sys
 
 from itertools import product
+
+# Stop numpy and scipy from doing multithreading automatically.
+os.environ['OPENBLAS_NUM_THREADS'] = '1'
+os.environ['MKL_NUM_THREADS'] = '1'
 
 def parse_numerical_range(s):
     range_ = s.split(":")
