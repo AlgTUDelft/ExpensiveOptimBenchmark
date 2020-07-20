@@ -46,7 +46,10 @@ def construct_rosen(params):
 # Linear MIVABO Function
 def construct_linearmivabo(params):
     from problems.linear_MIVABOfunction import Linear
-    return [Linear()]
+
+    seed = params.get('--seed')
+
+    return [Linear(seed=seed)]
 
 # floris wake simulator
 def construct_windwake(params):
@@ -94,7 +97,7 @@ problems = {
         'constructor': construct_convex
     },
     'linearmivabo': {
-        'args': set(), # TODO: make this approach configurable.
+        'args': {'--seed'}, # TODO: make this approach configurable.
         'defaults': {
         },
         'constructor': construct_linearmivabo

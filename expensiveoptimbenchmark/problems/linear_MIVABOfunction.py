@@ -19,8 +19,10 @@ class Linear():
         n_feats_c=16,   # number of continuous features
         noisy=False,    # should we add observation noise?
         laplace=True,   # should we sample the weights from a Laplace distribution?
+        seed=None,      # Seed for the rng.
     ):
         # set variables
+        self.rng = np.random.RandomState(seed)
         self.n_vars_d = n_vars_d
         self.n_vars_c = n_vars - self.n_vars_d
         self.alpha = alpha # Store for descriptor
@@ -42,11 +44,11 @@ class Linear():
         """ Sample the coefficients from either a Laplace or a Gaussian distribution """
 
         if laplace:
-            self.w = np.random.laplace(0.0, 1.0 / alpha, self.n_feats_total)
+            self.w = self.rng.laplace(0.0, 1.0 / alpha, self.n_feats_total)
             # ensure sparsity by setting small weights to zero
             self.w[self.w < 1.0 / alpha] = 0.0
         else:
-            self.w = np.random.normal(0.0, 1.0 / alpha, self.n_feats_total)
+            self.w = self.rng.normal(0.0, 1.0 / alpha, self.n_feats_total)
 
         # extract the coefficients
         self.w0 = self.w[0]
@@ -58,7 +60,7 @@ class Linear():
         """ sample the continuous feature parameters, i.e.,
             random Fourier feature / random kitchen sink parameters U and b """
 
-        self.rks_U = np.random.normal(size=(self.n_feats_c, self.n_vars_c)) * (1.0 / sigma)
+        self.rks_U = self.rng.normal(size=(self.n_feats_c, self.n_vars_c)) * (1.0 / sigma)
         self.rks_b = 2.0 * np.pi * np.random.rand(self.n_feats_c)
         self.rks_c = np.sqrt(2.0 / self.n_feats_c)
 
@@ -92,7 +94,7 @@ class Linear():
         f_m = self.f_m(x[: self.n_vars_d], x[self.n_vars_d :])
         f = w0 + f_d + f_c + f_m
 
-        return f if not self.noisy else np.random.normal(f, 1 / self.beta)
+        return f if not self.noisy else self.rng.normal(f, 1 / self.beta)
 
     def f_d(self, x_d):
         """ linear model of discrete features """
