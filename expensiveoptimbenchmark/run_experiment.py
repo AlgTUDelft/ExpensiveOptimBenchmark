@@ -245,7 +245,8 @@ def execute_bayesianoptimization(params, problem, max_eval, log):
 def execute_smac(params, problem, max_eval, log):
     from solvers.smac.wsmac import optimize_smac
     rand_evals = int(params['--rand-evals'])
-    return optimize_smac(problem, max_eval, rand_evals=rand_evals, log=log)
+    deterministic = params.get('--deterministic') in ['true','t', 'yes', 'y']
+    return optimize_smac(problem, max_eval, rand_evals=rand_evals, deterministic=deterministic, log=log)
 
 def check_smac():
     from solvers.smac.wsmac import optimize_smac
@@ -320,9 +321,10 @@ solvers = {
         'check': nop
     },
     'smac': {
-        'args': {'--rand-evals'},
+        'args': {'--rand-evals', '--deterministic'},
         'defaults': {
-            '--rand-evals': '1'
+            '--rand-evals': '1',
+            '--deterministic': 'n'
         },
         'executor': execute_smac,
         'check': check_smac
