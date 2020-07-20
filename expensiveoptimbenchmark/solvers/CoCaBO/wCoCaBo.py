@@ -47,7 +47,7 @@ def get_variables(problem):
         } for i in range(problem.dims())
     ]
 
-def optimize_CoCaBO(problem, max_evals, init_points=24, log=None):
+def optimize_CoCaBO(problem, max_evals, init_points=24, kernel_mix=0.5, log=None):
     d = problem.dims()
 
     variables = get_variables(problem)
@@ -91,14 +91,14 @@ def optimize_CoCaBO(problem, max_evals, init_points=24, log=None):
 
     tempdir = tempfile.mkdtemp()
     mon.start()
-    optim = CoCaBO(f, init_points, variables, 'LCB', C)
+    optim = CoCaBO(objfn=f, initN=init_points, bounds=variables, acq_type='LCB', C=C, kernel_mix=kernel_mix)
     # Set saving path to a temporary directory.
     # Normally this is set by run trails...
     optim.saving_path = tempdir
     # Set this to ensure it does not crash in the last step.
     # Normally this is set by run trails...
     optim.trial_num = 1
-    seed = 0
+    seed = None
     try:
         df = optim.runOptim(max_eval_budget, seed)
         mon.end()
