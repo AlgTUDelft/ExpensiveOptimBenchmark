@@ -1,6 +1,7 @@
 ## This file is a wrapper for the benchmark tool
 ## to be able to run CoCaBO on these problems.
 import tempfile
+import traceback
 
 import numpy as np
 
@@ -107,6 +108,7 @@ def optimize_CoCaBO(problem, max_evals, init_points=24, kernel_mix=0.5, log=None
     except Exception as e:
         mon.end()
         print("An error has occurred while using CoCaBO, terminating early...")
+        traceback.print_exception(e)
         return None, None, mon
         
     return solX, solY, mon
