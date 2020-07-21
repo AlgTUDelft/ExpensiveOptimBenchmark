@@ -95,13 +95,14 @@ def optimize_CoCaBO(problem, max_evals, init_points=24, kernel_mix=0.5, log=None
     optim = CoCaBO(objfn=f, initN=init_points, bounds=variables, acq_type='LCB', C=C, kernel_mix=kernel_mix)
     # Set saving path to a temporary directory.
     # Normally this is set by run trails...
-    optim.saving_path = tempdir
+    # optim.saving_path = tempdir
     # Set this to ensure it does not crash in the last step.
     # Normally this is set by run trails...
-    optim.trial_num = 1
+    # optim.trial_num = 1
     seed = None
     try:
-        df = optim.runOptim(max_eval_budget, seed)
+        # df = optim.runOptim(max_eval_budget, seed)
+        optim.runTrails(1, max_eval_budget, tempdir)
         mon.end()
 
         _lbtch, _trls, _li, solY, solX = optim.best_val_list[-1]
