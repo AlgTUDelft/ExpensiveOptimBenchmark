@@ -168,3 +168,6 @@ $RECYCLE.BIN/
 *.sif
 
 .vscode/settings.json
+
+# log files
+expensiveoptimbenchmark/results/
