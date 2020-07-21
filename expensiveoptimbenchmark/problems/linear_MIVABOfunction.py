@@ -22,6 +22,7 @@ class Linear():
         seed=None,      # Seed for the rng.
     ):
         # set variables
+        self.seed = seed
         self.rng = np.random.RandomState(seed)
         self.n_vars_d = n_vars_d
         self.n_vars_c = n_vars - self.n_vars_d
@@ -125,5 +126,5 @@ class Linear():
         return self.n_vars_d + self.n_vars_c
 
     def __str__(self):
-        return f"LinearMIVABO(n_vars_d={self.n_vars_d},n_vars_c={self.n_vars_c},alpha={self.alpha},beta={self.beta},sigma={self.sigma},n_feats_d={self.n_feats_d},n_feats_c={self.n_feats_c},noisy={self.noisy},laplace={self.laplace})"
+        return f"LinearMIVABO(seed={self.seed},n_vars_d={self.n_vars_d},n_vars_c={self.n_vars_c},alpha={self.alpha},beta={self.beta},sigma={self.sigma},n_feats_d={self.n_feats_d},n_feats_c={self.n_feats_c},noisy={self.noisy},laplace={self.laplace})"
 
