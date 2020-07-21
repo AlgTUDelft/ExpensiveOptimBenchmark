@@ -108,7 +108,7 @@ def optimize_CoCaBO(problem, max_evals, init_points=24, kernel_mix=0.5, log=None
     except Exception as e:
         mon.end()
         print("An error has occurred while using CoCaBO, terminating early...")
-        traceback.print_exception(e)
+        traceback.print_exception()
         return None, None, mon
         
     return solX, solY, mon
