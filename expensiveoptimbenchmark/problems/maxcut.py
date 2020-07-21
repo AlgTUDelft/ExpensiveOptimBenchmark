@@ -6,8 +6,8 @@ from random import Random
 class MaxCut:
 
     def __init__(self, d, graph_seed = 42, noise_seed = None, noise_factor = 1):
-        self.ub = 0
-        self.lb = 1
+        self.ub = 1
+        self.lb = 0
         self.d = d
         self.noise_seed = noise_seed
         self.noise_rng = np.random.RandomState(seed=noise_seed)
@@ -26,7 +26,7 @@ class MaxCut:
             i += 1
         self.graph = {e: r.randint(0, 10) for e in graph.edges}
 
-    def evaluate(self, x):
+    def evaluate(self, x, minimize=True):
         assert len(x) == self.d
 
         objective = 0
@@ -37,7 +37,11 @@ class MaxCut:
         if self.noise_seed is not True:
             # Add noise to objective. Mean=0, std=1.
             objective += self.noise_rng.normal(scale=self.noise_factor)
-        return objective
+
+        if minimize is True:
+            return -objective
+        else:
+            return objective
 
     def lbs(self):
         return self.lb*np.ones(self.d, dtype=int)
