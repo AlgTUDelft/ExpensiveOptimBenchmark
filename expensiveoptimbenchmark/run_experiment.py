@@ -55,8 +55,9 @@ def construct_linearmivabo(params):
     maybe_seed = params.get('--seed')
     seeds = parse_numerical_ranges(maybe_seed) if maybe_seed is not None else [None]
     laplace = params['--laplace'] in ['true','t', 'yes', 'y']
+    noisy = params['--noisy'] in ['true','t', 'yes', 'y']
 
-    return [Linear(laplace=laplace, seed=seed) for seed in seeds]
+    return [Linear(noisy=noisy, laplace=laplace, seed=seed) for seed in seeds]
 
 # floris wake simulator
 def construct_windwake(params):
@@ -104,9 +105,10 @@ problems = {
         'constructor': construct_convex
     },
     'linearmivabo': {
-        'args': {'--seed', '--laplace'}, # TODO: make this approach configurable.
+        'args': {'--seed', '--laplace', '--noisy'}, # TODO: make this approach configurable.
         'defaults': {
-            '--laplace': 'y'
+            '--laplace': 'y',
+            '--noisy': 'n'
         },
         'constructor': construct_linearmivabo
     },
