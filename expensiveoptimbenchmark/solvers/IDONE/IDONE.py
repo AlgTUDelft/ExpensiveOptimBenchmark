@@ -14,10 +14,11 @@ import os
 import math
 import random
 import time
+from sys import stdout
 import numpy as np
 from scipy.optimize import minimize, Bounds
 
-def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, rand_evals=0, enable_scaling=False, verbose=1, log=False):
+def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, rand_evals=0, enable_scaling=False, verbose=1, log=False, thompson_sampling=False):
 	d = len(x0) # dimension, number of variables
 	current_time = time.time() # time when starting the algorithm
 	next_X = [] # candidate solution presented by the algorithm
@@ -145,10 +146,19 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, rand_evals=0, enable_
 				
 		# Define model output for any new input x2
 		def out(x2):
-			return np.matmul( np.transpose(model['c']), model['Z'](x2) ).item(0,0)
+
+			if thompson_sampling is True:
+				# If Thompson Sampling is performed, compute output by sampled weights c_samp
+				return np.matmul( np.transpose(model['c_samp']), model['Z'](x2) ).item(0,0)
+			else:
+				return np.matmul( np.transpose(model['c']), model['Z'](x2) ).item(0,0)
+		
 		# Define model output derivative for any new input x2 (used in the optimization step)
 		def deriv(x2):
-			c = np.transpose(model['c'])			
+			if thompson_sampling is True:
+				c = np.transpose(model['c_samp'])
+			else:
+				c = np.transpose(model['c'])			
 			# temp = np.reshape(model['Zderiv'](x2),(model['Zderiv'](x2)).shape[0])
 			temp = np.reshape(model['Zderiv'](x2), -1)
 			temp = np.matmul(np.diag(temp), model['W'])
@@ -169,7 +179,8 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, rand_evals=0, enable_
 	## Iteratively evaluate the objective, update the model, find the minimum of the model, and explore the search space
 	for ii in range(0,max_evals):
 		if verbose > 0 and ii % verbose == 0:
-			print(f"Starting IDONE iteration {ii}/{max_evals}")
+			stdout.write(f"\rStarting IDONE iteration {ii}/{max_evals}")
+			stdout.flush()
 		x = np.copy(next_X).astype(int)
 		if ii==0:
 			y = obj(x) # Evaluate the objective
@@ -208,6 +219,11 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, rand_evals=0, enable_
 		time_start = time.time() 
 		model = updateModel(x,y, model)
 		update_time = time.time()-time_start # Time used to update the model
+
+		# Perform sampling of weights
+		if thompson_sampling is True:
+			model['c_samp'] = np.random.multivariate_normal(model['c'].T[0], model['P']).T
+			model['c_samp'] = np.reshape(model['c_samp'], (model['D'], 1))
 		
 		# Should the next sample be chosen using the surrogate model?
 		minimization_time = 0.0
@@ -232,23 +248,25 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, rand_evals=0, enable_
 			## Exploration step (else the algorithm gets stuck in the local minimum of the surrogate model)
 			next_X_before_exploration = np.copy(next_X)
 			next_X = np.copy(next_X)
+
 			if ii<max_evals-2: # Skip exploration before the last iteration, to end at the exact minimum of the surrogate model.
-				for j in range(0,d):
-					r = random.random()
-					a = next_X[j]
-					prob = 1/d # Probability for each variable to increase or decrease
-					if r < prob:
-						if a==lb[j] and a<ub[j]:
-							a += 1 # Explore to the right
-						elif a==ub[j] and a>lb[j]:
-							a -= 1 # Explore to the left
-						elif a>lb[j] and a<ub[j]:
-							r2 = random.random() # Explore left or right
-							if r2<0.5:
-								a += 1
-							else:
-								a -= 1
-					next_X[j]=a
+				if thompson_sampling is not True: # Skip random exploration if Thompson sampling is being used
+					for j in range(0,d):
+						r = random.random()
+						a = next_X[j]
+						prob = 1/d # Probability for each variable to increase or decrease
+						if r < prob:
+							if a==lb[j] and a<ub[j]:
+								a += 1 # Explore to the right
+							elif a==ub[j] and a>lb[j]:
+								a -= 1 # Explore to the left
+							elif a>lb[j] and a<ub[j]:
+								r2 = random.random() # Explore left or right
+								if r2<0.5:
+									a += 1
+								else:
+									a -= 1
+						next_X[j]=a
 			
 			# Just to be sure, clip to the bounds again
 			np.clip(next_X, lb, ub)
