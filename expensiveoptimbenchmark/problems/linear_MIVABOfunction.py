@@ -111,7 +111,8 @@ class Linear():
 
     # For compatibility
     def evaluate(self, x):
-        return self.objective_function(x)
+        # Divided by 100 to be sure...
+        return self.objective_function(x) / 100.0
 
     def lbs(self):
         return np.zeros(self.dims())
