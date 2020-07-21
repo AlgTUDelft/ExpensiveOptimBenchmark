@@ -102,7 +102,7 @@ def optimize_CoCaBO(problem, max_evals, init_points=24, kernel_mix=0.5, log=None
     seed = None
     try:
         # df = optim.runOptim(max_eval_budget, seed)
-        optim.runTrails(1, max_eval_budget, tempdir)
+        optim.runTrials(1, max_eval_budget, tempdir)
         mon.end()
 
         _lbtch, _trls, _li, solY, solX = optim.best_val_list[-1]
