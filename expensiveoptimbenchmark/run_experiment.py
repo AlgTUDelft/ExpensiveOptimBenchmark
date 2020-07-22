@@ -46,8 +46,8 @@ def construct_convex(params):
 def construct_rosen(params):
     from problems.rosenbrock_int import RosenbrockInt
     ds = parse_numerical_ranges(params['-d'])
-    dolog = params['--log'] in ['true','t', 'yes', 'y']
-    return [RosenbrockInt(d, dolog) for d in ds]
+    logscale = params['--logscale'] in ['true','t', 'yes', 'y']
+    return [RosenbrockInt(d, logscale) for d in ds]
 
 # Linear MIVABO Function
 def construct_linearmivabo(params):
@@ -92,10 +92,10 @@ problems = {
         'constructor': construct_tsp
     },
     'rosen': {
-        'args': {'-d', '--log'},
+        'args': {'-d', '--logscale'},
         'defaults': {
             '-d': '2',
-            '--log': 'f'
+            '--logscale': 'f'
         },
         'constructor': construct_rosen
     },
