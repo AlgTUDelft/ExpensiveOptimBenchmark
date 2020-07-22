@@ -12,7 +12,7 @@ class Strategies(enum.Enum):
     hyperopt = 2
     randomsearch = 3
     bayesianoptimization = 4
-    idone_Sa = 5 #TODO: This strategy are not implemented
+    idone_Sa = 5 #TODO: This strategyh are not implemented
     idone_Ar = 6
 
 class Problems(enum.Enum):
