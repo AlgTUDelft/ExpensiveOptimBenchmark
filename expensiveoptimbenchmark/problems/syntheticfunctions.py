@@ -138,7 +138,7 @@ SFDim238Rosenbrock = MixedFunction('dim238Rosenbrock', dim238Rosenbrock, 119, 11
 SFDim238Rosenbrocklog = MixedFunction('dim238Rosenbrocklog', dim238Rosenbrock, 119, 119, 
     np.concatenate([np.zeros(119), np.ones(119) * -2]),
     np.concatenate([np.ones(119) * 4, np.ones(119) * 2]),
-    False, dolog=true)
+    False, dolog=True)
 fns.append(SFDim238Rosenbrock)
 fns.append(SFDim238Rosenbrocklog)
 
