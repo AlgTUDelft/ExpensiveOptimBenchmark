@@ -53,9 +53,11 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
 
     # Display
     plt.legend()
-    plt.show()
+
     if save_file is not None:
         fig.savefig(save_file)
+    else:
+        plt.show()
 
 if __name__ == "__main__":
     import sys
