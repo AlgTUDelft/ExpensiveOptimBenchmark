@@ -154,6 +154,8 @@ def execute_IDONE(params, problem, max_eval, log):
         raise ValueError("Valid model types are `basic` and `advanced`")
     if params['--binarize-categorical'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
         raise ValueError("--binarize-categorical should be a boolean.")
+    if params['--binarize-int'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
+        raise ValueError("--binarize-int should be a boolean.")
     if params['--scaling'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
         raise ValueError("--scaling should be a boolean.")
     if params['--thompson-sampling'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
@@ -161,12 +163,13 @@ def execute_IDONE(params, problem, max_eval, log):
         
     type_model = params['--model']
     binarize_categorical = params['--binarize-categorical'] in ['true','t', 'yes', 'y']
+    binarize_int =  params['--binarize-int'] in ['true','t', 'yes', 'y']
     enable_scaling = params['--scaling'] in ['true','t', 'yes', 'y']
     rand_evals = int(params['--rand-evals']) - 1
     thompson_sampling = params['--thompson-sampling'] in ['true','t', 'yes', 'y']
     assert rand_evals >= 0, "IDONE requires at least one initial random evaluation."
 
-    return optimize_IDONE(problem, max_eval, rand_evals=rand_evals, model=type_model, binarize_categorical=binarize_categorical, thompson_sampling=thompson_sampling, enable_scaling=enable_scaling, log=log)
+    return optimize_IDONE(problem, max_eval, rand_evals=rand_evals, model=type_model, binarize_categorical=binarize_categorical, binarize_int=binarize_int, thompson_sampling=thompson_sampling, enable_scaling=enable_scaling, log=log)
 
 def execute_MVRSM(params, problem, max_eval, log):
     from solvers.MVRSM.wMVRSM import optimize_MVRSM
@@ -251,10 +254,11 @@ def execute_cocabo(params, problem, max_eval, log):
 
 solvers = {
     'idone': {
-        'args': {'--model', '--binarize-categorical', '--rand-evals', '--scaling', '--thompson-sampling'},
+        'args': {'--model', '--binarize-categorical', '--binarize-int', '--rand-evals', '--scaling', '--thompson-sampling'},
         'defaults': {
             '--model': 'advanced',
             '--binarize-categorical': 'false',
+            '--binarize-int': 'false',
             '--rand-evals': '1',
             '--scaling': 'false',
             '--thompson-sampling': 'false'
@@ -397,6 +401,7 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print(f" idone")
     print(f" --model=<basic|advanced> \t The kind of model IDONE should utilize (default: advanced)")
     print(f" --binarize-categorical=<t|true|f|false> \t Whether to binarize categorical variables. (default: false)")
+    print(f" --binarize-int=<t|true|f|false> \t Whether to binarize integer variables. (default: false)")
     print(f" --thompson-sampling=<t|true|f|false> \t Whether to use thompson sampling. (default: false)")
     print(f" --scaling=<t|true|f|false> \t Whether scaling is applied. (default: false)")
     print(f" --rand-evals=<int> \t Number of random evaluations. (default: 1)")
