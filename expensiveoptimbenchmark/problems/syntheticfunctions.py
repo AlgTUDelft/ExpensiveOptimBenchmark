@@ -33,7 +33,7 @@ class MixedFunction:
     
     def evaluate(self, x):
         if dolog:
-            return np.log(self.f(x) + 0.5)
+            return np.log(self.f(x) + 1)
         return self.f(x)
 
     def lbs(self):
