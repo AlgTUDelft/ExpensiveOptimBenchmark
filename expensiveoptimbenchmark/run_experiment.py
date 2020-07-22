@@ -95,7 +95,7 @@ problems = {
         'args': {'-d', '--log'},
         'defaults': {
             '-d': '2',
-            '--log', 'f'
+            '--log': 'f'
         },
         'constructor': construct_rosen
     },
