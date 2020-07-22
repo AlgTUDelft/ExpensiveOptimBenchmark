@@ -13,7 +13,7 @@ class RosenbrockInt:
     def evaluate(self, x):
         assert len(x) == self.d
         if self.dolog:
-            return np.log((rosen(x)/self.scaling) + 1)
+            return np.log(rosen(x) + 1)
         return rosen(x)/self.scaling
 
     def lbs(self):
