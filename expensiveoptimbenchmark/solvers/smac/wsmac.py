@@ -55,7 +55,7 @@ def optimize_smac(problem, max_evals, rand_evals=1, log=None):
         "cs": cs,
         "output_dir": None,
         "limit_resources": False, # Limiting resources stops the Monitor from working...
-        # "deterministic": True
+        "deterministic": True
     })
     # smac = SMAC4HPO(scenario=sc, tae_runner=f)
     smac = SMAC4HPO(scenario=sc, initial_design=RandomConfigurations, initial_design_kwargs={'init_budget': rand_evals}, tae_runner=f)
