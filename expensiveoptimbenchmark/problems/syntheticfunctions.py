@@ -16,7 +16,7 @@ from scipy.optimize import rosen
 # Wrapper
 
 class MixedFunction:
-    def __init__(self, name, f, n_vars_d, n_vars_c, lbs, ubs, is_discrete_categorical):
+    def __init__(self, name, f, n_vars_d, n_vars_c, lbs, ubs, is_discrete_categorical, dolog=False):
         self.name = name
         self.f = f
         self.n_vars_d = n_vars_d
@@ -25,12 +25,15 @@ class MixedFunction:
         self.ub = ubs
         self.is_discrete_categorical = is_discrete_categorical
         self.d = n_vars_d + n_vars_c
+        self.dolog=dolog
         assert len(lbs) == int(self.d), \
 			f"Function {name} has a different number of lower bounds ({len(lbs)}) to its dimensionality ({self.d})"
         assert len(ubs) == int(self.d), \
 			f"Function {name} has a different number of upper bounds ({len(ubs)}) to its dimensionality ({self.d})"
     
     def evaluate(self, x):
+        if dolog:
+            return np.log(self.f(x) + 0.5)
         return self.f(x)
 
     def lbs(self):
@@ -50,7 +53,8 @@ class MixedFunction:
         return self.n_vars_d + self.n_vars_c
 
     def __str__(self):
-        return f"MixedFunction(name={self.name})"
+        return f"MixedFunction(name={self.name},log={self.dolog})"
+
 
 fns = []
 
@@ -80,7 +84,12 @@ SFhighdimRosenbrock = MixedFunction('highdimRosenbrock', highdimRosenbrock, 5, 2
     np.concatenate([np.zeros(5), np.ones(20) * -2]),
     np.concatenate([np.ones(5), np.ones(20) * 2]),
     False)
+SFhighdimRosenbrocklog = MixedFunction('highdimRosenbrocklog', highdimRosenbrock, 5, 20,
+    np.concatenate([np.zeros(5), np.ones(20) * -2]),
+    np.concatenate([np.ones(5), np.ones(20) * 2]),
+    False, dolog=True)
 fns.append(SFhighdimRosenbrock)
+fns.append(SFhighdimRosenbrocklog)
 
 #
 def dim10Rosenbrock(x):
@@ -92,7 +101,12 @@ SFDim10Rosenbrock = MixedFunction('dim10Rosenbrock', dim10Rosenbrock, 3, 10-3,
     np.concatenate([np.zeros(3), np.ones(10-3) * -2]),
     np.concatenate([np.ones(3), np.ones(10-3) * 2]),
     False)
+SFDim10Rosenbrocklog = MixedFunction('dim10Rosenbrocklog', dim10Rosenbrock, 3, 10-3, 
+    np.concatenate([np.zeros(3), np.ones(10-3) * -2]),
+    np.concatenate([np.ones(3), np.ones(10-3) * 2]),
+    False, dolog=True)
 fns.append(SFDim10Rosenbrock)
+fns.append(SFDim10Rosenbrocklog)
 
 #
 def dim53Rosenbrock(x):
@@ -104,7 +118,12 @@ SFDim53Rosenbrock = MixedFunction('dim53Rosenbrock', dim53Rosenbrock, 50, 3,
     np.concatenate([np.zeros(50), np.ones(3) * -2]),
     np.concatenate([np.ones(50), np.ones(3) * 2]),
     False)
+SFDim53Rosenbrocklog = MixedFunction('dim53Rosenbrocklog', dim53Rosenbrock, 50, 3, 
+    np.concatenate([np.zeros(50), np.ones(3) * -2]),
+    np.concatenate([np.ones(50), np.ones(3) * 2]),
+    False, dolog=True)
 fns.append(SFDim53Rosenbrock)
+fns.append(SFDim53Rosenbrocklog)
 
 #
 def dim238Rosenbrock(x):
@@ -116,7 +135,12 @@ SFDim238Rosenbrock = MixedFunction('dim238Rosenbrock', dim238Rosenbrock, 119, 11
     np.concatenate([np.zeros(119), np.ones(119) * -2]),
     np.concatenate([np.ones(119) * 4, np.ones(119) * 2]),
     False)
+SFDim238Rosenbrocklog = MixedFunction('dim238Rosenbrocklog', dim238Rosenbrock, 119, 119, 
+    np.concatenate([np.zeros(119), np.ones(119) * -2]),
+    np.concatenate([np.ones(119) * 4, np.ones(119) * 2]),
+    False, dolog=true)
 fns.append(SFDim238Rosenbrock)
+fns.append(SFDim238Rosenbrocklog)
 
 #
 def dim53Ackley(x):
