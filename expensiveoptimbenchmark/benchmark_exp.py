@@ -12,8 +12,8 @@ class Strategies(enum.Enum):
     hyperopt = 2
     randomsearch = 3
     bayesianoptimization = 4
-    idone_Sa = 5 #TODO: This strategyh are not implemented
-    idone_Ar = 6
+    idone_Sa = 5 
+    idone_Ar = 6 #TODO: This strategy are not implemented
 
 class Problems(enum.Enum):
     maxcut = 0
