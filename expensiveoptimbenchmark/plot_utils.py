@@ -37,12 +37,12 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
     
         mean_fitness_value = fitness_value_df.mean(axis=1)
         sd_fitness_value = fitness_value_df.std(axis=1)
-        ax.plot(mean_fitness_value.index, mean_fitness_value, label = solver)
         upperError = pd.to_numeric(mean_fitness_value + sd_fitness_value)
         lowerError = pd.to_numeric(mean_fitness_value - sd_fitness_value)
-        ax.fill_between(pd.to_numeric(mean_fitness_value.index), upperError, lowerError, alpha=0.1)
+        
+        ax.plot(mean_fitness_value.index, mean_fitness_value, label = solver, linewidth=2)
+        ax.fill_between(pd.to_numeric(mean_fitness_value.index), upperError, lowerError, alpha=0.25)
     
-        print(solver, fitness_value_df)
     # Styling
     plt.title(f"Problem {problem}")
     plt.ylabel(convert_feature_label(y_feature))
