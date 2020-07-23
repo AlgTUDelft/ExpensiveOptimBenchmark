@@ -497,7 +497,7 @@ while len(args) > i:
     solver['params'] = solver['info']['defaults'].copy()
 
     if rand_evals_default is not None:
-        solver['--rand-evals'] = rand_evals_default
+        solver['params']['--rand-evals'] = rand_evals_default
 
     # Perform imports before running so that we do not run
     # into surprises later
