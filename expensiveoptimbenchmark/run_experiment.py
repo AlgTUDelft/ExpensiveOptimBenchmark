@@ -174,14 +174,17 @@ def execute_IDONE(params, problem, max_eval, log):
         raise ValueError("--binarize-categorical should be a boolean.")
     if params['--scaling'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
         raise ValueError("--scaling should be a boolean.")
+    if params['--internal-logging'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
+        raise ValueError("--internal-logging should be a boolean.")
         
     type_model = params['--model']
     binarize_categorical = params['--binarize-categorical'] in ['true','t', 'yes', 'y']
     enable_scaling = params['--scaling'] in ['true','t', 'yes', 'y']
+    idone_log = params['--internal-logging'] in ['true','t', 'yes', 'y']
     rand_evals = int(params['--rand-evals']) - 1
     assert rand_evals >= 0, "IDONE requires at least one initial random evaluation."
 
-    return optimize_IDONE(problem, max_eval, rand_evals=rand_evals, model=type_model, binarize_categorical=binarize_categorical, enable_scaling=enable_scaling, log=log)
+    return optimize_IDONE(problem, max_eval, rand_evals=rand_evals, model=type_model, binarize_categorical=binarize_categorical, enable_scaling=enable_scaling, log=log, idone_log=idone_log)
 
 def execute_MVRSM(params, problem, max_eval, log):
     from solvers.MVRSM.wMVRSM import optimize_MVRSM
@@ -272,7 +275,8 @@ solvers = {
             '--model': 'advanced',
             '--binarize-categorical': 'false',
             '--rand-evals': '1',
-            '--scaling': 'false'
+            '--scaling': 'false',
+            '--internal-logging': 'false'
         },
         'executor': execute_IDONE,
         'check': nop
