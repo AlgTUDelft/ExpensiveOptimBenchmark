@@ -32,7 +32,7 @@ class MixedFunction:
 			f"Function {name} has a different number of upper bounds ({len(ubs)}) to its dimensionality ({self.d})"
     
     def evaluate(self, x):
-        if dolog:
+        if self.dolog:
             return np.log(self.f(x) + 1)
         return self.f(x)
 
