@@ -37,9 +37,9 @@ def get_variables(problem):
 
     return cs
 
-def optimize_smac(problem, max_evals, rand_evals=1, log=None):
+def optimize_smac(problem, max_evals, rand_evals=1, deterministic=False, log=None):
 
-    mon = Monitor("smac", problem, log=log)
+    mon = Monitor(f"smac{'/det' if deterministic else ''}", problem, log=log)
     def f(cfg):
         xvec = np.array([cfg[k] for k, t in zip(cfg, problem.vartype())])
         mon.commit_start_eval()
@@ -55,7 +55,7 @@ def optimize_smac(problem, max_evals, rand_evals=1, log=None):
         "cs": cs,
         "output_dir": None,
         "limit_resources": False, # Limiting resources stops the Monitor from working...
-        "deterministic": True
+        "deterministic": deterministic
     })
     # smac = SMAC4HPO(scenario=sc, tae_runner=f)
     smac = SMAC4HPO(scenario=sc, initial_design=RandomConfigurations, initial_design_kwargs={'init_budget': rand_evals}, tae_runner=f)

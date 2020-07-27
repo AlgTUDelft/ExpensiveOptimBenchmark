@@ -18,7 +18,7 @@ from sys import stdout
 import numpy as np
 from scipy.optimize import minimize, Bounds
 
-def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, rand_evals=0, enable_scaling=False, verbose=1, log=False, sampling=None, exploration_prob = None):
+def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, rand_evals=5, enable_scaling=False, verbose=1, log=False, sampling=None, exploration_prob = None):
 	d = len(x0) # dimension, number of variables
 	current_time = time.time() # time when starting the algorithm
 	next_X = [] # candidate solution presented by the algorithm
@@ -248,7 +248,7 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, rand_evals=0, enable_
 		# Should the next sample be chosen using the surrogate model?
 		minimization_time = 0.0
 		next_X_before_exploration = x
-		if ii >= rand_evals:
+		if ii >= rand_evals - 1:
 			## Minimization of the surrogate model
 			time_start = time.time()
 			temp = minimize(model['out'], x, method='L-BFGS-B', bounds = Bounds(lb, ub), jac=model['outderiv'], options={'maxiter':20,'maxfun':20})
