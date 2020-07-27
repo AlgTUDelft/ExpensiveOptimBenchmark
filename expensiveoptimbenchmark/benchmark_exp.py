@@ -64,9 +64,13 @@ def run_exp(problem, strategy, args, out_path):
             f"--max-eval={args.evaluations}", 
             f"--out-path={out_path}", 
             f"--repetitions={args.repetitions}", 
-            problem, f'-d={args.dimensions}',
-            get_solver(strategy)
+            problem
             ]
+    if problem != 'esp':
+        command.append(f'-d={args.dimensions}')
+
+    command.append(get_solver(strategy))
+    command.append(f'--rand-evals={args.randevals}')
     
     # Solver parameters
     if strategy in THOMPSON_SAMPLING:
@@ -107,6 +111,8 @@ if __name__ == "__main__":
                         help='Number of evaluations for the given problem instance')
     parser.add_argument('-r','--repetitions', type=int, default=1,
                         help='Number of experiments to perform')
+    parser.add_argument('-re', '--randevals', type=int, default=1,
+                        help='Number of random evaluations')
     parser.add_argument('-t', '--tag', type=str,
                         help='Optional tag id for experiment')
 
