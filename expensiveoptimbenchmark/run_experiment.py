@@ -71,6 +71,14 @@ def construct_windwake(params):
 
     return [WindWakeLayout(sim_info_file, n_turbines=n_turbines, wind_seed=wind_seed, width=width, height=height)]
 
+# MaxCut function
+def construct_maxcut(params):
+    from problems.maxcut import MaxCut
+    ds = parse_numerical_ranges(params['-d'])
+    graph_seeds = parse_numerical_ranges(params['--graph-seed'])
+
+    return [MaxCut(d, graph_seed=graph_seed) for d, graph_seed in product(ds, graph_seeds)]
+
 def construct_windwakeh(params):
     from problems.windwakeheight import WindWakeHeightLayout
     sim_info_file = params['--file']
@@ -124,6 +132,14 @@ problems = {
         },
         'constructor': construct_windwake
     },
+    'maxcut': {
+        'args': {'-d', '--graph-seed'},
+        'defaults': {
+            '-d': '147', # This is 3 times 49, which corresponds to binarisation of ESP
+            '--graph-seed': '42'
+        },
+        'constructor': construct_maxcut
+    },
     'windwakeh': {
         'args': {'--file', '-n', '-w', '-h', '--wind-seed'},
         'defaults': {
@@ -172,19 +188,28 @@ def execute_IDONE(params, problem, max_eval, log):
         raise ValueError("Valid model types are `basic` and `advanced`")
     if params['--binarize-categorical'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
         raise ValueError("--binarize-categorical should be a boolean.")
+    if params['--binarize-int'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
+        raise ValueError("--binarize-int should be a boolean.")
     if params['--scaling'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
         raise ValueError("--scaling should be a boolean.")
+    if params['--sampling'] not in ['none', 'thompson', 'uniform']:
+        raise ValueError("--sampling argument is incorrect.")
+    if params['--expl-prob'] not in ['normal', 'larger']:
+        raise ValueError("--expl-prob argument is incorrect.")
     if params['--internal-logging'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
         raise ValueError("--internal-logging should be a boolean.")
         
     type_model = params['--model']
     binarize_categorical = params['--binarize-categorical'] in ['true','t', 'yes', 'y']
+    binarize_int =  params['--binarize-int'] in ['true','t', 'yes', 'y']
     enable_scaling = params['--scaling'] in ['true','t', 'yes', 'y']
     idone_log = params['--internal-logging'] in ['true','t', 'yes', 'y']
     rand_evals = int(params['--rand-evals']) - 1
-    assert rand_evals >= 1, "IDONE requires at least one initial random evaluation."
+    sampling = params['--sampling']
+    expl_prob = params['--expl-prob']
 
-    return optimize_IDONE(problem, max_eval, rand_evals=rand_evals, model=type_model, binarize_categorical=binarize_categorical, enable_scaling=enable_scaling, log=log, idone_log=idone_log)
+    assert rand_evals >= 1, "IDONE requires at least one initial random evaluation."
+    return optimize_IDONE(problem, max_eval, rand_evals=rand_evals, model=type_model, binarize_categorical=binarize_categorical, binarize_int=binarize_int, sampling=sampling, enable_scaling=enable_scaling, log=log, exploration_prob=expl_prob, idone_log=idone_log)
 
 def execute_MVRSM(params, problem, max_eval, log):
     from solvers.MVRSM.wMVRSM import optimize_MVRSM
@@ -270,12 +295,15 @@ def execute_cocabo(params, problem, max_eval, log):
 
 solvers = {
     'idone': {
-        'args': {'--model', '--binarize-categorical', '--rand-evals', '--scaling'},
+        'args': {'--model', '--binarize-categorical', '--binarize-int', '--rand-evals', '--scaling', '--sampling', '--expl-prob'},
         'defaults': {
             '--model': 'advanced',
             '--binarize-categorical': 'false',
+            '--binarize-int': 'false',
             '--rand-evals': '5',
             '--scaling': 'false',
+            '--sampling': 'none',
+            '--expl-prob': 'normal',
             '--internal-logging': 'false'
         },
         'executor': execute_IDONE,
@@ -396,6 +424,11 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print(f" rosen")
     print(f" -d=<intranges> \t The dimensionality of the rosenbrock problem")
     print()
+    # MaxCut
+    print(f" maxcut")
+    print(f" -d=<intranges> \t The dimensionality of the maxcut problem (default: 147)")
+    print(f" --graph-seed=<intranges> \t The seed of constructing the graph instance (default: 42)")
+    print()
     # Predefined: Synthetic
     print(", ".join(fn.name for fn in fns))
     print(f" (for all: no arguments)")
@@ -412,8 +445,12 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print(f" idone")
     print(f" --model=<basic|advanced> \t The kind of model IDONE should utilize (default: advanced)")
     print(f" --binarize-categorical=<t|true|f|false> \t Whether to binarize categorical variables. (default: false)")
+    print(f" --binarize-int=<t|true|f|false> \t Whether to binarize integer variables. (default: false)")
+    print(f" --sampling=<none|thompson|uniform> \t Whether to use thompson or uniform sampling, or none. (default: none)")
     print(f" --scaling=<t|true|f|false> \t Whether scaling is applied. (default: false)")
     print(f" --rand-evals=<int> \t Number of random evaluations. (default: 1)")
+    print(f" --expl-prob=<normal|larger> \t Decide probability of exploration. Not applicable to Thompson sampling. (default: normal)")
+    
     print()
     # MVRSM
     print(f" mvrsm")
