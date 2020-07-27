@@ -13,7 +13,26 @@ class Strategies(enum.Enum):
     randomsearch = 3
     bayesianoptimization = 4
     idone_Sa = 5 
-    idone_Ar = 6 #TODO: This strategy are not implemented
+    idone_Ar = 6 
+
+
+    # Ablation analysis
+    TS_idone = 10
+    binarize_idone = 11
+    uniform_idone = 12 
+    larger_expl_idone = 13 
+
+
+
+# Controls the strategies
+IDONE_LIST = [Strategies.idone, Strategies.idone_Sa, Strategies.idone_Ar,
+              Strategies.TS_idone, Strategies.binarize_idone, Strategies.uniform_idone, Strategies.larger_expl_idone
+             ]
+THOMPSON_SAMPLING = [Strategies.idone_Sa, Strategies.TS_idone]
+BINARIZE = [Strategies.idone_Sa, Strategies.binarize_idone]
+UNIFORM_SAMPLING = [Strategies.idone_Ar, Strategies.uniform_idone]
+LARGER_PROBABILITY = [Strategies.idone_Ar, Strategies.larger_expl_idone]
+SCALING = []
 
 class Problems(enum.Enum):
     maxcut = 0
@@ -23,7 +42,7 @@ class Problems(enum.Enum):
 
 
 def get_solver(strategy):
-    if strategy in [Strategies.idone, Strategies.idone_Sa, Strategies.idone_Ar]:
+    if strategy in IDONE_LIST:
         return 'idone'
     elif strategy in [Strategies.smac]:
         return 'smac'
@@ -31,8 +50,8 @@ def get_solver(strategy):
         return 'hyperopt'
     elif strategy in [Strategies.randomsearch]:
         return 'randomsearch'
-    elif strategy in [Strategies.bayesianoptimsation]:
-        return 'bayesianoptimsation'
+    elif strategy in [Strategies.bayesianoptimization]:
+        return 'bayesianoptimization'
     else:
         raise ValueError("Strategy does not exist.")
 
@@ -49,21 +68,25 @@ def run_exp(problem, strategy, args, out_path):
             get_solver(strategy)
             ]
     
-    # IDONE parameters
-    TS = strategy in [Strategies.idone_Sa]
-    binarize = strategy in [Strategies.idone_Sa]
-    if TS is True:
-        command.append('--thompson-sampling=true')
-    if binarize is True: 
+    # Solver parameters
+    if strategy in THOMPSON_SAMPLING:
+        command.append('--sampling=thompson')
+    if strategy in BINARIZE: 
         command.append('--binarize-categorical=true')
         command.append('--binarize-int=true')
-
-
-    print("Running", str(command))
+    if strategy in SCALING:
+        command.append('--scaling=true')
+    if strategy in UNIFORM_SAMPLING:
+        command.append('--sampling=uniform')
+    if strategy in LARGER_PROBABILITY:
+        command.append('--expl-prob=larger')
+        
+        
+    print("\nRunning command:\n", str(command))
     subprocess.run(command)
 
     # Document command 
-    with open(f"{out_path}command_log.txt", 'w+') as f:
+    with open(f"{out_path}command_log.txt", 'a') as f:
         f.write(" ".join(command))
         f.write("\n")
 
@@ -73,9 +96,9 @@ if __name__ == "__main__":
     # Parse arguments
     parser = ArgumentParser()
 
-    parser.add_argument('-p', '--problem', type=str, nargs = '+',
+    parser.add_argument('-p', '--problem', type=str, nargs = '+', required=True,
                         help='Pick problem', choices=[p.name for p in Problems])
-    parser.add_argument('-s', '--solver', type=str, nargs = '+',
+    parser.add_argument('-s', '--solver', type=str, nargs = '+', required=True,
                         help='Pick solver', choices=[s.name for s in Strategies])
 
     parser.add_argument('-d','--dimensions', type=int, default = 25,
@@ -84,6 +107,8 @@ if __name__ == "__main__":
                         help='Number of evaluations for the given problem instance')
     parser.add_argument('-r','--repetitions', type=int, default=1,
                         help='Number of experiments to perform')
+    parser.add_argument('-t', '--tag', type=str,
+                        help='Optional tag id for experiment')
 
 
     args = parser.parse_args()
@@ -96,7 +121,7 @@ if __name__ == "__main__":
 
     for problem_instance in problem_instance_list:
         
-        experiment_id = f"{datetime.now().strftime('%d%m_%H%M%S')}_{problem_instance}"
+        experiment_id = f"{datetime.now().strftime('%d%m_%H%M%S')}_{problem_instance}{'_'+args.tag if args.tag is not None else ''}"
         out_path = f"./results/{experiment_id}/"
 
         # Run experiments
