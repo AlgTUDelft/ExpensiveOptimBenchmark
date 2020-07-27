@@ -18,11 +18,32 @@ from sys import stdout
 import numpy as np
 from scipy.optimize import minimize, Bounds
 
-def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, rand_evals=0, enable_scaling=False, verbose=1, log=False, thompson_sampling=False):
+def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, rand_evals=0, enable_scaling=False, verbose=1, log=False, sampling=None, exploration_prob = None):
 	d = len(x0) # dimension, number of variables
 	current_time = time.time() # time when starting the algorithm
 	next_X = [] # candidate solution presented by the algorithm
 	rng = np.random.default_rng()
+
+	# Compute exploration probability
+	if exploration_prob is None: # Optional to pick probability of making a random step
+		prob = 1/d
+	else:
+		prob = exploration_prob
+
+	# Decide sampling strategy
+	sampling_strategies = ['none', 'thompson', 'uniform'] # Allowed sampling strategies
+	if sampling in sampling_strategies or sampling is None:
+		if sampling == 'thompson':
+			thompson_sampling = True
+			uniform_sampling = False
+		elif sampling == 'uniform':
+			thompson_sampling = False
+			uniform_sampling = True
+		else:
+			thompson_sampling = False
+			uniform_sampling = False
+	else:
+		raise ValueError(f"Invalid sampling argument given. Change to an existing one: {sampling_strategies}")
 	
 	## Initialize the surrogate model
 	def initializeModel():
@@ -146,7 +167,6 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, rand_evals=0, enable_
 				
 		# Define model output for any new input x2
 		def out(x2):
-
 			if thompson_sampling is True:
 				# If Thompson Sampling is performed, compute output by sampled weights c_samp
 				return np.matmul( np.transpose(model['c_samp']), model['Z'](x2) ).item(0,0)
@@ -249,24 +269,29 @@ def IDONE_minimize(obj, x0, lb, ub, max_evals, model_type, rand_evals=0, enable_
 			next_X_before_exploration = np.copy(next_X)
 			next_X = np.copy(next_X)
 
-			if ii<max_evals-2: # Skip exploration before the last iteration, to end at the exact minimum of the surrogate model.
-				if thompson_sampling is not True: # Skip random exploration if Thompson sampling is being used
+			# Skip exploration before the last iteration, to end at the exact minimum of the surrogate model.
+			# or skip random exploration if Thompson sampling is being used
+			if ii<max_evals-2 and thompson_sampling is not True:
+				if uniform_sampling is not True:
 					for j in range(0,d):
-						r = random.random()
+						r = rng.random()
 						a = next_X[j]
-						prob = 1/d # Probability for each variable to increase or decrease
 						if r < prob:
 							if a==lb[j] and a<ub[j]:
 								a += 1 # Explore to the right
 							elif a==ub[j] and a>lb[j]:
 								a -= 1 # Explore to the left
 							elif a>lb[j] and a<ub[j]:
-								r2 = random.random() # Explore left or right
+								r2 = rng.random() # Explore left or right
 								if r2<0.5:
 									a += 1
 								else:
 									a -= 1
 						next_X[j]=a
+				else:
+					mutated = rng.uniform(size=(d,)) < prob
+					next_X[mutated] = rng.integers(lb[mutated], ub[mutated], endpoint=True)
+
 			
 			# Just to be sure, clip to the bounds again
 			np.clip(next_X, lb, ub)
