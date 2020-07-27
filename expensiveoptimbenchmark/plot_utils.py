@@ -21,6 +21,7 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
     fig = plt.figure()
     ax = fig.add_subplot()
     
+
     # Read log files
     for f in file_list:
         
@@ -42,7 +43,9 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
         
         ax.plot(mean_fitness_value.index, mean_fitness_value, label = solver, linewidth=2)
         ax.fill_between(pd.to_numeric(mean_fitness_value.index), upperError, lowerError, alpha=0.25)
-    
+
+
+        print(f"{solver}:\nmean={mean_fitness_value.values[-1]} sd={sd_fitness_value.values[-1]}")
     # Styling
     plt.title(f"Problem {problem}")
     plt.ylabel(convert_feature_label(y_feature))
@@ -62,4 +65,8 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
 if __name__ == "__main__":
     import sys
     folder_path = sys.argv[1]
-    plot_iter_file(folder_path)
+    if len(sys.argv) > 2:
+        feature = sys.argv[2]
+    else:
+        feature = 'iter_best_fitness'
+    plot_iter_file(folder_path, feature)
