@@ -15,7 +15,7 @@ def get_variable(problem, varidx, params):
     elif vartype == 'int':
         icm = params.get('int_conversion_mode')
         if icm == 'randint':
-            return hp.randint(f'v{varidx}', ub - lb + 1)
+            return hp.randint(f'v{varidx}', int(ub - lb + 1))
         elif icm == 'quniform':
             return hp.quniform(f'v{varidx}', lb, ub, 1)
         else:

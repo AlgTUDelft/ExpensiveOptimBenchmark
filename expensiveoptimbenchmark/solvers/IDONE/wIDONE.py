@@ -3,7 +3,7 @@ import numpy as np
 from .IDONE import IDONE_minimize
 from ..utils import Monitor, Binarizer
 
-def optimize_IDONE(problem, max_evals, rand_evals=0, model='advanced', binarize_categorical=False, binarize_int=False, sampling = None, enable_scaling=False, log=None, exploration_prob='normal'):
+def optimize_IDONE(problem, max_evals, rand_evals=5, model='advanced', binarize_categorical=False, binarize_int=False, sampling = None, enable_scaling=False, log=None, exploration_prob='normal', idone_log=False):
     d = problem.dims()
     lb = problem.lbs()
     ub = problem.ubs()
@@ -53,7 +53,7 @@ def optimize_IDONE(problem, max_evals, rand_evals=0, model='advanced', binarize_
         return r
     
     mon.start()
-    solX, solY, model, logfile = IDONE_minimize(f, x0, lb, ub, max_evals, rand_evals=rand_evals, enable_scaling=enable_scaling, model_type=model, sampling = sampling, exploration_prob=prob)
+    solX, solY, model, logfile = IDONE_minimize(f, x0, lb, ub, max_evals, rand_evals=rand_evals, enable_scaling=enable_scaling, model_type=model, sampling = sampling, exploration_prob=prob, log=idone_log)
     mon.end()
 
     return solX, solY, mon

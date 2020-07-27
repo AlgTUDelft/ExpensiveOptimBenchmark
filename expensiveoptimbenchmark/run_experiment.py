@@ -1,6 +1,11 @@
+import os
 import sys
 
 from itertools import product
+
+# Stop numpy and scipy from doing multithreading automatically.
+os.environ['OPENBLAS_NUM_THREADS'] = '1'
+os.environ['MKL_NUM_THREADS'] = '1'
 
 def parse_numerical_range(s):
     range_ = s.split(":")
@@ -41,12 +46,19 @@ def construct_convex(params):
 def construct_rosen(params):
     from problems.rosenbrock_int import RosenbrockInt
     ds = parse_numerical_ranges(params['-d'])
-    return [RosenbrockInt(d) for d in ds]
+    logscale = params['--logscale'] in ['true','t', 'yes', 'y']
+    return [RosenbrockInt(d, logscale) for d in ds]
 
 # Linear MIVABO Function
 def construct_linearmivabo(params):
     from problems.linear_MIVABOfunction import Linear
-    return [Linear()]
+
+    maybe_seed = params.get('--seed')
+    seeds = parse_numerical_ranges(maybe_seed) if maybe_seed is not None else [None]
+    laplace = params['--laplace'] in ['true','t', 'yes', 'y']
+    noisy = params['--noisy'] in ['true','t', 'yes', 'y']
+
+    return [Linear(noisy=noisy, laplace=laplace, seed=seed) for seed in seeds]
 
 # floris wake simulator
 def construct_windwake(params):
@@ -67,6 +79,15 @@ def construct_maxcut(params):
 
     return [MaxCut(d, graph_seed=graph_seed) for d, graph_seed in product(ds, graph_seeds)]
 
+def construct_windwakeh(params):
+    from problems.windwakeheight import WindWakeHeightLayout
+    sim_info_file = params['--file']
+    wind_seed = int(params['--wind-seed'])
+    n_turbines = int(params['-n'])
+    width = int(params['-w'])
+    height = int(params['-h'])
+
+    return [WindWakeHeightLayout(sim_info_file, n_turbines=n_turbines, wind_seed=wind_seed, width=width, height=height)]
 
 # Summary of problems and their parameters.
 problems = {
@@ -79,9 +100,10 @@ problems = {
         'constructor': construct_tsp
     },
     'rosen': {
-        'args': {'-d'},
+        'args': {'-d', '--logscale'},
         'defaults': {
-            '-d': '2'
+            '-d': '2',
+            '--logscale': 'f'
         },
         'constructor': construct_rosen
     },
@@ -93,8 +115,10 @@ problems = {
         'constructor': construct_convex
     },
     'linearmivabo': {
-        'args': set(), # TODO: make this approach configurable.
+        'args': {'--seed', '--laplace', '--noisy'}, # TODO: make this approach configurable.
         'defaults': {
+            '--laplace': 'y',
+            '--noisy': 'n'
         },
         'constructor': construct_linearmivabo
     },
@@ -115,6 +139,16 @@ problems = {
             '--graph-seed': '42'
         },
         'constructor': construct_maxcut
+    },
+    'windwakeh': {
+        'args': {'--file', '-n', '-w', '-h', '--wind-seed'},
+        'defaults': {
+            '-n': '3',
+            '-w': '1000',
+            '-h': '1000',
+            '--wind-seed': '0'
+        },
+        'constructor': construct_windwakeh
     }
 }
 
@@ -162,17 +196,20 @@ def execute_IDONE(params, problem, max_eval, log):
         raise ValueError("--sampling argument is incorrect.")
     if params['--expl-prob'] not in ['normal', 'larger']:
         raise ValueError("--expl-prob argument is incorrect.")
+    if params['--internal-logging'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
+        raise ValueError("--internal-logging should be a boolean.")
         
     type_model = params['--model']
     binarize_categorical = params['--binarize-categorical'] in ['true','t', 'yes', 'y']
     binarize_int =  params['--binarize-int'] in ['true','t', 'yes', 'y']
     enable_scaling = params['--scaling'] in ['true','t', 'yes', 'y']
+    idone_log = params['--internal-logging'] in ['true','t', 'yes', 'y']
     rand_evals = int(params['--rand-evals']) - 1
     sampling = params['--sampling']
     expl_prob = params['--expl-prob']
-    assert rand_evals >= 0, "IDONE requires at least one initial random evaluation."
 
-    return optimize_IDONE(problem, max_eval, rand_evals=rand_evals, model=type_model, binarize_categorical=binarize_categorical, binarize_int=binarize_int, sampling=sampling, enable_scaling=enable_scaling, log=log, exploration_prob=expl_prob)
+    assert rand_evals >= 1, "IDONE requires at least one initial random evaluation."
+    return optimize_IDONE(problem, max_eval, rand_evals=rand_evals, model=type_model, binarize_categorical=binarize_categorical, binarize_int=binarize_int, sampling=sampling, enable_scaling=enable_scaling, log=log, exploration_prob=expl_prob, idone_log=idone_log)
 
 def execute_MVRSM(params, problem, max_eval, log):
     from solvers.MVRSM.wMVRSM import optimize_MVRSM
@@ -186,7 +223,7 @@ def execute_MVRSM(params, problem, max_eval, log):
     type_model = params['--model']
     binarize_categorical = params['--binarize-categorical'] in ['true','t', 'yes', 'y']
     enable_scaling = params['--scaling'] in ['true','t', 'yes', 'y']
-    rand_evals = int(params['--rand-evals']) - 1
+    rand_evals = int(params['--rand-evals'])
     assert rand_evals >= 0, "MVRSM requires at least one initial random evaluation."
 
     return optimize_MVRSM(problem, max_eval, rand_evals=rand_evals, model=type_model, binarize_categorical=binarize_categorical, enable_scaling=enable_scaling, log=log)
@@ -243,7 +280,8 @@ def execute_bayesianoptimization(params, problem, max_eval, log):
 def execute_smac(params, problem, max_eval, log):
     from solvers.smac.wsmac import optimize_smac
     rand_evals = int(params['--rand-evals'])
-    return optimize_smac(problem, max_eval, rand_evals=rand_evals, log=log)
+    deterministic = params.get('--deterministic') in ['true','t', 'yes', 'y']
+    return optimize_smac(problem, max_eval, rand_evals=rand_evals, deterministic=deterministic, log=log)
 
 def check_smac():
     from solvers.smac.wsmac import optimize_smac
@@ -262,10 +300,11 @@ solvers = {
             '--model': 'advanced',
             '--binarize-categorical': 'false',
             '--binarize-int': 'false',
-            '--rand-evals': '1',
+            '--rand-evals': '5',
             '--scaling': 'false',
             '--sampling': 'none',
-            '--expl-prob': 'normal'
+            '--expl-prob': 'normal',
+            '--internal-logging': 'false'
         },
         'executor': execute_IDONE,
         'check': nop
@@ -321,9 +360,10 @@ solvers = {
         'check': nop
     },
     'smac': {
-        'args': {'--rand-evals'},
+        'args': {'--rand-evals', '--deterministic'},
         'defaults': {
-            '--rand-evals': '1'
+            '--rand-evals': '1',
+            '--deterministic': 'n'
         },
         'executor': execute_smac,
         'check': check_smac
@@ -494,7 +534,7 @@ while len(args) > i:
     solver['params'] = solver['info']['defaults'].copy()
 
     if rand_evals_default is not None:
-        solver['--rand-evals'] = rand_evals_default
+        solver['params']['--rand-evals'] = rand_evals_default
 
     # Perform imports before running so that we do not run
     # into surprises later
