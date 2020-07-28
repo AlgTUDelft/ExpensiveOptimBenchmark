@@ -66,12 +66,15 @@ def run_exp(problem, strategy, args, out_path):
             f"--repetitions={args.repetitions}", 
             problem
             ]
+    # Problem parameters            
     if problem != 'esp':
         command.append(f'-d={args.dimensions}')
 
+    # Solver and parameters
     command.append(get_solver(strategy))
-    command.append(f'--rand-evals={args.randevals}')
-    
+    if strategy != Strategies.randomsearch:
+        #command.append(f'--rand-evals={args.randevals}') TODO
+        pass
     # Solver parameters
     if strategy in THOMPSON_SAMPLING:
         command.append('--sampling=thompson')
