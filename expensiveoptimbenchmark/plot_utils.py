@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import markers
 import os
 
 # Return nice labels
@@ -58,6 +59,13 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
     plt.style.use('seaborn-colorblind')
     plt.grid(True)
     plt.xlim(np.min(fitness_value_df.index), np.max(fitness_value_df.index))
+
+    # Give all lines different markers
+    valid_markers = ([item[0] for item in markers.MarkerStyle.markers.items() if item[1] is not 'nothing' and not item[1].startswith('tick') and not item[1].startswith('caret')])
+    for i, line in enumerate(ax.get_lines()):
+        line.set_marker(valid_markers[i])
+        line.set_markevery(5)
+ 
 
     # Display
     plt.legend()
