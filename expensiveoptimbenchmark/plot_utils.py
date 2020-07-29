@@ -36,6 +36,8 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
             exp_df = exp_df.reset_index()
             fitness_value_df = pd.concat([fitness_value_df, exp_df[y_feature]], axis=1)
     
+        fitness_value_df = fitness_value_df.apply(lambda x: x.str.strip("[]"))
+        fitness_value_df = fitness_value_df.astype(float)
         mean_fitness_value = fitness_value_df.mean(axis=1)
         sd_fitness_value = fitness_value_df.std(axis=1)
         upperError = pd.to_numeric(mean_fitness_value + sd_fitness_value)
