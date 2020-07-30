@@ -12,27 +12,29 @@ from sklearn.decomposition import PCA
 
 class SteelFoldPlate:
 
-    def __init__(self, files, evaluator):
+    def __init__(self, files):
         self.files = files
+        self.data_X, self.data_y = data_to_X_and_y(load_data(files))
+        # TODO: Allow this to be picked?
+        self.validator = LeaveOneOut()
+        self.argspec = all_args_spec()
+        self.lbs_v, self.ubs_v, self.vartype_v = argspec_to_vecs(self.args)
 
     def evaluate(self, x):
-        # TODO
-        return 0.0
+        classifier = construct_classifier(argspec_and_vec_to_argdict(self.argspec, x))
+        return evaluate_classifier(classifier, self.validator, self.data_X, self.data_y)
 
     def lbs(self):
-        # TODO
-        return self.lb*np.ones(self.d, dtype=int)
+        return self.lbs_v
 
     def ubs(self):
-        # TODO
-        return self.ub*np.ones(self.d, dtype=int)
+        return self.ubs_v
 
     def vartype(self):
-        # TODO
-        return np.array(['int'] * self.d)
+        return self.vartype_v
 
     def dims(self):
-        return self.d
+        return len(self.argspec)
 
     def __str__(self):
         return f"SteelFoldPlate()"
@@ -66,7 +68,8 @@ def data_to_X_and_y(data):
     y = class_headers[np.argmax(np.asarray(dat[class_headers]), axis=1)]
 
     return X, y
-def evaluate_classifier(model: Pipeline, validator: BaseCrossValidator, X, y):
+
+def evaluate_classifier(classifier: Pipeline, validator: BaseCrossValidator, X, y):
 
     scores = []
 
@@ -74,16 +77,41 @@ def evaluate_classifier(model: Pipeline, validator: BaseCrossValidator, X, y):
         X_train, X_test = X[train_index], X[test_index]
         y_train, y_test = y[train_index], y[test_index]
 
-        model.fit(X_train, y_train)
-        y_pred_test = model.predict(X_test, max_tree)
+        classifier.fit(X_train, y_train)
+        y_pred_test = classifier.predict(X_test, max_tree)
         # print(list(zip(y_pred_test, y_test)))
         scores.append(np.sum(y_test == y_pred_test) / y_test.shape[0])
 
     # Return mean score
     return np.mean(scores)
 
+def argspec_to_vecs(argspec):
+    lbs = [v['lb'] for (k, v) in argspec.items()]
+    ubs = [v['ub'] for (k, v) in argspec.items()]
+    ty = [v['type'] for (k, v) in argspec.items()]
+    return lbs, ubs, ty
+
+def argspec_and_vec_to_argdict(argspec, vec):
+    return dict(zip(argspec, vec))
+
 # Parameters are listed beyond this point.
 # Features without any change in value stay as-is.
+
+def all_args_spec():
+    args_preprocessing = preprocessing_args_spec()
+    args_xgboost = xgboost_args_spec()
+    
+    args_all = dict()
+    args_all.update(args_preprocessing)
+    args_all.update(args_xgboost)
+
+    return args_all
+
+def construct_classifier(args):
+    return make_pipeline(
+        construct_preprocessing(args), 
+        construct_xgboost(args)
+    )
 
 # - Preprocessing via scikit-learn
 def preprocessing_args_spec():
