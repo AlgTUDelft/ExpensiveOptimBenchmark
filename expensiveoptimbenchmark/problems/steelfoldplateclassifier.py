@@ -160,7 +160,7 @@ def param_preprocessing_normalizer_norm(norm: int):
 
 def xgboost_args_spec():
     return {
-        'xg_objective': {'lb': 0, 'ub': 3, 'type': 'cat'},
+        # 'xg_objective': {'lb': 0, 'ub': 3, 'type': 'cat'},
         'xg_booster': {'lb': 0, 'ub': 3, 'type': 'cat'},
         'xg_tree_method': {'lb': 0, 'ub': 3, 'type': 'cat'},
         'xg_learning_rate': {'lb': 0, 'ub': 1, 'type': 'cont'},
@@ -216,7 +216,8 @@ def construct_xgboost(args: dict):
     n_jobs = 1
 
     n_estimators = int(args['xg_num_round'])
-    objective = param_xgboost_objective(args['xg_objective'])
+    # objective = param_xgboost_objective(args['xg_objective'])
+    objective = 'multi:softmax'
     booster = param_xgboost_booster(args['xg_booster'])
     tree_method = param_xgboost_tree_tree_method(args['xg_tree_method'])
     learning_rate = float(args['xg_eta'])
