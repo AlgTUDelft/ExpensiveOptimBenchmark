@@ -88,26 +88,26 @@ def evaluate_classifier(model: Pipeline, validator: BaseCrossValidator, X, y):
 
 def xgboost_args_spec():
     return {
-        'objective': {'lb': 0, 'ub': 3, 'type': 'cat'},
-        'booster': {'lb': 0, 'ub': 3, 'type': 'cat'},
-        'tree_method': {'lb': 0, 'ub': 3, 'type': 'cat'},
-        'learning_rate': {'lb': 0, 'ub': 1, 'type': 'cont'},
+        'xg_objective': {'lb': 0, 'ub': 3, 'type': 'cat'},
+        'xg_booster': {'lb': 0, 'ub': 3, 'type': 'cat'},
+        'xg_tree_method': {'lb': 0, 'ub': 3, 'type': 'cat'},
+        'xg_learning_rate': {'lb': 0, 'ub': 1, 'type': 'cont'},
         # NOTE: Arbitrarily cut off at 10: does not have an upper bound.
-        'gamma': {'lb': 0, 'ub': 10, 'type': 'cont'},
+        'xg_gamma': {'lb': 0, 'ub': 10, 'type': 'cont'},
         # NOTE: Arbitrarily cut off at 10: does not have an upper bound.
-        'min_child_weight': {'lb': 0, 'ub': 10, 'type': 'int'},
+        'xg_min_child_weight': {'lb': 0, 'ub': 10, 'type': 'int'},
         # NOTE: Arbitrarily cut off at 10: does not have an upper bound.
-        'max_delta_step': {'lb': 0, 'ub': 10, 'type': 'int'},
+        'xg_max_delta_step': {'lb': 0, 'ub': 10, 'type': 'int'},
         # NOTE: Lower bound is 0 for the 4 below, non inclusive.
         # Set slightly higher to avoid issues around this bound.
-        'subsample': {'lb': 0.001, 'ub': 1.0, 'type': 'cont'},
-        'colsample_bytree': {'lb': 0.001, 'ub': 1.0, 'type': 'cont'},
-        'colsample_bylevel': {'lb': 0.001, 'ub': 1.0, 'type': 'cont'},
-        'colsample_bynode': {'lb': 0.001, 'ub': 1.0, 'type': 'cont'},
+        'xg_subsample': {'lb': 0.001, 'ub': 1.0, 'type': 'cont'},
+        'xg_colsample_bytree': {'lb': 0.001, 'ub': 1.0, 'type': 'cont'},
+        'xg_colsample_bylevel': {'lb': 0.001, 'ub': 1.0, 'type': 'cont'},
+        'xg_colsample_bynode': {'lb': 0.001, 'ub': 1.0, 'type': 'cont'},
         # NOTE: Lower bound is 0 (non-inclusive), and upper bound is
         #       set arbitrarily at 10 (there is no real upper bound)
-        'alpha': {'lb': 0.001, 'ub': 10.0, 'type': 'cont'},
-        'lambda': {'lb': 0.001, 'ub': 10.0, 'type': 'cont'},
+        'xg_alpha': {'lb': 0.001, 'ub': 10.0, 'type': 'cont'},
+        'xg_lambda': {'lb': 0.001, 'ub': 10.0, 'type': 'cont'},
         # Reweighting factor strongly depends on data
         # Alternative would be '1' or #neg/#pos
         # Given multiclass nature a tad difficult.
@@ -117,63 +117,63 @@ def xgboost_args_spec():
         # Upper bound is set arbitrarily at 10.
         # Maybe add a computational time limit?
         # Otherwise maybe better suited for a multi-objective problem.
-        'num_round': {'lb': 1, 'ub': 10, 'type': 'int'}
+        'xg_num_round': {'lb': 1, 'ub': 10, 'type': 'int'}
 
         # The following arguments are not directly accessible via the
         # SKLearn API. So whether these work or not, is a bit of a guess.
         # NOTE: Bounds are (0, 1), both non-inclusive.
         # Set higher and lower respectively to avoid issues. 
-        'sketch_eps': {'lb': 0.001, 'ub': 0.999, 'type': 'cont'},
-        'grow_policy': {'lb': 0, 'ub': 1, 'type': 'cat'},
-        'max_leaves': {'lb': 0, 'ub': 128, 'type': 'int'},
-        'normalize_type': {'lb': 0, 'ub': 1, 'type': 'cat'},
-        'rate_drop': {'lb': 0, 'ub': 1, 'type': 'cont'},
-        'one_drop': {'lb': 0, 'ub': 1, 'type': 'cat'},
-        'skip_drop': {'lb': 0, 'ub': 1, 'type': 'cont'},
-        'updater': {'lb': 0, 'ub': 1, 'type': 'cat'},
-        'feature_selector': {'lb': 0, 'ub': 4, 'type': 'cat'},
+        'xg_sketch_eps': {'lb': 0.001, 'ub': 0.999, 'type': 'cont'},
+        'xg_grow_policy': {'lb': 0, 'ub': 1, 'type': 'cat'},
+        'xg_max_leaves': {'lb': 0, 'ub': 128, 'type': 'int'},
+        'xg_normalize_type': {'lb': 0, 'ub': 1, 'type': 'cat'},
+        'xg_rate_drop': {'lb': 0, 'ub': 1, 'type': 'cont'},
+        'xg_one_drop': {'lb': 0, 'ub': 1, 'type': 'cat'},
+        'xg_skip_drop': {'lb': 0, 'ub': 1, 'type': 'cont'},
+        'xg_updater': {'lb': 0, 'ub': 1, 'type': 'cat'},
+        'xg_feature_selector': {'lb': 0, 'ub': 4, 'type': 'cat'},
         # NOTE: Bound arbitrarily set at 10, there is no real
         # upper bound.
         # Special case: 0 is select all.
         # Suggestion: Maybe split up
         # (select all: y/n, use 2nd integer if n)
-        'top_k': {'lb': 0, 'ub': 10, 'type': 'int'},
+        'xg_top_k': {'lb': 0, 'ub': 10, 'type': 'int'},
     }
 
 def construct_xgboost(args: dict):
     n_jobs = 1
 
-    n_estimators = int(args['num_round'])
-    objective = param_xgboost_objective(args['objective'])
-    booster = param_xgboost_booster(args['booster'])
-    tree_method = param_xgboost_tree_tree_method(args['tree_method'])
-    learning_rate = float(args['eta'])
-    gamma = float(args['gamma'])
+    n_estimators = int(args['xg_num_round'])
+    objective = param_xgboost_objective(args['xg_objective'])
+    booster = param_xgboost_booster(args['xg_booster'])
+    tree_method = param_xgboost_tree_tree_method(args['xg_tree_method'])
+    learning_rate = float(args['xg_eta'])
+    gamma = float(args['xg_gamma'])
     
-    max_depth = int(args['max_depth'])
-    min_child_weight = int(args['min_child_weight'])
-    max_delta_step = int(args['max_delta_step'])
+    max_depth = int(args['xg_max_depth'])
+    min_child_weight = int(args['xg_min_child_weight'])
+    max_delta_step = int(args['xg_max_delta_step'])
     
-    subsample = float(args['subsample'])
-    colsample_bytree = float(args['colsample_bytree'])
-    colsample_bylevel = float(args['colsample_bylevel'])
-    colsample_bynode = float(args['colsample_bynode'])
+    subsample = float(args['xg_subsample'])
+    colsample_bytree = float(args['xg_colsample_bytree'])
+    colsample_bylevel = float(args['xg_colsample_bylevel'])
+    colsample_bynode = float(args['xg_colsample_bynode'])
     
-    reg_alpha = float(args['alpha'])
-    reg_lambda = float(args['lambda'])
+    reg_alpha = float(args['xg_alpha'])
+    reg_lambda = float(args['xg_lambda'])
 
     # The following arguments are not directly accessible via the
     # SKLearn API. So whether these work or not, is a bit of a guess.
-    sketch_eps = float(args['sketch_eps'])
-    grow_policy = param_xgboost_tree_grow_policy(args['grow_policy'])
-    max_leaves = int(args['max_leaves'])
-    normalize_type = param_xgboost_tree_normalize_type(args['normalize_type'])
-    rate_drop = float(args['rate_drop'])
-    one_drop = int(args['one_drop'])
-    skip_drop = float(args['skip_drop'])
-    updater = param_xgboost_tree_updater(args['updater'])
-    feature_selector = param_xgboost_tree_feature_selector(args['feature_selector'])
-    top_k = int(args['top_k'])
+    sketch_eps = float(args['xg_sketch_eps'])
+    grow_policy = param_xgboost_tree_grow_policy(args['xg_grow_policy'])
+    max_leaves = int(args['xg_max_leaves'])
+    normalize_type = param_xgboost_tree_normalize_type(args['xg_normalize_type'])
+    rate_drop = float(args['xg_rate_drop'])
+    one_drop = int(args['xg_one_drop'])
+    skip_drop = float(args['xg_skip_drop'])
+    updater = param_xgboost_tree_updater(args['xg_updater'])
+    feature_selector = param_xgboost_tree_feature_selector(args['xg_feature_selector'])
+    top_k = int(args['xg_top_k'])
 
     kwargsd = {
         'sketch_eps': sketch_eps,
