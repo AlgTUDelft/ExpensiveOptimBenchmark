@@ -6,6 +6,8 @@ import os
 
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.model_selection import LeaveOneOut, StratifiedKFold, BaseCrossValidator
+from sklearn.preprocessing import FunctionTransformer, Normalizer, MinMaxScaler, StandardScaler
+from sklearn.decomposition import PCA
 
 
 class SteelFoldPlate:
@@ -82,6 +84,48 @@ def evaluate_classifier(model: Pipeline, validator: BaseCrossValidator, X, y):
 
 # Parameters are listed beyond this point.
 # Features without any change in value stay as-is.
+
+# - Preprocessing via scikit-learn
+def preprocessing_args_spec():
+    return {
+        # Corresponding to ['None', 'PCA', 'MinMaxScaler', 'Normalizer', 'StandardScaler']
+        'pp_kind': {'lb': 0, 'ub': 4, 'type': 'cat'},
+        # Specifically for normalizer..
+        # Corresponding to ['L1', 'L2', 'max']
+        'pp_normalizer_norm': {'lb': 0, 'ub': 2, 'type': 'cat'},
+        # 
+        'pp_pca_whiten': {'lb': 0, 'ub': 1, 'type': 'cat'},
+        'pp_pca_n_components': {'lb': 0, 'ub': 27, 'type': 'int'},
+    }
+
+def construct_preprocessing(args):
+    # Roughly based on hyperopt-sklearn's preprocessing (TFIDF is left out: it is for text)
+    kind = int(args['pp_kind'])
+
+    if kind == 0:
+        # A function transformer without any arguments is the identity transform.
+        return FunctionTransformer()
+    elif kind == 1:
+        whiten = int(args['pp_pca_whiten']) == 1
+        n_components = int(args['pp_pca_n_components'])
+        return PCA(n_components=n_components, whiten=whiten)
+    elif kind == 2:
+        return MinMaxScaler()
+    elif kind == 3:
+        norm = param_preprocessing_normalizer_norm(args['pp_normalizer_norm'])
+        return Normalizer(norm=norm) 
+    elif kind == 4:
+        return StandardScaler()
+    else:
+        raise ValueError()
+
+def param_preprocessing_normalizer_norm(norm: int):
+    options = [
+        'l1',
+        'l2',
+        'max'
+    ]
+    return options[norm]
 
 # - XGBoost
 #  https://xgboost.readthedocs.io/en/latest/parameter.html#learning-task-parameters
