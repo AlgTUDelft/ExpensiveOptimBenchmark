@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import markers
 import os
 
 # Return nice labels
@@ -36,23 +37,37 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
             exp_df = exp_df.reset_index()
             fitness_value_df = pd.concat([fitness_value_df, exp_df[y_feature]], axis=1)
     
+        try:
+            fitness_value_df = fitness_value_df.apply(lambda x: x.str.strip("[]"))
+            fitness_value_df = fitness_value_df.astype(float)
+        except:
+            pass 
         mean_fitness_value = fitness_value_df.mean(axis=1)
         sd_fitness_value = fitness_value_df.std(axis=1)
         upperError = pd.to_numeric(mean_fitness_value + sd_fitness_value)
         lowerError = pd.to_numeric(mean_fitness_value - sd_fitness_value)
         
         ax.plot(mean_fitness_value.index, mean_fitness_value, label = solver, linewidth=2)
-        ax.fill_between(pd.to_numeric(mean_fitness_value.index), upperError, lowerError, alpha=0.25)
+        ax.fill_between(pd.to_numeric(mean_fitness_value.index), upperError, lowerError, alpha=0.4)
 
 
         print(f"{solver}:\nmean={mean_fitness_value.values[-1]} sd={sd_fitness_value.values[-1]}")
+    
     # Styling
     plt.title(f"Problem {problem}")
     plt.ylabel(convert_feature_label(y_feature))
     plt.xlabel("Iteration index")
+    plt.xlim(mean_fitness_value.index[0], mean_fitness_value.index[-1])
+
+
+    # Give all lines different markers
+    valid_markers = ([item[0] for item in markers.MarkerStyle.markers.items() if item[1] is not 'nothing' and not item[1].startswith('tick') and not item[1].startswith('caret')])
+    for i, line in enumerate(ax.get_lines()):
+        line.set_marker(valid_markers[i])
+        line.set_markevery(5)
+
     plt.style.use('seaborn-colorblind')
     plt.grid(True)
-    plt.xlim(np.min(fitness_value_df.index), np.max(fitness_value_df.index))
 
     # Display
     plt.legend()

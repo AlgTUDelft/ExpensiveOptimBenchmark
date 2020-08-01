@@ -97,13 +97,21 @@ def dim10Rosenbrock(x):
     # h2 = [-2, -1, 0, 1, 2] #convert to these categories, as Cocabo assumes categories in (0,1,2,3,etc.)
     return rosen(x)/300 + 1e-6 * np.random.rand()
 
+# SFDim10Rosenbrock = MixedFunction('dim10Rosenbrock', dim10Rosenbrock, 3, 10-3, 
+#     np.concatenate([np.zeros(3), np.ones(10-3) * -2]),
+#     np.concatenate([np.ones(3), np.ones(10-3) * 2]),
+#     False)
+# SFDim10Rosenbrocklog = MixedFunction('dim10Rosenbrocklog', dim10Rosenbrock, 3, 10-3, 
+#     np.concatenate([np.zeros(3), np.ones(10-3) * -2]),
+#     np.concatenate([np.ones(3), np.ones(10-3) * 2]),
+#     False, dolog=True)
 SFDim10Rosenbrock = MixedFunction('dim10Rosenbrock', dim10Rosenbrock, 3, 10-3, 
-    np.concatenate([np.zeros(3), np.ones(10-3) * -2]),
-    np.concatenate([np.ones(3), np.ones(10-3) * 2]),
+    np.ones(10) * -2,
+    np.ones(10) * 2,
     False)
 SFDim10Rosenbrocklog = MixedFunction('dim10Rosenbrocklog', dim10Rosenbrock, 3, 10-3, 
-    np.concatenate([np.zeros(3), np.ones(10-3) * -2]),
-    np.concatenate([np.ones(3), np.ones(10-3) * 2]),
+    np.ones(10) * -2,
+    np.ones(10) * 2,
     False, dolog=True)
 fns.append(SFDim10Rosenbrock)
 fns.append(SFDim10Rosenbrocklog)
@@ -114,13 +122,21 @@ def dim53Rosenbrock(x):
     # h2 = [1, 2] #convert to these categories, as Cocabo assumes categories in (0,1,2,3,etc.)
     return rosen(x)/20000 + 1e-6 * np.random.rand()
 
+# SFDim53Rosenbrock = MixedFunction('dim53Rosenbrock', dim53Rosenbrock, 50, 3, 
+#     np.concatenate([np.zeros(50), np.ones(3) * -2]),
+#     np.concatenate([np.ones(50), np.ones(3) * 2]),
+#     False)
+# SFDim53Rosenbrocklog = MixedFunction('dim53Rosenbrocklog', dim53Rosenbrock, 50, 3, 
+#     np.concatenate([np.zeros(50), np.ones(3) * -2]),
+#     np.concatenate([np.ones(50), np.ones(3) * 2]),
+#     False, dolog=True)
 SFDim53Rosenbrock = MixedFunction('dim53Rosenbrock', dim53Rosenbrock, 50, 3, 
-    np.concatenate([np.zeros(50), np.ones(3) * -2]),
-    np.concatenate([np.ones(50), np.ones(3) * 2]),
+    np.ones(53) * -2,
+    np.ones(53) * 2,
     False)
 SFDim53Rosenbrocklog = MixedFunction('dim53Rosenbrocklog', dim53Rosenbrock, 50, 3, 
-    np.concatenate([np.zeros(50), np.ones(3) * -2]),
-    np.concatenate([np.ones(50), np.ones(3) * 2]),
+    np.ones(53) * -2,
+    np.ones(53) * 2,
     False, dolog=True)
 fns.append(SFDim53Rosenbrock)
 fns.append(SFDim53Rosenbrocklog)
@@ -131,13 +147,21 @@ def dim238Rosenbrock(x):
     # h2 = [-2, -1, 0, 1, 2] #convert to these categories, as Cocabo assumes categories in (0,1,2,3,etc.)
     return rosen(x)/50000 + 1e-6 * np.random.rand()
 
+# SFDim238Rosenbrock = MixedFunction('dim238Rosenbrock', dim238Rosenbrock, 119, 119, 
+#     np.concatenate([np.zeros(119), np.ones(119) * -2]),
+#     np.concatenate([np.ones(119) * 4, np.ones(119) * 2]),
+#     False)
+# SFDim238Rosenbrocklog = MixedFunction('dim238Rosenbrocklog', dim238Rosenbrock, 119, 119, 
+#     np.concatenate([np.zeros(119), np.ones(119) * -2]),
+#     np.concatenate([np.ones(119) * 4, np.ones(119) * 2]),
+#     False, dolog=True)
 SFDim238Rosenbrock = MixedFunction('dim238Rosenbrock', dim238Rosenbrock, 119, 119, 
-    np.concatenate([np.zeros(119), np.ones(119) * -2]),
-    np.concatenate([np.ones(119) * 4, np.ones(119) * 2]),
+    np.ones(238) * -2,
+    np.ones(238) * 2,
     False)
 SFDim238Rosenbrocklog = MixedFunction('dim238Rosenbrocklog', dim238Rosenbrock, 119, 119, 
-    np.concatenate([np.zeros(119), np.ones(119) * -2]),
-    np.concatenate([np.ones(119) * 4, np.ones(119) * 2]),
+    np.ones(238) * -2,
+    np.ones(238) * 2,
     False, dolog=True)
 fns.append(SFDim238Rosenbrock)
 fns.append(SFDim238Rosenbrocklog)

@@ -214,7 +214,7 @@ def execute_IDONE(params, problem, max_eval, log):
     binarize_int =  params['--binarize-int'] in ['true','t', 'yes', 'y']
     enable_scaling = params['--scaling'] in ['true','t', 'yes', 'y']
     idone_log = params['--internal-logging'] in ['true','t', 'yes', 'y']
-    rand_evals = int(params['--rand-evals']) - 1
+    rand_evals = int(params['--rand-evals'])
     sampling = params['--sampling']
     expl_prob = params['--expl-prob']
 
@@ -233,7 +233,7 @@ def execute_MVRSM(params, problem, max_eval, log):
     type_model = params['--model']
     binarize_categorical = params['--binarize-categorical'] in ['true','t', 'yes', 'y']
     enable_scaling = params['--scaling'] in ['true','t', 'yes', 'y']
-    rand_evals = int(params['--rand-evals'])
+    rand_evals = int(params['--rand-evals']) - 1
     assert rand_evals >= 0, "MVRSM requires at least one initial random evaluation."
 
     return optimize_MVRSM(problem, max_eval, rand_evals=rand_evals, model=type_model, binarize_categorical=binarize_categorical, enable_scaling=enable_scaling, log=log)
