@@ -16,14 +16,16 @@ class SteelFoldPlate:
         self.folder = folder
         self.data_X, self.data_y = data_to_X_and_y(load_data(folder))
         # TODO: Allow this to be picked?
-        self.validator = LeaveOneOut()
+        self.validator = StratifiedKFold() # LeaveOneOut()
         self.argspec = all_args_spec()
-        self.lbs_v, self.ubs_v, self.vartype_v = argspec_to_vecs(self.args)
+        self.lbs_v, self.ubs_v, self.vartype_v = argspec_to_vecs(self.argspec)
         self.random_state = 0
 
     def evaluate(self, x):
         classifier = construct_classifier(argspec_and_vec_to_argdict(self.argspec, x), self.random_state)
-        return evaluate_classifier(classifier, self.validator, self.data_X, self.data_y)
+        # evaluation is higher is better. But optimizer minimizes.
+        # Flip sign to compensate.
+        return -1 * evaluate_classifier(classifier, self.validator, self.data_X, self.data_y)
 
     def lbs(self):
         return self.lbs_v
@@ -66,7 +68,7 @@ def data_to_X_and_y(data):
     # Turn features into an array
     X = np.asarray(data.drop(class_headers, axis=1))
     # And classes into an array of strings.
-    y = class_headers[np.argmax(np.asarray(dat[class_headers]), axis=1)]
+    y = class_headers[np.argmax(np.asarray(data[class_headers]), axis=1)]
 
     return X, y
 
@@ -79,7 +81,8 @@ def evaluate_classifier(classifier: Pipeline, validator: BaseCrossValidator, X, 
         y_train, y_test = y[train_index], y[test_index]
 
         classifier.fit(X_train, y_train)
-        y_pred_test = classifier.predict(X_test, max_tree)
+        # TODO: Something with dropout and the `max_tree` parameter. 
+        y_pred_test = classifier.predict(X_test)
         # print(list(zip(y_pred_test, y_test)))
         scores.append(np.sum(y_test == y_pred_test) / y_test.shape[0])
 
@@ -87,9 +90,9 @@ def evaluate_classifier(classifier: Pipeline, validator: BaseCrossValidator, X, 
     return np.mean(scores)
 
 def argspec_to_vecs(argspec):
-    lbs = [v['lb'] for (k, v) in argspec.items()]
-    ubs = [v['ub'] for (k, v) in argspec.items()]
-    ty = [v['type'] for (k, v) in argspec.items()]
+    lbs = np.asarray([v['lb'] for (k, v) in argspec.items()])
+    ubs = np.asarray([v['ub'] for (k, v) in argspec.items()])
+    ty = np.asarray([v['type'] for (k, v) in argspec.items()])
     return lbs, ubs, ty
 
 def argspec_and_vec_to_argdict(argspec, vec):
@@ -141,7 +144,7 @@ def construct_preprocessing(args):
     elif kind == 2:
         return MinMaxScaler()
     elif kind == 3:
-        norm = param_preprocessing_normalizer_norm(args['pp_normalizer_norm'])
+        norm = param_preprocessing_normalizer_norm(int(args['pp_normalizer_norm']))
         return Normalizer(norm=norm) 
     elif kind == 4:
         return StandardScaler()
@@ -190,7 +193,9 @@ def xgboost_args_spec():
         # Upper bound is set arbitrarily at 10.
         # Maybe add a computational time limit?
         # Otherwise maybe better suited for a multi-objective problem.
-        'xg_num_round': {'lb': 1, 'ub': 10, 'type': 'int'}
+        'xg_num_round': {'lb': 1, 'ub': 10, 'type': 'int'},
+        # Maximum depth of a tree.
+        'xg_max_depth': {'lb': 1, 'ub': 10, 'type': 'int'}, 
 
         # The following arguments are not directly accessible via the
         # SKLearn API. So whether these work or not, is a bit of a guess.
@@ -198,6 +203,7 @@ def xgboost_args_spec():
         # Set higher and lower respectively to avoid issues. 
         'xg_sketch_eps': {'lb': 0.001, 'ub': 0.999, 'type': 'cont'},
         'xg_grow_policy': {'lb': 0, 'ub': 1, 'type': 'cat'},
+        # Arbitrarily capped at 128.
         'xg_max_leaves': {'lb': 0, 'ub': 128, 'type': 'int'},
         'xg_normalize_type': {'lb': 0, 'ub': 1, 'type': 'cat'},
         'xg_rate_drop': {'lb': 0, 'ub': 1, 'type': 'cont'},
@@ -219,9 +225,9 @@ def construct_xgboost(args: dict, random_state):
     n_estimators = int(args['xg_num_round'])
     # objective = param_xgboost_objective(args['xg_objective'])
     objective = 'multi:softmax'
-    booster = param_xgboost_booster(args['xg_booster'])
-    tree_method = param_xgboost_tree_tree_method(args['xg_tree_method'])
-    learning_rate = float(args['xg_eta'])
+    booster = param_xgboost_booster(int(args['xg_booster']))
+    tree_method = param_xgboost_tree_tree_method(int(args['xg_tree_method']))
+    learning_rate = float(args['xg_learning_rate'])
     gamma = float(args['xg_gamma'])
     
     max_depth = int(args['xg_max_depth'])
@@ -239,14 +245,14 @@ def construct_xgboost(args: dict, random_state):
     # The following arguments are not directly accessible via the
     # SKLearn API. So whether these work or not, is a bit of a guess.
     sketch_eps = float(args['xg_sketch_eps'])
-    grow_policy = param_xgboost_tree_grow_policy(args['xg_grow_policy'])
+    grow_policy = param_xgboost_tree_grow_policy(int(args['xg_grow_policy']))
     max_leaves = int(args['xg_max_leaves'])
-    normalize_type = param_xgboost_tree_normalize_type(args['xg_normalize_type'])
+    normalize_type = param_xgboost_tree_normalize_type(int(args['xg_normalize_type']))
     rate_drop = float(args['xg_rate_drop'])
     one_drop = int(args['xg_one_drop'])
     skip_drop = float(args['xg_skip_drop'])
-    updater = param_xgboost_tree_updater(args['xg_updater'])
-    feature_selector = param_xgboost_tree_feature_selector(args['xg_feature_selector'])
+    updater = param_xgboost_tree_updater(int(args['xg_updater']))
+    feature_selector = param_xgboost_tree_feature_selector(int(args['xg_feature_selector']))
     top_k = int(args['xg_top_k'])
 
     kwargsd = {
@@ -262,6 +268,7 @@ def construct_xgboost(args: dict, random_state):
         'top_k': top_k
     }
 
+    # return xgboost.XGBClassifier(objective=objective)
     return xgboost.XGBClassifier(
         objective=objective,
         max_depth=max_depth,
@@ -305,11 +312,11 @@ def param_xgboost_objective(obj: int):
 #    return base_score
 
 # `booster` is categorical in [0, 3]
-def param_xgboost_booster(booster: int)
+def param_xgboost_booster(booster: int):
     options = [
         'gblinear',
         'dart',
-        'hist',
+        'gbtree',
         'gbtree'
         ]
     return options[booster]
@@ -383,7 +390,7 @@ def param_xgboost_tree_tree_method(tree_method: int):
     options = [
         'auto', 'exact', 'approx', 'hist'
     ]
-   return options[tree_method]
+    return options[tree_method]
 
 # (parameter) `sketch_eps` is continuous in (0, 1)
 # note: only used when `tree_method` = 'approx'
@@ -396,7 +403,7 @@ def param_xgboost_tree_grow_policy(grow_policy: int):
     options = [
         'depthwise', 'lossguide'
     ]
-   return options[grow_policy]
+    return options[grow_policy]
 
 # (parameter) `max_leaves` is integer in [0, ∞]
 # note: only relevant if `grow_policy` = 'lossguide'
@@ -408,14 +415,14 @@ def param_xgboost_tree_sample_type(sample_type: int):
     options = [
         'uniform', 'weighted'
     ]
-   return options[sample_type]
+    return options[sample_type]
 
 # (parameter) `normalize_type` is categorical in [0, 1]
 def param_xgboost_tree_normalize_type(normalize_type: int):
     options = [
         'tree', 'forest'
     ]
-   return options[normalize_type]
+    return options[normalize_type]
 
 # (parameter) `rate_drop` is continuous in [0, 1]
 # def param_xgboost_tree_rate_drop(rate_drop: float):
@@ -436,7 +443,7 @@ def param_xgboost_tree_updater(updater: int):
     options = [
         'shotgun', 'coord_descent'
     ]
-   return options[updater]
+    return options[updater]
 
 # The following parameters are utilized only with gblinear as boosting technique.
 # (parameter) `feature_selector` is categorical in [0, 4]
@@ -444,7 +451,7 @@ def param_xgboost_tree_feature_selector(feature_selector: int):
     options = [
         'cyclic', 'shuffle', 'random', 'greedy', 'thrifty'
     ]
-   return options[feature_selector]
+    return options[feature_selector]
 
 # (parameter) `top_k` is integer in [0, ∞]
 # note: `top_k` = 0 means select all. 
