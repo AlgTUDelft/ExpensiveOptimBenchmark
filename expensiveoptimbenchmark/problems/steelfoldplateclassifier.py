@@ -12,16 +12,17 @@ from sklearn.decomposition import PCA
 
 class SteelFoldPlate:
 
-    def __init__(self, files):
-        self.files = files
-        self.data_X, self.data_y = data_to_X_and_y(load_data(files))
+    def __init__(self, folder):
+        self.folder = folder
+        self.data_X, self.data_y = data_to_X_and_y(load_data(folder))
         # TODO: Allow this to be picked?
         self.validator = LeaveOneOut()
         self.argspec = all_args_spec()
         self.lbs_v, self.ubs_v, self.vartype_v = argspec_to_vecs(self.args)
+        self.random_state = 0
 
     def evaluate(self, x):
-        classifier = construct_classifier(argspec_and_vec_to_argdict(self.argspec, x))
+        classifier = construct_classifier(argspec_and_vec_to_argdict(self.argspec, x), self.random_state)
         return evaluate_classifier(classifier, self.validator, self.data_X, self.data_y)
 
     def lbs(self):
@@ -107,10 +108,10 @@ def all_args_spec():
 
     return args_all
 
-def construct_classifier(args):
+def construct_classifier(args, random_state):
     return make_pipeline(
         construct_preprocessing(args), 
-        construct_xgboost(args)
+        construct_xgboost(args, random_state)
     )
 
 # - Preprocessing via scikit-learn
@@ -212,7 +213,7 @@ def xgboost_args_spec():
         'xg_top_k': {'lb': 0, 'ub': 10, 'type': 'int'},
     }
 
-def construct_xgboost(args: dict):
+def construct_xgboost(args: dict, random_state):
     n_jobs = 1
 
     n_estimators = int(args['xg_num_round'])
@@ -278,6 +279,7 @@ def construct_xgboost(args: dict):
         colsample_bynode=colsample_bynode,
         reg_alpha=reg_alpha,
         reg_lambda=reg_lambda,
+        random_state=random_state,
         kwargs=kwargsd
     )
 
