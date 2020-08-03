@@ -43,7 +43,7 @@ class SteelFoldPlate:
             # evaluation is higher is better. But optimizer minimizes.
             # Flip sign to compensate.
             return -1 * evaluate_classifier_b(classifier, self.validator, self.data_X, self.data_y)
-        except e:
+        except:
             return 0.0
 
     def lbs(self):
