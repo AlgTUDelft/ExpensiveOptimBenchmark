@@ -174,7 +174,13 @@ def xgboost_args_spec():
         # Default is 2 (gbtree)
         'xg_booster': {'lb': 0, 'ub': 2, 'type': 'cat', 'default': 2 },
         'xg_tree_method': {'lb': 0, 'ub': 3, 'type': 'cat', 'default': 0},
-        'xg_learning_rate': {'lb': 0, 'ub': 1, 'type': 'cont', 'default': 0.3},
+        # TODO: [hyperopt-sklearn] has set this variable to be loguniform
+        #       hp.loguniform(name, np.log(0.0001), np.log(0.5)) - 0.0001
+        #       Under https://xgboost.readthedocs.io/en/latest/parameter.html#parameters-for-tree-booster
+        #       however, `eta` (or alias `learning_rate`) is stated to have a range of [0, 1], as used below.
+        #       Which one should be used?
+        # 'xg_learning_rate': {'lb': 0, 'ub': 1, 'type': 'cont', 'default': 0.3},
+        'xg_learning_rate': {'lb': np.log(0.0001), 'ub': np.log(0.5), 'type': 'cont', 'default': np.log(0.3+0.0001)},
         # NOTE: Arbitrarily cut off at 10: does not have an upper bound.
         'xg_gamma': {'lb': 0, 'ub': 10, 'type': 'cont', 'default': 0.0},
         # NOTE: Arbitrarily cut off at 10: does not have an upper bound.
@@ -183,14 +189,26 @@ def xgboost_args_spec():
         'xg_max_delta_step': {'lb': 0, 'ub': 10, 'type': 'int', 'default': 0},
         # NOTE: Lower bound is 0 for the 4 below, non inclusive.
         # Set slightly higher to avoid issues around this bound.
+        # TODO: [hyperopt-sklearn] has set the lower bound of these variables to 0.5
+        #       But during optimization I have seen some of these take up values of 0.37
+        #       for the best solution
         'xg_subsample': {'lb': 0.001, 'ub': 1.0, 'type': 'cont', 'default': 1.0},
         'xg_colsample_bytree': {'lb': 0.001, 'ub': 1.0, 'type': 'cont', 'default': 1.0},
         'xg_colsample_bylevel': {'lb': 0.001, 'ub': 1.0, 'type': 'cont', 'default': 1.0},
         'xg_colsample_bynode': {'lb': 0.001, 'ub': 1.0, 'type': 'cont', 'default': 1.0},
-        # NOTE: upper bound is set arbitrarily at 10 (there is no real upper bound)
-        'xg_alpha': {'lb': 0.0, 'ub': 10.0, 'type': 'cont', 'default': 0.0},
-        # NOTE: Same as alpha, but 0 is excluded as well.
-        'xg_lambda': {'lb': 0.001, 'ub': 10.0, 'type': 'cont', 'default': 1.0},
+        # Original: upper bound is set arbitrarily at 10 (there is no real upper bound)
+        # 'xg_alpha': {'lb': 0.0, 'ub': 10.0, 'type': 'cont', 'default': 0.0},
+        # Instead we use the bounds used by hyperopt-sklearn:
+        # [hyperopt-sklearn] uses hp.loguniform(name, np.log(0.0001), np.log(1)) - 0.0001
+        # As such we set the uniform bounds to `np.log(0.0001)` and `np.log(1)`
+        # and perform np.exp(xg_alpha) - 0.0001 in the function below.
+        # TODO: Native passthrough for hyperopt / appoaches that have native support
+        #       for these distributions (as they potentially make use of this information)
+        'xg_alpha': {'lb': np.log(0.0001), 'ub': np.log(1), 'type': 'cont', 'default': np.log(0.0 + 0.0001)},
+        # Original: Same as alpha, but 0 is excluded as well.
+        # 'xg_lambda': {'lb': 0.001, 'ub': 10.0, 'type': 'cont', 'default': 1.0},
+        # [hyperopt-sklearn] uses hp.loguniform(name, np.log(1), np.log(4))
+        'xg_lambda': {'lb': np.log(1), 'ub': np.log(4), 'type': 'cont', 'default': np.log(1)},
         # Reweighting factor strongly depends on data
         # Alternative would be '1' or #neg/#pos
         # Given multiclass nature a tad difficult.
@@ -202,9 +220,10 @@ def xgboost_args_spec():
         # Otherwise maybe better suited for a multi-objective problem.
         'xg_num_round': {'lb': 1, 'ub': 200, 'type': 'int', 'default': 100},
         # Maximum depth of a tree.
-        # NOTE: Arbitrarily capped at 10, but the complexity scales exponentially
+        # NOTE: Arbitrarily capped at 11, but the complexity scales exponentially
         # with the depth. As such this is arguably reasonable compared to the default of 6.
-        'xg_max_depth': {'lb': 1, 'ub': 10, 'type': 'int', 'default': 6}, 
+        # Extra: value was originally capped at 10, new value via [hyperopt-sklearn]
+        'xg_max_depth': {'lb': 1, 'ub': 11, 'type': 'int', 'default': 6}, 
 
         # The following arguments are not directly accessible via the
         # SKLearn API. So whether these work or not, is a bit of a guess.
@@ -236,7 +255,7 @@ def construct_xgboost(args: dict, random_state):
     objective = 'multi:softmax'
     booster = param_xgboost_booster(int(args['xg_booster']))
     tree_method = param_xgboost_tree_tree_method(int(args['xg_tree_method']))
-    learning_rate = float(args['xg_learning_rate'])
+    learning_rate = param_xgboost_learning_rate(float(args['xg_learning_rate']))
     gamma = float(args['xg_gamma'])
     
     max_depth = int(args['xg_max_depth'])
@@ -248,8 +267,8 @@ def construct_xgboost(args: dict, random_state):
     colsample_bylevel = float(args['xg_colsample_bylevel'])
     colsample_bynode = float(args['xg_colsample_bynode'])
     
-    reg_alpha = float(args['xg_alpha'])
-    reg_lambda = float(args['xg_lambda'])
+    reg_alpha = param_xgboost_alpha(float(args['xg_alpha']))
+    reg_lambda = param_xgboost_lambda(float(args['xg_lambda']))
 
     # The following arguments are not directly accessible via the
     # SKLearn API. So whether these work or not, is a bit of a guess.
@@ -336,12 +355,12 @@ def param_xgboost_booster(booster: int):
 # linear boosting techniques.
 
 # (parameter) `lambda` is continuous in (0, ∞] (?)
-# def param_xgboost_lambda(lambda: float):
-#    return lambda
+def param_xgboost_lambda(lmbd: float):
+   return np.exp(lmbd)
 
 # (parameter) `alpha` is continuous in (0, ∞] (?)
-# def param_xgboost_alpha(alpha: float):
-#    return alpha
+def param_xgboost_alpha(alpha: float):
+   return np.exp(alpha) - 0.0001
 
 
 # The following parameters are utilized only with tree (dart, gbtree)
@@ -349,8 +368,8 @@ def param_xgboost_booster(booster: int):
 
 # (parameter) `eta` is continuous in [0, 1]
 # note: via sklearn this parameter is called `learning_rate`
-# def param_xgboost_tree_eta(eta: float):
-#    return eta
+def param_xgboost_learning_rate(eta: float):
+   return np.exp(eta) - 0.0001
 
 # (parameter) `gamma` is continuous in [0, ∞]
 # def param_xgboost_tree_gamma(gamma: float):
