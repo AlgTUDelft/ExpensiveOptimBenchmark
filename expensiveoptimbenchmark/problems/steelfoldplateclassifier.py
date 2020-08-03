@@ -16,13 +16,16 @@ class SteelFoldPlate:
         self.folder = folder
         self.data_X, self.data_y = data_to_X_and_y(load_data(folder))
         # TODO: Allow this to be picked?
-        self.validator = StratifiedKFold() # LeaveOneOut()
+        self.validator = StratifiedKFold()
+        # self.validator = LeaveOneOut()
         self.argspec = all_args_spec()
         self.lbs_v, self.ubs_v, self.vartype_v = argspec_to_vecs(self.argspec)
         self.random_state = 0
 
     def evaluate(self, x):
-        classifier = construct_classifier(argspec_and_vec_to_argdict(self.argspec, x), self.random_state)
+        argdict = argspec_and_vec_to_argdict(self.argspec, x)
+        # print(argdict)
+        classifier = construct_classifier(argdict, self.random_state)
         # evaluation is higher is better. But optimizer minimizes.
         # Flip sign to compensate.
         return -1 * evaluate_classifier(classifier, self.validator, self.data_X, self.data_y)
@@ -121,13 +124,16 @@ def construct_classifier(args, random_state):
 def preprocessing_args_spec():
     return {
         # Corresponding to ['None', 'PCA', 'MinMaxScaler', 'Normalizer', 'StandardScaler']
-        'pp_kind': {'lb': 0, 'ub': 4, 'type': 'cat'},
+        'pp_kind': {'lb': 0, 'ub': 4, 'type': 'cat', 'default': 4},
         # Specifically for normalizer..
         # Corresponding to ['L1', 'L2', 'max']
-        'pp_normalizer_norm': {'lb': 0, 'ub': 2, 'type': 'cat'},
+        'pp_normalizer_norm': {'lb': 0, 'ub': 2, 'type': 'cat', 'default': 1},
         # 
-        'pp_pca_whiten': {'lb': 0, 'ub': 1, 'type': 'cat'},
-        'pp_pca_n_components': {'lb': 0, 'ub': 27, 'type': 'int'},
+        'pp_pca_whiten': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 0}, 
+        # While a lower bound of zero is possible and is equivalent to dropping everything
+        # it will cause the downstream classifier to fail.
+        # Note: default is set to 27 as this is min(n_samples, n_features) for the used dataset.
+        'pp_pca_n_components': {'lb': 1, 'ub': 27, 'type': 'int', 'default': 27},
     }
 
 def construct_preprocessing(args):
@@ -165,25 +171,26 @@ def param_preprocessing_normalizer_norm(norm: int):
 def xgboost_args_spec():
     return {
         # 'xg_objective': {'lb': 0, 'ub': 3, 'type': 'cat'},
-        'xg_booster': {'lb': 0, 'ub': 3, 'type': 'cat'},
-        'xg_tree_method': {'lb': 0, 'ub': 3, 'type': 'cat'},
-        'xg_learning_rate': {'lb': 0, 'ub': 1, 'type': 'cont'},
+        # Default is 2 (gbtree)
+        'xg_booster': {'lb': 0, 'ub': 2, 'type': 'cat', 'default': 2 },
+        'xg_tree_method': {'lb': 0, 'ub': 3, 'type': 'cat', 'default': 0},
+        'xg_learning_rate': {'lb': 0, 'ub': 1, 'type': 'cont', 'default': 0.3},
         # NOTE: Arbitrarily cut off at 10: does not have an upper bound.
-        'xg_gamma': {'lb': 0, 'ub': 10, 'type': 'cont'},
+        'xg_gamma': {'lb': 0, 'ub': 10, 'type': 'cont', 'default': 0.0},
         # NOTE: Arbitrarily cut off at 10: does not have an upper bound.
-        'xg_min_child_weight': {'lb': 0, 'ub': 10, 'type': 'int'},
+        'xg_min_child_weight': {'lb': 0, 'ub': 10, 'type': 'int', 'default': 1},
         # NOTE: Arbitrarily cut off at 10: does not have an upper bound.
-        'xg_max_delta_step': {'lb': 0, 'ub': 10, 'type': 'int'},
+        'xg_max_delta_step': {'lb': 0, 'ub': 10, 'type': 'int', 'default': 0},
         # NOTE: Lower bound is 0 for the 4 below, non inclusive.
         # Set slightly higher to avoid issues around this bound.
-        'xg_subsample': {'lb': 0.001, 'ub': 1.0, 'type': 'cont'},
-        'xg_colsample_bytree': {'lb': 0.001, 'ub': 1.0, 'type': 'cont'},
-        'xg_colsample_bylevel': {'lb': 0.001, 'ub': 1.0, 'type': 'cont'},
-        'xg_colsample_bynode': {'lb': 0.001, 'ub': 1.0, 'type': 'cont'},
-        # NOTE: Lower bound is 0 (non-inclusive), and upper bound is
-        #       set arbitrarily at 10 (there is no real upper bound)
-        'xg_alpha': {'lb': 0.001, 'ub': 10.0, 'type': 'cont'},
-        'xg_lambda': {'lb': 0.001, 'ub': 10.0, 'type': 'cont'},
+        'xg_subsample': {'lb': 0.001, 'ub': 1.0, 'type': 'cont', 'default': 1.0},
+        'xg_colsample_bytree': {'lb': 0.001, 'ub': 1.0, 'type': 'cont', 'default': 1.0},
+        'xg_colsample_bylevel': {'lb': 0.001, 'ub': 1.0, 'type': 'cont', 'default': 1.0},
+        'xg_colsample_bynode': {'lb': 0.001, 'ub': 1.0, 'type': 'cont', 'default': 1.0},
+        # NOTE: upper bound is set arbitrarily at 10 (there is no real upper bound)
+        'xg_alpha': {'lb': 0.0, 'ub': 10.0, 'type': 'cont', 'default': 0.0},
+        # NOTE: Same as alpha, but 0 is excluded as well.
+        'xg_lambda': {'lb': 0.001, 'ub': 10.0, 'type': 'cont', 'default': 1.0},
         # Reweighting factor strongly depends on data
         # Alternative would be '1' or #neg/#pos
         # Given multiclass nature a tad difficult.
@@ -193,30 +200,32 @@ def xgboost_args_spec():
         # Upper bound is set arbitrarily at 10.
         # Maybe add a computational time limit?
         # Otherwise maybe better suited for a multi-objective problem.
-        'xg_num_round': {'lb': 1, 'ub': 10, 'type': 'int'},
+        'xg_num_round': {'lb': 1, 'ub': 200, 'type': 'int', 'default': 100},
         # Maximum depth of a tree.
-        'xg_max_depth': {'lb': 1, 'ub': 10, 'type': 'int'}, 
+        # NOTE: Arbitrarily capped at 10, but the complexity scales exponentially
+        # with the depth. As such this is arguably reasonable compared to the default of 6.
+        'xg_max_depth': {'lb': 1, 'ub': 10, 'type': 'int', 'default': 6}, 
 
         # The following arguments are not directly accessible via the
         # SKLearn API. So whether these work or not, is a bit of a guess.
         # NOTE: Bounds are (0, 1), both non-inclusive.
         # Set higher and lower respectively to avoid issues. 
-        'xg_sketch_eps': {'lb': 0.001, 'ub': 0.999, 'type': 'cont'},
-        'xg_grow_policy': {'lb': 0, 'ub': 1, 'type': 'cat'},
-        # Arbitrarily capped at 128.
-        'xg_max_leaves': {'lb': 0, 'ub': 128, 'type': 'int'},
-        'xg_normalize_type': {'lb': 0, 'ub': 1, 'type': 'cat'},
-        'xg_rate_drop': {'lb': 0, 'ub': 1, 'type': 'cont'},
-        'xg_one_drop': {'lb': 0, 'ub': 1, 'type': 'cat'},
-        'xg_skip_drop': {'lb': 0, 'ub': 1, 'type': 'cont'},
-        'xg_updater': {'lb': 0, 'ub': 1, 'type': 'cat'},
-        'xg_feature_selector': {'lb': 0, 'ub': 4, 'type': 'cat'},
+        'xg_sketch_eps': {'lb': 0.001, 'ub': 0.999, 'type': 'cont', 'default': 0.03},
+        'xg_grow_policy': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 0},
+        # NOTE: Arbitrarily capped at 128. 0 is a special value (no maximum)
+        'xg_max_leaves': {'lb': 0, 'ub': 128, 'type': 'int', 'default': 0},
+        'xg_normalize_type': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 0},
+        'xg_rate_drop': {'lb': 0, 'ub': 1, 'type': 'cont', 'default': 0.0},
+        'xg_one_drop': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 0},
+        'xg_skip_drop': {'lb': 0, 'ub': 1, 'type': 'cont', 'default': 0.0},
+        'xg_updater': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 0},
+        'xg_feature_selector': {'lb': 0, 'ub': 4, 'type': 'cat', 'default': 0},
         # NOTE: Bound arbitrarily set at 10, there is no real
         # upper bound.
         # Special case: 0 is select all.
         # Suggestion: Maybe split up
         # (select all: y/n, use 2nd integer if n)
-        'xg_top_k': {'lb': 0, 'ub': 10, 'type': 'int'},
+        'xg_top_k': {'lb': 0, 'ub': 10, 'type': 'int', 'default': 0},
     }
 
 def construct_xgboost(args: dict, random_state):
@@ -286,7 +295,10 @@ def construct_xgboost(args: dict, random_state):
         colsample_bynode=colsample_bynode,
         reg_alpha=reg_alpha,
         reg_lambda=reg_lambda,
+
         random_state=random_state,
+        verbosity=0,
+
         kwargs=kwargsd
     )
 
@@ -316,7 +328,6 @@ def param_xgboost_booster(booster: int):
     options = [
         'gblinear',
         'dart',
-        'gbtree',
         'gbtree'
         ]
     return options[booster]
