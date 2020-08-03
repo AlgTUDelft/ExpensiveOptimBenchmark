@@ -26,9 +26,9 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
     dict_dataframes = {} # solver name as key, dataframe as value
 
     # Read log files
-    for f in file_list:
-        
-        iter_df = pd.read_csv(f)
+    iter_dfs = pd.concat(pd.read_csv(f) for f in file_list)
+
+    for (_, iter_df) in iter_dfs.groupby(['approach', 'problem']):
         solver = iter_df['approach'].values[0]
         problem = iter_df['problem'].values[0]
         list_exp_id = np.unique(iter_df['exp_id'].values)
