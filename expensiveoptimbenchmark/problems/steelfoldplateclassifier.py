@@ -7,6 +7,7 @@ import os
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.model_selection import LeaveOneOut, StratifiedKFold, BaseCrossValidator
 from sklearn.preprocessing import FunctionTransformer, Normalizer, MinMaxScaler, StandardScaler
+from sklearn.compose import ColumnTransformer
 from sklearn.decomposition import PCA
 
 
@@ -122,9 +123,7 @@ def construct_classifier(args, random_state):
 
 # - Preprocessing via scikit-learn
 def preprocessing_args_spec():
-    return {
-        # Corresponding to ['None', 'PCA', 'MinMaxScaler', 'Normalizer', 'StandardScaler']
-        'pp_kind': {'lb': 0, 'ub': 4, 'type': 'cat', 'default': 4},
+    pp_argspec = {
         # Specifically for normalizer..
         # Corresponding to ['L1', 'L2', 'max']
         'pp_normalizer_norm': {'lb': 0, 'ub': 2, 'type': 'cat', 'default': 1},
@@ -132,30 +131,84 @@ def preprocessing_args_spec():
         'pp_pca_whiten': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 0}, 
         # While a lower bound of zero is possible and is equivalent to dropping everything
         # it will cause the downstream classifier to fail.
+        # TODO: Hyperopt-sklearn uses
+        #       hp.qloguniform(np.log(0.51), np.log(30.5), 1.0)
+        # Which ranges from 4-120
         # Note: default is set to 27 as this is min(n_samples, n_features) for the used dataset.
-        'pp_pca_n_components': {'lb': 1, 'ub': 27, 'type': 'int', 'default': 27},
-    }
+        'pp_pca_n_components': {'lb': 1, 'ub': 27, 'type': 'int', 'default': 27}
+    } 
+    # Per feature
+    pp_argspec.update({
+        # Corresponding to ['None', 'PCA', 'MinMaxScaler', 'Normalizer', 'StandardScaler']
+        f'pp_kind_{fi}': {'lb': 0, 'ub': 4, 'type': 'cat', 'default': 4}
+        for fi in range(0, 27)
+    })
+    # Scalers are per-feature configured as well
+    pp_argspec.update({
+        # Corresponding to ['None', 'PCA', 'MinMaxScaler', 'Normalizer', 'StandardScaler']
+        f'pp_min_max_min_{fi}': {'lb': -1, 'ub': 0, 'type': 'cat', 'default': 0}
+        for fi in range(0, 27)
+    })
+    pp_argspec.update({
+        # Corresponding to ['None', 'PCA', 'MinMaxScaler', 'Normalizer', 'StandardScaler']
+        f'pp_ss_mean_{fi}': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 1}
+        for fi in range(0, 27)
+    })
+    pp_argspec.update({
+        # Corresponding to ['None', 'PCA', 'MinMaxScaler', 'Normalizer', 'StandardScaler']
+        f'pp_ss_std_{fi}': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 1}
+        for fi in range(0, 27)
+    })
+
+    return pp_argspec
 
 def construct_preprocessing(args):
-    # Roughly based on hyperopt-sklearn's preprocessing (TFIDF is left out: it is for text)
-    kind = int(args['pp_kind'])
+    # Construct a more advanced preprocessing setup.
+    features_pca = []
+    features_norm = []
+    transformers = []
+    features_pass = []
 
-    if kind == 0:
-        # A function transformer without any arguments is the identity transform.
-        return FunctionTransformer()
-    elif kind == 1:
-        whiten = int(args['pp_pca_whiten']) == 1
-        n_components = int(args['pp_pca_n_components'])
-        return PCA(n_components=n_components, whiten=whiten)
-    elif kind == 2:
-        return MinMaxScaler()
-    elif kind == 3:
-        norm = param_preprocessing_normalizer_norm(int(args['pp_normalizer_norm']))
-        return Normalizer(norm=norm) 
-    elif kind == 4:
-        return StandardScaler()
-    else:
-        raise ValueError()
+    # Scalers & collect lists for other transformers.
+    for fi in range(0, 27):
+        kind = int(args[f'pp_kind_{fi}'])
+        if kind == 0:
+            features_pass.append(fi)
+        elif kind == 1:
+            features_pca.append(fi)
+        elif kind == 2:
+            min_range = float(args[f'pp_min_max_min_{fi}'])
+            max_range = 1.0
+            transformers.append(
+                (f'scaler_{fi}', 
+                MinMaxScaler(feature_range=(min_range, max_range)), 
+                [fi]))
+        elif kind == 3:
+            features_norm.append(fi)
+        elif kind == 4:
+            with_mean = int(args[f'pp_ss_mean_{fi}']) == 1
+            with_std = int(args[f'pp_ss_std_{fi}']) == 1
+            transformers.append(
+                (f'scaler_{fi}', 
+                StandardScaler(with_mean=with_mean, with_std=with_std), 
+                [fi]))
+
+    # PCA
+    if len(features_pca) > 0:
+        pca_whiten = int(args['pp_pca_whiten']) == 1
+        pca_n_components = np.minimum(int(args['pp_pca_n_components']), len(features_pca))
+        transformers.append(('pca', PCA(n_components=pca_n_components, whiten=pca_whiten), features_pca))
+    
+    # Normalizer
+    if len(features_norm) > 0:
+        normalizer_norm = param_preprocessing_normalizer_norm(int(args['pp_normalizer_norm']))
+        transformers.append(('norm', Normalizer(norm=normalizer_norm), features_norm))
+
+    # Do nothing
+    if len(features_pass) > 0:
+        transformers.append(('nop', FunctionTransformer(), features_pass))
+
+    return ColumnTransformer(transformers)
 
 def param_preprocessing_normalizer_norm(norm: int):
     options = [
