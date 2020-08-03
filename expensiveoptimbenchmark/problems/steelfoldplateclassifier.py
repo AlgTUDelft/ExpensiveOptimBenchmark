@@ -39,15 +39,12 @@ class SteelFoldPlate:
             print("WARNING: Could not enforce limits on evaluate_classifier. Dropping limits.")
             evaluate_classifier_b = evaluate_classifier
         
-        res = 0.0
         try:
-            res = evaluate_classifier_b(classifier, self.validator, self.data_X, self.data_y)
+            # evaluation is higher is better. But optimizer minimizes.
+            # Flip sign to compensate.
+            return -1 * evaluate_classifier_b(classifier, self.validator, self.data_X, self.data_y)
         except e:
-            pass
-        
-        # evaluation is higher is better. But optimizer minimizes.
-        # Flip sign to compensate.
-        return -1 * res 
+            return 0.0
 
     def lbs(self):
         return self.lbs_v
