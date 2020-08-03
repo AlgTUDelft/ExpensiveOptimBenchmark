@@ -1,6 +1,10 @@
 import pandas as pd
 import numpy as np
 
+try:
+    import pynisher
+except e:
+    pass
 import xgboost
 import os
 
@@ -24,12 +28,26 @@ class SteelFoldPlate:
         self.random_state = 0
 
     def evaluate(self, x):
+        time_limit_in_s = 8
         argdict = argspec_and_vec_to_argdict(self.argspec, x)
         # print(argdict)
         classifier = construct_classifier(argdict, self.random_state)
+                
+        try:
+            evaluate_classifier_b = pynisher.enforce_limits(wall_time_in_s=time_limit_in_s)(evaluate_classifier)
+        except:
+            print("WARNING: Could not enforce limits on evaluate_classifier. Dropping limits.")
+            evaluate_classifier_b = evaluate_classifier
+        
+        res = 0.0
+        try:
+            res = evaluate_classifier_b(classifier, self.validator, self.data_X, self.data_y)
+        except e:
+            pass
+        
         # evaluation is higher is better. But optimizer minimizes.
         # Flip sign to compensate.
-        return -1 * evaluate_classifier(classifier, self.validator, self.data_X, self.data_y)
+        return -1 * res 
 
     def lbs(self):
         return self.lbs_v
