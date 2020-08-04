@@ -1,3 +1,5 @@
+from .base import BaseProblem
+
 import pandas as pd
 import numpy as np
 
@@ -15,7 +17,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.decomposition import PCA
 
 
-class SteelFoldPlate:
+class SteelFoldPlate(BaseProblem):
 
     def __init__(self, folder):
         self.folder = folder
@@ -243,7 +245,7 @@ def xgboost_args_spec():
     dep_is_tree = {'on': 'xg_booster', 'values': {1, 2}}
     dep_is_dart = {'on': 'xg_booster', 'values': {1}}
     dep_is_gblinear = {'on': 'xg_booster', 'values': {0}}
-    
+
     return {
         # 'xg_objective': {'lb': 0, 'ub': 3, 'type': 'cat'},
         # Default is 2 (gbtree)
