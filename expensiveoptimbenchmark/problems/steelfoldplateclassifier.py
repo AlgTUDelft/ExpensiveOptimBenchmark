@@ -161,17 +161,20 @@ def preprocessing_args_spec():
     # Scalers are per-feature configured as well
     pp_argspec.update({
         # Corresponding to ['None', 'PCA', 'MinMaxScaler', 'Normalizer', 'StandardScaler']
-        f'pp_min_max_min_{fi}': {'lb': -1, 'ub': 0, 'type': 'cat', 'default': 0}
+        f'pp_min_max_min_{fi}': {'lb': -1, 'ub': 0, 'type': 'cat', 'default': 0, 
+            'dependent': {'on': f'pp_kind_{fi}', 'values': {2}}}
         for fi in range(0, 27)
     })
     pp_argspec.update({
         # Corresponding to ['None', 'PCA', 'MinMaxScaler', 'Normalizer', 'StandardScaler']
-        f'pp_ss_mean_{fi}': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 1}
+        f'pp_ss_mean_{fi}': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 1,
+            'dependent': {'on': f'pp_kind_{fi}', 'values': {4}}}
         for fi in range(0, 27)
     })
     pp_argspec.update({
         # Corresponding to ['None', 'PCA', 'MinMaxScaler', 'Normalizer', 'StandardScaler']
-        f'pp_ss_std_{fi}': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 1}
+        f'pp_ss_std_{fi}': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 1,
+            'dependent': {'on': f'pp_kind_{fi}', 'values': {4}}}
         for fi in range(0, 27)
     })
 
@@ -237,33 +240,42 @@ def param_preprocessing_normalizer_norm(norm: int):
 #  https://xgboost.readthedocs.io/en/latest/parameter.html#learning-task-parameters
 
 def xgboost_args_spec():
+    dep_is_tree = {'on': 'xg_booster', 'values': {1, 2}}
+    dep_is_dart = {'on': 'xg_booster', 'values': {1}}
+    dep_is_gblinear = {'on': 'xg_booster', 'values': {0}}
+    
     return {
         # 'xg_objective': {'lb': 0, 'ub': 3, 'type': 'cat'},
         # Default is 2 (gbtree)
         'xg_booster': {'lb': 0, 'ub': 2, 'type': 'cat', 'default': 2 },
-        'xg_tree_method': {'lb': 0, 'ub': 3, 'type': 'cat', 'default': 0},
+        'xg_tree_method': {'lb': 0, 'ub': 3, 'type': 'cat', 'default': 0,
+            'dependent': dep_is_tree},
         # TODO: [hyperopt-sklearn] has set this variable to be loguniform
         #       hp.loguniform(name, np.log(0.0001), np.log(0.5)) - 0.0001
         #       Under https://xgboost.readthedocs.io/en/latest/parameter.html#parameters-for-tree-booster
         #       however, `eta` (or alias `learning_rate`) is stated to have a range of [0, 1], as used below.
         #       Which one should be used?
         # 'xg_learning_rate': {'lb': 0, 'ub': 1, 'type': 'cont', 'default': 0.3},
-        'xg_learning_rate': {'lb': np.log(0.0001), 'ub': np.log(0.5), 'type': 'cont', 'default': np.log(0.3+0.0001)},
+        'xg_learning_rate': {'lb': np.log(0.0001), 'ub': np.log(0.5), 'type': 'cont', 'default': np.log(0.3+0.0001),
+            'dependent': dep_is_tree},
         # NOTE: Arbitrarily cut off at 10: does not have an upper bound.
-        'xg_gamma': {'lb': 0, 'ub': 10, 'type': 'cont', 'default': 0.0},
+        'xg_gamma': {'lb': 0, 'ub': 10, 'type': 'cont', 'default': 0.0, 
+            'dependent': dep_is_tree},
         # NOTE: Arbitrarily cut off at 10: does not have an upper bound.
-        'xg_min_child_weight': {'lb': 0, 'ub': 10, 'type': 'int', 'default': 1},
+        'xg_min_child_weight': {'lb': 0, 'ub': 10, 'type': 'int', 'default': 1,
+            'dependent': dep_is_tree},
         # NOTE: Arbitrarily cut off at 10: does not have an upper bound.
-        'xg_max_delta_step': {'lb': 0, 'ub': 10, 'type': 'int', 'default': 0},
+        'xg_max_delta_step': {'lb': 0, 'ub': 10, 'type': 'int', 'default': 0,
+            'dependent': dep_is_tree},
         # NOTE: Lower bound is 0 for the 4 below, non inclusive.
         # Set slightly higher to avoid issues around this bound.
         # TODO: [hyperopt-sklearn] has set the lower bound of these variables to 0.5
         #       But during optimization I have seen some of these take up values of 0.37
         #       for the best solution
-        'xg_subsample': {'lb': 0.001, 'ub': 1.0, 'type': 'cont', 'default': 1.0},
-        'xg_colsample_bytree': {'lb': 0.001, 'ub': 1.0, 'type': 'cont', 'default': 1.0},
-        'xg_colsample_bylevel': {'lb': 0.001, 'ub': 1.0, 'type': 'cont', 'default': 1.0},
-        'xg_colsample_bynode': {'lb': 0.001, 'ub': 1.0, 'type': 'cont', 'default': 1.0},
+        'xg_subsample': {'lb': 0.001, 'ub': 1.0, 'type': 'cont', 'default': 1.0, 'dependent': dep_is_tree},
+        'xg_colsample_bytree': {'lb': 0.001, 'ub': 1.0, 'type': 'cont', 'default': 1.0, 'dependent': dep_is_tree},
+        'xg_colsample_bylevel': {'lb': 0.001, 'ub': 1.0, 'type': 'cont', 'default': 1.0, 'dependent': dep_is_tree},
+        'xg_colsample_bynode': {'lb': 0.001, 'ub': 1.0, 'type': 'cont', 'default': 1.0, 'dependent': dep_is_tree},
         # Original: upper bound is set arbitrarily at 10 (there is no real upper bound)
         # 'xg_alpha': {'lb': 0.0, 'ub': 10.0, 'type': 'cont', 'default': 0.0},
         # Instead we use the bounds used by hyperopt-sklearn:
@@ -291,28 +303,42 @@ def xgboost_args_spec():
         # NOTE: Arbitrarily capped at 11, but the complexity scales exponentially
         # with the depth. As such this is arguably reasonable compared to the default of 6.
         # Extra: value was originally capped at 10, new value via [hyperopt-sklearn]
-        'xg_max_depth': {'lb': 1, 'ub': 11, 'type': 'int', 'default': 6}, 
+        'xg_max_depth': {'lb': 1, 'ub': 11, 'type': 'int', 'default': 6, 'dependent': dep_is_tree}, 
 
         # The following arguments are not directly accessible via the
         # SKLearn API. So whether these work or not, is a bit of a guess.
         # NOTE: Bounds are (0, 1), both non-inclusive.
         # Set higher and lower respectively to avoid issues. 
-        'xg_sketch_eps': {'lb': 0.001, 'ub': 0.999, 'type': 'cont', 'default': 0.03},
-        'xg_grow_policy': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 0},
+        'xg_sketch_eps': {'lb': 0.001, 'ub': 0.999, 'type': 'cont', 'default': 0.03,
+            # xg_tree_method(2) = approx 
+            'dependent': {'on': 'xg_tree_method', 'values': {2}}},
+        'xg_grow_policy': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 0,
+            # xg_tree_method(3) = hist 
+            'dependent': {'on': 'xg_tree_method', 'values': {3}}},
         # NOTE: Arbitrarily capped at 128. 0 is a special value (no maximum)
-        'xg_max_leaves': {'lb': 0, 'ub': 128, 'type': 'int', 'default': 0},
-        'xg_normalize_type': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 0},
-        'xg_rate_drop': {'lb': 0, 'ub': 1, 'type': 'cont', 'default': 0.0},
-        'xg_one_drop': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 0},
-        'xg_skip_drop': {'lb': 0, 'ub': 1, 'type': 'cont', 'default': 0.0},
-        'xg_updater': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 0},
-        'xg_feature_selector': {'lb': 0, 'ub': 4, 'type': 'cat', 'default': 0},
+        # Documentation states only relevant when value is lossguide.
+        'xg_max_leaves': {'lb': 0, 'ub': 128, 'type': 'int', 'default': 0,
+            # xg_grow_policy(1) = lossguide 
+            'dependent': {'on': 'xg_grow_policy', 'values': {1}}},
+        'xg_normalize_type': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 0,
+            'dependent': dep_is_dart},
+        'xg_rate_drop': {'lb': 0, 'ub': 1, 'type': 'cont', 'default': 0.0,
+            'dependent': dep_is_dart},
+        'xg_one_drop': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 0,
+            'dependent': dep_is_dart},
+        'xg_skip_drop': {'lb': 0, 'ub': 1, 'type': 'cont', 'default': 0.0,
+            'dependent': dep_is_dart},
+        'xg_updater': {'lb': 0, 'ub': 1, 'type': 'cat', 'default': 0,
+            'dependent': dep_is_gblinear},
+        'xg_feature_selector': {'lb': 0, 'ub': 4, 'type': 'cat', 'default': 0,
+            'dependent': dep_is_gblinear},
         # NOTE: Bound arbitrarily set at 10, there is no real
         # upper bound.
         # Special case: 0 is select all.
         # Suggestion: Maybe split up
         # (select all: y/n, use 2nd integer if n)
-        'xg_top_k': {'lb': 0, 'ub': 10, 'type': 'int', 'default': 0},
+        'xg_top_k': {'lb': 0, 'ub': 10, 'type': 'int', 'default': 0,
+            'dependent': dep_is_gblinear},
     }
 
 def construct_xgboost(args: dict, random_state):
