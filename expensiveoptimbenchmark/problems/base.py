@@ -20,6 +20,6 @@ class BaseProblem:
     def dims(self):
         raise NotImplementedError()
     
-    
     def dependencies(self):
-        return None
+        # Return a list of dims() Nones to signify no dependencies.
+        return [None for _ in range(self.dims())]
