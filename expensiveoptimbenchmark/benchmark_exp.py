@@ -56,7 +56,7 @@ def get_solver(strategy):
         raise ValueError("Strategy does not exist.")
 
 # Wrapper function for scripting run_experiment.py
-def run_exp(problem, strategy, args, out_path):
+def run_exp(problem_enum, strategy_enum, args, out_path):
 
     command = [
             "python",
@@ -64,28 +64,39 @@ def run_exp(problem, strategy, args, out_path):
             f"--max-eval={args.evaluations}", 
             f"--out-path={out_path}", 
             f"--repetitions={args.repetitions}", 
-            problem
+            problem_enum.name
             ]
+
     # Problem parameters            
-    if problem != 'esp':
+    if problem_enum != Problems.esp and problem_enum != Problems.tsp:
         command.append(f'-d={args.dimensions}')
+    
+    if problem_enum == Problems.tsp:
+        instance_file_path = f'TSP_instances/ftv{args.dimensions}.atsp'
+        if not os.path.exists(instance_file_path):
+            raise ValueError("Invalid dimension given, instance does not exist.")
+        command.append(f'--tsplib-file={instance_file_path}')
+
+    if args.binarize is True:
+        command.append('--binarize=true')
+
 
     # Solver and parameters
-    command.append(get_solver(strategy))
-    if strategy != Strategies.randomsearch:
+    command.append(get_solver(strategy_enum))
+    if strategy_enum != Strategies.randomsearch:
         #command.append(f'--rand-evals={args.randevals}') TODO
         pass
     # Solver parameters
-    if strategy in THOMPSON_SAMPLING:
+    if strategy_enum in THOMPSON_SAMPLING:
         command.append('--sampling=thompson')
-    if strategy in BINARIZE: 
+    if strategy_enum in BINARIZE: 
         command.append('--binarize-categorical=true')
         command.append('--binarize-int=true')
-    if strategy in SCALING:
+    if strategy_enum in SCALING:
         command.append('--scaling=true')
-    if strategy in UNIFORM_SAMPLING:
+    if strategy_enum in UNIFORM_SAMPLING:
         command.append('--sampling=uniform')
-    if strategy in LARGER_PROBABILITY:
+    if strategy_enum in LARGER_PROBABILITY:
         command.append('--expl-prob=larger')
         
         
@@ -108,6 +119,7 @@ if __name__ == "__main__":
     parser.add_argument('-s', '--solver', type=str, nargs = '+', required=True,
                         help='Pick solver', choices=[s.name for s in Strategies])
 
+
     parser.add_argument('-d','--dimensions', type=int, default = 25,
                         help='Dimension of decision variables to the problem')
     parser.add_argument('-e','--evaluations', type=int, default=100,
@@ -118,24 +130,25 @@ if __name__ == "__main__":
                         help='Number of random evaluations')
     parser.add_argument('-t', '--tag', type=str,
                         help='Optional tag id for experiment')
+    parser.add_argument('-b', '--binarize', action='store_true',
+                        help='Use binarized problem version if available')
 
 
     args = parser.parse_args()
 
-    # Parameters
-    problem_instance_list = args.problem
 
-    # Cast solver strings to Strategies enum class
+    # Cast strings to enum class
     strategies = [Strategies[s] for s in args.solver]
+    problem_instance_list = [Problems[s] for s in args.problem]
 
-    for problem_instance in problem_instance_list:
-        
-        experiment_id = f"{datetime.now().strftime('%d%m_%H%M%S')}_{problem_instance}{'_'+args.tag if args.tag is not None else ''}"
+    for problem_instance_enum in problem_instance_list:
+    
+        experiment_id = f"{datetime.now().strftime('%d%m_%H%M%S')}_{problem_instance_enum.name}{'_'+args.tag if args.tag is not None else ''}"
         out_path = f"./results/{experiment_id}/"
 
         # Run experiments
         for s in strategies:
-            run_exp(problem_instance, s, args, out_path)
+            run_exp(problem_instance_enum, s, args, out_path)
 
         # Plot results (saves image in log folder)
         plot_iter_file(out_path, save_file=f"{out_path}/iter_plot.png")

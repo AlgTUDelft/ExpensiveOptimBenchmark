@@ -45,9 +45,14 @@ def construct_convex(params):
 # IntRosenbrock
 def construct_rosen(params):
     from problems.rosenbrock_int import RosenbrockInt
+    from problems.rosenbrock_binarized import RosenbrockBinarized
     ds = parse_numerical_ranges(params['-d'])
     logscale = params['--logscale'] in ['true','t', 'yes', 'y']
-    return [RosenbrockInt(d, logscale) for d in ds]
+    binarize = params['--binarize'] in ['true','t', 'yes', 'y']
+    if binarize:
+        return [RosenbrockBinarized(d) for d in ds]
+    else:
+        return [RosenbrockInt(d, logscale) for d in ds]
 
 # Linear MIVABO Function
 def construct_linearmivabo(params):
@@ -100,10 +105,11 @@ problems = {
         'constructor': construct_tsp
     },
     'rosen': {
-        'args': {'-d', '--logscale'},
+        'args': {'-d', '--logscale', '--binarize'},
         'defaults': {
             '-d': '2',
-            '--logscale': 'f'
+            '--logscale': 'f',
+            '--binarize': 'f'
         },
         'constructor': construct_rosen
     },
@@ -423,6 +429,7 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     # Rosenbrock
     print(f" rosen")
     print(f" -d=<intranges> \t The dimensionality of the rosenbrock problem")
+    print(f" --binarize=<true|false> \t Whether to binarize the problem (default: false)")
     print()
     # MaxCut
     print(f" maxcut")
