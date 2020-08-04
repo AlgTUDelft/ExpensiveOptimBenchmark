@@ -1,4 +1,5 @@
 import numpy as np
+from typing import Union
 
 class BaseProblem:
 
@@ -23,3 +24,16 @@ class BaseProblem:
     def dependencies(self):
         # Return a list of dims() Nones to signify no dependencies.
         return [None for _ in range(self.dims())]
+
+## Utilities
+def maybe_int(v: Union[int, None]):
+    if v is None:
+        return None
+    else:
+        return int(v)
+
+def maybe_float(v: Union[float, None]):
+    if v is None:
+        return None
+    else:
+        return float(v)

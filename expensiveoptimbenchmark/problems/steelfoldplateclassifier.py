@@ -1,11 +1,12 @@
-from .base import BaseProblem
+from .base import BaseProblem, maybe_int, maybe_float
+from typing import Union
 
 import pandas as pd
 import numpy as np
 
 try:
     import pynisher
-except e:
+except:
     pass
 import xgboost
 import os
@@ -19,14 +20,15 @@ from sklearn.decomposition import PCA
 
 class SteelFoldPlate(BaseProblem):
 
-    def __init__(self, folder):
+    def __init__(self, folder, naive=False):
         self.folder = folder
         self.data_X, self.data_y = data_to_X_and_y(load_data(folder))
+        self.naive = naive
         # TODO: Allow this to be picked?
         self.validator = StratifiedKFold()
         # self.validator = LeaveOneOut()
         self.argspec = all_args_spec()
-        self.lbs_v, self.ubs_v, self.vartype_v = argspec_to_vecs(self.argspec)
+        self.lbs_v, self.ubs_v, self.vartype_v, self.deps_v = argspec_to_vecs(self.argspec)
         self.random_state = 0
 
     def evaluate(self, x):
@@ -59,6 +61,12 @@ class SteelFoldPlate(BaseProblem):
 
     def dims(self):
         return len(self.argspec)
+
+    def dependencies(self):
+        if self.naive:
+            return super().dependencies()
+        else:
+            return self.deps_v
 
     def __str__(self):
         return f"SteelFoldPlate()"
@@ -111,10 +119,17 @@ def evaluate_classifier(classifier: Pipeline, validator: BaseCrossValidator, X, 
     return np.mean(scores)
 
 def argspec_to_vecs(argspec):
+    name_to_idx = { k: i for (i, (k, v)) in enumerate(argspec.items()) }
     lbs = np.asarray([v['lb'] for (k, v) in argspec.items()])
     ubs = np.asarray([v['ub'] for (k, v) in argspec.items()])
     ty = np.asarray([v['type'] for (k, v) in argspec.items()])
-    return lbs, ubs, ty
+    deps = np.asarray([ 
+        {
+            'on': name_to_idx[v['dependent']['on']], 
+            'values': v['dependent']['values'] 
+        } if v.get('dependent') is not None else None 
+        for (k, v) in argspec.items() ])
+    return lbs, ubs, ty, deps
 
 def argspec_and_vec_to_argdict(argspec, vec):
     return dict(zip(argspec, vec))
@@ -350,34 +365,34 @@ def construct_xgboost(args: dict, random_state):
     # objective = param_xgboost_objective(args['xg_objective'])
     objective = 'multi:softmax'
     booster = param_xgboost_booster(int(args['xg_booster']))
-    tree_method = param_xgboost_tree_tree_method(int(args['xg_tree_method']))
-    learning_rate = param_xgboost_learning_rate(float(args['xg_learning_rate']))
-    gamma = float(args['xg_gamma'])
+    tree_method = param_xgboost_tree_tree_method(maybe_int(args['xg_tree_method']))
+    learning_rate = param_xgboost_learning_rate(maybe_float(args['xg_learning_rate']))
+    gamma = maybe_float(args['xg_gamma'])
     
-    max_depth = int(args['xg_max_depth'])
-    min_child_weight = int(args['xg_min_child_weight'])
-    max_delta_step = int(args['xg_max_delta_step'])
+    max_depth = maybe_int(args['xg_max_depth'])
+    min_child_weight = maybe_int(args['xg_min_child_weight'])
+    max_delta_step = maybe_int(args['xg_max_delta_step'])
     
-    subsample = float(args['xg_subsample'])
-    colsample_bytree = float(args['xg_colsample_bytree'])
-    colsample_bylevel = float(args['xg_colsample_bylevel'])
-    colsample_bynode = float(args['xg_colsample_bynode'])
+    subsample = maybe_float(args['xg_subsample'])
+    colsample_bytree = maybe_float(args['xg_colsample_bytree'])
+    colsample_bylevel = maybe_float(args['xg_colsample_bylevel'])
+    colsample_bynode = maybe_float(args['xg_colsample_bynode'])
     
     reg_alpha = param_xgboost_alpha(float(args['xg_alpha']))
     reg_lambda = param_xgboost_lambda(float(args['xg_lambda']))
 
     # The following arguments are not directly accessible via the
     # SKLearn API. So whether these work or not, is a bit of a guess.
-    sketch_eps = float(args['xg_sketch_eps'])
-    grow_policy = param_xgboost_tree_grow_policy(int(args['xg_grow_policy']))
-    max_leaves = int(args['xg_max_leaves'])
-    normalize_type = param_xgboost_tree_normalize_type(int(args['xg_normalize_type']))
-    rate_drop = float(args['xg_rate_drop'])
-    one_drop = int(args['xg_one_drop'])
-    skip_drop = float(args['xg_skip_drop'])
-    updater = param_xgboost_tree_updater(int(args['xg_updater']))
-    feature_selector = param_xgboost_tree_feature_selector(int(args['xg_feature_selector']))
-    top_k = int(args['xg_top_k'])
+    sketch_eps = maybe_float(args['xg_sketch_eps'])
+    grow_policy = param_xgboost_tree_grow_policy(maybe_int(args['xg_grow_policy']))
+    max_leaves = maybe_int(args['xg_max_leaves'])
+    normalize_type = param_xgboost_tree_normalize_type(maybe_int(args['xg_normalize_type']))
+    rate_drop = maybe_float(args['xg_rate_drop'])
+    one_drop = maybe_int(args['xg_one_drop'])
+    skip_drop = maybe_float(args['xg_skip_drop'])
+    updater = param_xgboost_tree_updater(maybe_int(args['xg_updater']))
+    feature_selector = param_xgboost_tree_feature_selector(maybe_int(args['xg_feature_selector']))
+    top_k = maybe_int(args['xg_top_k'])
 
     kwargsd = {
         'sketch_eps': sketch_eps,
@@ -452,11 +467,11 @@ def param_xgboost_booster(booster: int):
 
 # (parameter) `lambda` is continuous in (0, ∞] (?)
 def param_xgboost_lambda(lmbd: float):
-   return np.exp(lmbd)
+    return np.exp(lmbd)
 
 # (parameter) `alpha` is continuous in (0, ∞] (?)
 def param_xgboost_alpha(alpha: float):
-   return np.exp(alpha) - 0.0001
+    return np.exp(alpha) - 0.0001
 
 
 # The following parameters are utilized only with tree (dart, gbtree)
@@ -464,8 +479,11 @@ def param_xgboost_alpha(alpha: float):
 
 # (parameter) `eta` is continuous in [0, 1]
 # note: via sklearn this parameter is called `learning_rate`
-def param_xgboost_learning_rate(eta: float):
-   return np.exp(eta) - 0.0001
+def param_xgboost_learning_rate(eta: Union[float, None]):
+    if eta is None:
+        return None
+
+    return np.exp(eta) - 0.0001
 
 # (parameter) `gamma` is continuous in [0, ∞]
 # def param_xgboost_tree_gamma(gamma: float):
@@ -512,7 +530,10 @@ def param_xgboost_learning_rate(eta: float):
 #    return colsample_bynode
 
 # (parameter) `tree_method` is categorical in [0, 3]
-def param_xgboost_tree_tree_method(tree_method: int):
+def param_xgboost_tree_tree_method(tree_method: Union[int, None]):
+    if tree_method is None:
+        return None
+
     options = [
         'auto', 'exact', 'approx', 'hist'
     ]
@@ -525,7 +546,10 @@ def param_xgboost_tree_tree_method(tree_method: int):
 
 # (parameter) `grow_policy` is categorical in [0, 1]
 # note: only used when `tree_method` = 'hist'
-def param_xgboost_tree_grow_policy(grow_policy: int):
+def param_xgboost_tree_grow_policy(grow_policy: Union[int, None]):
+    if grow_policy is None:
+        return None
+
     options = [
         'depthwise', 'lossguide'
     ]
@@ -536,15 +560,18 @@ def param_xgboost_tree_grow_policy(grow_policy: int):
 # def param_xgboost_tree_max_leaves(max_leaves: int):
 #    return max_leaves
 
-# (parameter) `sample_type` is categorical in [0, 1]
-def param_xgboost_tree_sample_type(sample_type: int):
-    options = [
-        'uniform', 'weighted'
-    ]
-    return options[sample_type]
+# (unused-parameter) `sample_type` is categorical in [0, 1]
+# def param_xgboost_tree_sample_type(sample_type: int):
+#     options = [
+#         'uniform', 'weighted'
+#     ]
+#     return options[sample_type]
 
 # (parameter) `normalize_type` is categorical in [0, 1]
-def param_xgboost_tree_normalize_type(normalize_type: int):
+def param_xgboost_tree_normalize_type(normalize_type: Union[int, None]):
+    if normalize_type is None:
+        return None
+
     options = [
         'tree', 'forest'
     ]
@@ -565,7 +592,10 @@ def param_xgboost_tree_normalize_type(normalize_type: int):
 
 # The following parameters are utilized only with gblinear as boosting technique.
 # (parameter) `updater` is categorical in [0, 1]
-def param_xgboost_tree_updater(updater: int):
+def param_xgboost_tree_updater(updater: Union[int, None]):
+    if updater is None:
+        return None
+
     options = [
         'shotgun', 'coord_descent'
     ]
@@ -573,7 +603,10 @@ def param_xgboost_tree_updater(updater: int):
 
 # The following parameters are utilized only with gblinear as boosting technique.
 # (parameter) `feature_selector` is categorical in [0, 4]
-def param_xgboost_tree_feature_selector(feature_selector: int):
+def param_xgboost_tree_feature_selector(feature_selector: Union[int, None]):
+    if feature_selector is None:
+        return None
+    
     options = [
         'cyclic', 'shuffle', 'random', 'greedy', 'thrifty'
     ]
