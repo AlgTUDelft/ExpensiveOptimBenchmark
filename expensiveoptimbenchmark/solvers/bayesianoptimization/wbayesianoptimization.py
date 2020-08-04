@@ -37,7 +37,7 @@ def optimize_bayesian_optimization(problem, max_evals, random_init_evals = 5, lo
     optimizer = BayesianOptimization(
         f=f,
         pbounds=get_variables(problem),
-        ptypes={f'v{i}': problem.vartype()[i] for i in range(problem.dims())}
+        ptypes={f'v{i}': 'float' if problem.vartype()[i] == 'cont' else 'int' for i in range(problem.dims())}
     )
 
     optimizer.maximize(
