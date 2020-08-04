@@ -92,6 +92,11 @@ def construct_windwakeh(params):
 def construct_automlnaive(params):
     from problems.steelfoldplateclassifier import SteelFoldPlate
     instance_info_folder = params['--folder']
+    return [SteelFoldPlate(instance_info_folder, naive=True)]
+
+def construct_automl(params):
+    from problems.steelfoldplateclassifier import SteelFoldPlate
+    instance_info_folder = params['--folder']
     return [SteelFoldPlate(instance_info_folder)]
 
 # Summary of problems and their parameters.
@@ -159,6 +164,11 @@ problems = {
         'args': {'--folder'},
         'defaults': {},
         'constructor': construct_automlnaive
+    },
+    'automl': {
+        'args': {'--folder'},
+        'defaults': {},
+        'constructor': construct_automl
     }
 }
 
