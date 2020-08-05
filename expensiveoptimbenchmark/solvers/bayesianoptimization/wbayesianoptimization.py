@@ -10,7 +10,7 @@ def get_variable_domain(problem, varidx):
     lbs = problem.lbs()
     ubs = problem.ubs()
     
-    return (lbs[varidx], ubs[varidx])
+    return (lbs[varidx], ubs[varidx] + (1 if vartype != 'cont' else 0))
 
 def get_variables(problem):
     n = problem.dims()
@@ -23,6 +23,7 @@ def get_variables(problem):
 
 def optimize_bayesian_optimization(problem, max_evals, random_init_evals = 5, log=None):
     variables = get_variables(problem)
+    n = problem.dims()
 
     mon = Monitor("bayesianoptimization", problem, log=log)
     def f(**x):
@@ -38,10 +39,11 @@ def optimize_bayesian_optimization(problem, max_evals, random_init_evals = 5, lo
         eps = 1e-4
         return -r + np.random.standard_normal() * eps
     mon.start()
+    nlog10 = math.ceil(math.log10(n))
     optimizer = BayesianOptimization(
         f=f,
         pbounds=get_variables(problem),
-        ptypes={f'v{i}': 'float' if problem.vartype()[i] == 'cont' else 'int' for i in range(problem.dims())}
+        ptypes={f'v{i:0{nlog10}}': float if problem.vartype()[i] == 'cont' else int for i in range(problem.dims())}
     )
 
     optimizer.maximize(
