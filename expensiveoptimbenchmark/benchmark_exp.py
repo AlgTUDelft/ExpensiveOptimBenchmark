@@ -15,7 +15,6 @@ class Strategies(enum.Enum):
     idone_Sa = 5 
     idone_Ar = 6 
 
-
     # Ablation analysis
     TS_idone = 10
     binarize_idone = 11
@@ -76,10 +75,10 @@ def run_exp(problem_enum, strategy_enum, args, out_path):
         if not os.path.exists(instance_file_path):
             raise ValueError("Invalid dimension given, instance does not exist.")
         command.append(f'--tsplib-file={instance_file_path}')
-
     if args.binarize is True:
         command.append('--binarize=true')
-
+    if args.seed is not None and problem_enum == Problems.maxcut:
+        command.append(f'--graph-seed={args.seed}')
 
     # Solver and parameters
     command.append(get_solver(strategy_enum))
@@ -132,6 +131,8 @@ if __name__ == "__main__":
                         help='Optional tag id for experiment')
     parser.add_argument('-b', '--binarize', action='store_true',
                         help='Use binarized problem version if available')
+    parser.add_argument('--seed', type=int, default=None,
+                            help="Define random seed if problem allows this as input")
 
 
     args = parser.parse_args()
