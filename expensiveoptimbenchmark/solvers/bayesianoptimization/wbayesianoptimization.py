@@ -1,4 +1,5 @@
 import numpy as np
+import math
 from ..utils import Monitor
 from bayes_opt import BayesianOptimization
 
@@ -12,8 +13,11 @@ def get_variable_domain(problem, varidx):
     return (lbs[varidx], ubs[varidx])
 
 def get_variables(problem):
+    n = problem.dims()
+    nlog10 = math.ceil(math.log10(n))
+
     return {
-        f'v{i}': get_variable_domain(problem, i)
+        f'v{i:0{nlog10}}': get_variable_domain(problem, i)
         for i in range(problem.dims())
     }
 
