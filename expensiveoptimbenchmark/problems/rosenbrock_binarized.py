@@ -15,7 +15,7 @@ class RosenbrockBinarized:
 
     def evaluate(self, x):
         assert len(x) == self.d
-        
+        x = x.astype(np.int64)
         # Compute non-binary representation
         unbinarized_x = []
         for i in range(self.unbinarized_d):
