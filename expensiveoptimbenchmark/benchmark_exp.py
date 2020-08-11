@@ -20,17 +20,20 @@ class Strategies(enum.Enum):
     binarize_idone = 11
     uniform_idone = 12 
     larger_expl_idone = 13 
+    TS_uniform_idone = 14
+    binarize_larger_idone = 15
 
 
 
 # Controls the strategies
 IDONE_LIST = [Strategies.idone, Strategies.idone_Sa, Strategies.idone_Ar,
-              Strategies.TS_idone, Strategies.binarize_idone, Strategies.uniform_idone, Strategies.larger_expl_idone
+              Strategies.TS_idone, Strategies.binarize_idone, Strategies.uniform_idone, Strategies.larger_expl_idone,
+              Strategies.TS_uniform_idone, Strategies.binarize_larger_idone
              ]
-THOMPSON_SAMPLING = [Strategies.idone_Sa, Strategies.TS_idone]
-BINARIZE = [Strategies.idone_Sa, Strategies.binarize_idone]
-UNIFORM_SAMPLING = [Strategies.idone_Ar, Strategies.uniform_idone]
-LARGER_PROBABILITY = [Strategies.idone_Ar, Strategies.larger_expl_idone]
+THOMPSON_SAMPLING = [Strategies.idone_Sa, Strategies.TS_idone, Strategies.TS_uniform_idone]
+BINARIZE = [Strategies.idone_Sa, Strategies.binarize_idone, Strategies.binarize_larger_idone]
+UNIFORM_SAMPLING = [Strategies.idone_Ar, Strategies.uniform_idone, Strategies.TS_uniform_idone]
+LARGER_PROBABILITY = [Strategies.idone_Ar, Strategies.larger_expl_idone, Strategies.binarize_larger_idone]
 SCALING = []
 
 class Problems(enum.Enum):
