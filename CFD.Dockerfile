@@ -19,4 +19,4 @@ RUN bash ./expensiveoptimbenchmark/problems/ESP2/patch.sh
 
 RUN ln -s ./dockerCall.sh ./evaluate.sh
 
-ENTRYPOINT [ "/bin/bash", "-l", "-c" ]
+# ENTRYPOINT [ "/bin/bash", "-l", "-c" ]

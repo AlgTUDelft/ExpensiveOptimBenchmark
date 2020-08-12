@@ -10,6 +10,7 @@ res=$(python3 dockerCall.py -p $1 $2 2>&1)
 #python3 dockerCall.py -p $1 $2
 
 if [[ $res == *"dockerCall.py"* ]]; then
+  echo $res
   echo "Error"
 else
   #echo $res

@@ -12,12 +12,18 @@ class DockerCFDBenchmarkProblem:
         self.vt = np.asarray(vartype)
         self.direction = 1 if direction == "min" else -1
         self.errval = errval
+        self.orig = False
         if os.path.exists("./evaluate.sh"):
             self.evalCommand = ["./evaluate.sh", self.name]
         elif os.path.exists("/evaluate.sh"):
             self.evalCommand = ["/evaluate.sh", self.name]
-        else:
+        elif self.orig:
+            if self.name in ["esp2", "esp3"]:
+                raise ValueError("ESP variants are only supported in the custom container")
+
             self.evalCommand = ["docker", "run", "--rm", "frehbach/cfd-test-problem-suite", "./dockerCall.sh", self.name]
+        else:
+            self.evalCommand = ["docker", "run", "--rm", "cfdbench", "./dockerCall.sh", self.name]
     
     def evaluate(self, xs):
         parsedCandidate = ",".join(["%.8f" % x if xvt == 'cont' else "%i" % x for (x, xvt) in zip(xs, self.vt)])
@@ -26,7 +32,7 @@ class DockerCFDBenchmarkProblem:
         # res = subprocess.check_output(cmd, shell=True)
         res = subprocess.check_output(self.evalCommand + [parsedCandidate])
         reslast = res.strip().split(b"\n")[-1]
-        # print(f"Result: {res}")
+        # print(f"Result: {res}. Objective: {reslast}")
         try:
             return self.direction * float(reslast)
         except:
