@@ -18,6 +18,7 @@ import sys, time
 import numpy as np
 import os
 from subprocess import call
+from shutil import rmtree
 
 # To avoid tkinter errors.
 import matplotlib
@@ -90,15 +91,15 @@ if __name__=='__main__':
     elif problem_name == 'ESP':
         print('Demonstration of the ESP test problem.')
         res = os.system('python Exeter_CFD_Problems/ESP/evaluateSimulation.py ' + allArgs[-1])
-        os.remove('Exeter_CFD_Problems/ESP/foamWorkingDir')
+        rmtree('Exeter_CFD_Problems/ESP/foamWorkingDir')
         sys.exit(res)
     elif problem_name == 'ESP2':
         print('Demonstration of the ESP variant two test problem.')
         res = os.system('python Exeter_CFD_Problems/ESP/evaluateSimulation2.py ' + allArgs[-1])
-        os.remove('Exeter_CFD_Problems/ESP/foamWorkingDir')
+        rmtree('Exeter_CFD_Problems/ESP/foamWorkingDir')
         sys.exit(res)
     elif problem_name == 'ESP3':
         print('Demonstration of the ESP variant three test problem.')
         res = os.system('python Exeter_CFD_Problems/ESP/evaluateSimulation3.py ' + allArgs[-1])
-        os.remove('Exeter_CFD_Problems/ESP/foamWorkingDir')
+        rmtree('Exeter_CFD_Problems/ESP/foamWorkingDir')
         sys.exit(res)
