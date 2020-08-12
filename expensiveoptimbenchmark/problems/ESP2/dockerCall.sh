@@ -27,12 +27,15 @@ else
     echo $res | grep -Eo '[+-]?[0-9]+([.][0-9]+)?(e-[0-9]+)?' | head -n 4 | tail -n 2
   fi
   if [[ $1 == "ESP" ]]; then
+    echo $res
     echo $res | grep -Eo '[+-]?[0-9]+([.][0-9]+)?(e-[0-9]+)?'
   fi
   if [[ $1 == "ESP2" ]]; then
+    echo $res
     echo $res | grep -Eo '[+-]?[0-9]+([.][0-9]+)?(e-[0-9]+)?'
   fi
   if [[ $1 == "ESP3" ]]; then
+    echo $res
     echo $res | grep -Eo '[+-]?[0-9]+([.][0-9]+)?(e-[0-9]+)?'
   fi
 fi
