@@ -60,8 +60,9 @@ def write1(name,val):
 def write7(name,val):
     createBafflesDictFile.write("//" + name + " Auswahl: " + str(val)+"\n")
   
-def writeFromArray(name, val, angle):
-    createBafflesDictFile.write(name+"{type faceZone; zoneName "+name+"; patches{master{name "+name+"_m; type cyclic; neighbourPatch "+name+"_s; patchFields{p{type porousBafflePressure; patchType cyclic; D 0; I "+str(angle)+"; length 0.03; jump uniform 0;value uniform 0;}}}slave{name "+name+"_s; type cyclic; neighbourPatch "+name+"_m; patchFields{${...master.patchFields}}}}}\n")
+def writeFromArray(name, val, p):
+    pstr = str(round(p, 1))
+    createBafflesDictFile.write(name+"{type faceZone; zoneName "+name+"; patches{master{name "+name+"_m; type cyclic; neighbourPatch "+name+"_s; patchFields{p{type porousBafflePressure; patchType cyclic; D 0; I  "+pstr+"; length 0.03; jump uniform 0;value uniform 0;}}}slave{name "+name+"_s; type cyclic; neighbourPatch "+name+"_m; patchFields{${...master.patchFields}}}}}\n")
 
 
 ## List of all existing baffles in the simulation model

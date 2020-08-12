@@ -28,11 +28,11 @@ class DockerCFDBenchmarkProblem:
     def evaluate(self, xs):
         parsedCandidate = ",".join(["%.8f" % x if xvt == 'cont' else "%i" % x for (x, xvt) in zip(xs, self.vt)])
         cmd = f"{self.evalCommand + [parsedCandidate]}"
-        # print(f"Running '{cmd}'")
+        print(f"Running '{cmd}'")
         # res = subprocess.check_output(cmd, shell=True)
         res = subprocess.check_output(self.evalCommand + [parsedCandidate])
         reslast = res.strip().split(b"\n")[-1]
-        # print(f"Result: {res}. Objective: {reslast}")
+        print(f"Result: {res}. Objective: {reslast}")
         try:
             return self.direction * float(reslast)
         except:
@@ -57,7 +57,7 @@ ESP = DockerCFDBenchmarkProblem("ESP", 49, [0] * 49, [7] * 49, ['cat'] * 49, "mi
 
 ESP2 = DockerCFDBenchmarkProblem("ESP2", 49*2, [0, 28.0] * 49, [3, 146.0] * 49, ['cat', 'cont'] * 49, "min", 10.0)
 
-ESP3 = DockerCFDBenchmarkProblem("ESP3", 5+49, [28.0] * 5 + [0] * 49, [146.0] * 5 + [3] * 49, ['cont'] * 5 + ['cat'] * 49, "min", 10.0)
+ESP3 = DockerCFDBenchmarkProblem("ESP3", 5+49, [28.0] * 5 + [0] * 49, [146.0] * 5 + [7] * 49, ['cont'] * 5 + ['cat'] * 49, "min", 10.0)
 
 PitzDaily = DockerCFDBenchmarkProblem("PitzDaily",
     10,
