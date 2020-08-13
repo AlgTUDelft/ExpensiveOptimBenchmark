@@ -21,9 +21,7 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
     # Initialise figure
     fig = plt.figure()
     ax = fig.add_subplot()
-
-    # To read experiments with the same solver from multiple files, use a dict
-    dict_dataframes = {} # solver name as key, dataframe as value
+    
 
     # Read log files
     iter_dfs = pd.concat(pd.read_csv(f) for f in file_list)
@@ -33,13 +31,7 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
         problem = iter_df['problem'].values[0]
         list_exp_id = np.unique(iter_df['exp_id'].values)
 
-        if solver in dict_dataframes:
-            fitness_value_df = dict_dataframes.get(solver)
-
-        else:
-            fitness_value_df = pd.DataFrame()
-
-
+        fitness_value_df = pd.DataFrame()
         for exp_id in list_exp_id:
             exp_df = iter_df[iter_df['exp_id'] == exp_id]
             exp_df = exp_df.reset_index()
@@ -50,12 +42,6 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
             fitness_value_df = fitness_value_df.astype(float)
         except:
             pass 
-
-        dict_dataframes[solver] = fitness_value_df
-
-    # Read and plot from dataframes dict
-    for solver, fitness_value_df in dict_dataframes.items():
-
         mean_fitness_value = fitness_value_df.mean(axis=1)
         sd_fitness_value = fitness_value_df.std(axis=1)
         upperError = pd.to_numeric(mean_fitness_value + sd_fitness_value)
@@ -63,6 +49,7 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
         
         ax.plot(mean_fitness_value.index, mean_fitness_value, label = solver, linewidth=2)
         ax.fill_between(pd.to_numeric(mean_fitness_value.index), upperError, lowerError, alpha=0.4)
+
 
         print(f"{solver}:\nmean={mean_fitness_value.values[-1]} sd={sd_fitness_value.values[-1]}")
     
