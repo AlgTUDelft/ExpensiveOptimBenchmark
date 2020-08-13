@@ -172,6 +172,3 @@ $RECYCLE.BIN/
 # log files
 expensiveoptimbenchmark/results/
 expensiveoptimbenchmark/runhistory.json
-
-# TSP instances
-expensiveoptimbenchmark/TSP_instances
