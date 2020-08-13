@@ -38,6 +38,10 @@ else
     echo $res
     echo $res | grep -Eo '[+-]?[0-9]+([.][0-9]+)?(e-[0-9]+)?'
   fi
+  if [[ $1 == "ESP4" ]]; then
+    echo $res
+    echo $res | grep -Eo '[+-]?[0-9]+([.][0-9]+)?(e-[0-9]+)?'
+  fi
 fi
 
 cd $orig

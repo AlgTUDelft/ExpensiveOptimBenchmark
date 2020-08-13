@@ -103,3 +103,8 @@ if __name__=='__main__':
         res = os.system('python Exeter_CFD_Problems/ESP/evaluateSimulation3.py ' + allArgs[-1])
         rmtree('Exeter_CFD_Problems/ESP/foamWorkingDir')
         sys.exit(res)
+    elif problem_name == 'ESP4':
+        print('Demonstration of the ESP variant three test problem.')
+        res = os.system('python Exeter_CFD_Problems/ESP/evaluateSimulation4.py ' + allArgs[-1])
+        rmtree('Exeter_CFD_Problems/ESP/foamWorkingDir')
+        sys.exit(res)
