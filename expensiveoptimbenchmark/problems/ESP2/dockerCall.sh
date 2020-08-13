@@ -10,6 +10,10 @@ res=$(python3 dockerCall.py -p $1 $2 2>&1)
 #python3 dockerCall.py -p $1 $2
 
 if [[ $res == *"dockerCall.py"* ]]; then
+  echo $res
+  echo "Error"
+elif [[ $res == *"ERROR"*  ]]; then
+  echo $res
   echo "Error"
 else
   #echo $res
@@ -23,12 +27,19 @@ else
     echo $res | grep -Eo '[+-]?[0-9]+([.][0-9]+)?(e-[0-9]+)?' | head -n 4 | tail -n 2
   fi
   if [[ $1 == "ESP" ]]; then
+    echo $res
     echo $res | grep -Eo '[+-]?[0-9]+([.][0-9]+)?(e-[0-9]+)?'
   fi
   if [[ $1 == "ESP2" ]]; then
+    echo $res
     echo $res | grep -Eo '[+-]?[0-9]+([.][0-9]+)?(e-[0-9]+)?'
   fi
   if [[ $1 == "ESP3" ]]; then
+    echo $res
+    echo $res | grep -Eo '[+-]?[0-9]+([.][0-9]+)?(e-[0-9]+)?'
+  fi
+  if [[ $1 == "ESP4" ]]; then
+    echo $res
     echo $res | grep -Eo '[+-]?[0-9]+([.][0-9]+)?(e-[0-9]+)?'
   fi
 fi

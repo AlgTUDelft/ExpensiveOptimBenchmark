@@ -8,7 +8,7 @@ from ConfigSpace.conditions import InCondition
 
 # 
 from smac.facade.smac_hpo_facade import SMAC4HPO
-# from smac.facade.smac_ac_facade import SMAC4AC
+from smac.facade.smac_ac_facade import SMAC4AC
 from smac.scenario.scenario import Scenario
 from smac.initial_design.random_configuration_design import RandomConfigurations
 
@@ -51,8 +51,8 @@ def get_variables(problem):
 def optimize_smac(problem, max_evals, rand_evals=1, deterministic=False, log=None):
     n = len(problem.vartype())
     nlog10 = math.ceil(math.log10(n))
-
-    mon = Monitor(f"smac{'/det' if deterministic else ''}", problem, log=log)
+    
+    mon = Monitor(f"smac{'/det' if deterministic else ''}{'/ac' if n > 40 else ''}", problem, log=log)
     def f(cfg):
         xvec = np.array([cfg.get(f'v{varidx:0{nlog10}}') for varidx, t in enumerate(problem.vartype())])
         mon.commit_start_eval()
@@ -71,8 +71,10 @@ def optimize_smac(problem, max_evals, rand_evals=1, deterministic=False, log=Non
         "deterministic": deterministic
     })
     # smac = SMAC4HPO(scenario=sc, tae_runner=f)
-    smac = SMAC4HPO(scenario=sc, initial_design=RandomConfigurations, initial_design_kwargs={'init_budget': rand_evals}, tae_runner=f)
-    # smac = SMAC4AC(scenario=sc, initial_design=RandomConfigurations, initial_design_kwargs={'init_budget': rand_evals}, tae_runner=f)
+    if n <= 40:
+        smac = SMAC4HPO(scenario=sc, initial_design=RandomConfigurations, initial_design_kwargs={'init_budget': rand_evals}, tae_runner=f)
+    else:
+        smac = SMAC4AC(scenario=sc, initial_design=RandomConfigurations, initial_design_kwargs={'init_budget': rand_evals}, tae_runner=f)
 
     mon.start()
     result = smac.optimize()

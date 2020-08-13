@@ -41,7 +41,8 @@ createBafflesDictFile.write(
 
 ## f.c.s values for specified baffle types
 # arrayBaffleSettings = [" 146"," 99"," 66.4"," 44"," 28"]
-poreousnesses = [str(setting) for setting in readSettings[0:5]]
+poreousnesses = [float(setting) for setting in readSettings[0:5]]
+poreousnesses.sort()
 
 def write(name,val):
     if val==0:
@@ -61,7 +62,7 @@ def write7(name,val):
     createBafflesDictFile.write("//" + name + " Auswahl: " + str(val)+"\n")
   
 def writeFromArray(name, val, p):
-    pstr = str(round(float(p), 1))
+    pstr = str(round(p, 1))
     createBafflesDictFile.write(name+"{type faceZone; zoneName "+name+"; patches{master{name "+name+"_m; type cyclic; neighbourPatch "+name+"_s; patchFields{p{type porousBafflePressure; patchType cyclic; D 0; I  "+pstr+"; length 0.03; jump uniform 0;value uniform 0;}}}slave{name "+name+"_s; type cyclic; neighbourPatch "+name+"_m; patchFields{${...master.patchFields}}}}}\n")
 
 
