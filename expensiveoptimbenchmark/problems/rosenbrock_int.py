@@ -17,8 +17,8 @@ class RosenbrockInt:
     def evaluate(self, x):
         assert len(x) == self.d
         if self.dolog:
-            return np.log(rosen(x) + 1)  + self.noise_rng.random() * self.noise_factor
-        return rosen(x)/self.scaling + self.noise_rng.random() * self.noise_factor
+            return np.log(rosen(x) + 1)  + self.noise_rng.normal(scale=self.noise_factor)
+        return rosen(x)/self.scaling + self.noise_rng.normal(scale=self.noise_factor)
 
     def lbs(self):
         return self.lb*np.ones(self.d, dtype=int)
