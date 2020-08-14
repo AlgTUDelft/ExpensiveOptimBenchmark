@@ -384,7 +384,7 @@ solvers = {
     }
 }
 
-general_args = {'--repetitions', '--max-eval', '--out-path', '--write-every', '--rand-eval-all'}
+general_args = {'--repetitions', '--max-eval', '--out-path', '--write-every', '--rand-evals-all'}
 
 # Parse
 general = {
@@ -506,7 +506,7 @@ repetitions = int(general['--repetitions'])
 max_eval = int(general['--max-eval'])
 out_path = general['--out-path']
 write_every = None if general['--write-every'] == "none" else int(general['--write-every'])
-rand_evals_default = general.get('--rand-eval-all')
+rand_evals_default = general.get('--rand-evals-all')
 
 if write_every is not None and write_every <= 0:
     print(f"`--write-every should have a value > 1.")
