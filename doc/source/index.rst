@@ -10,6 +10,9 @@ Welcome to ExpensiveOptimBenchmark's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   problems
+   approaches
+
    usage/adding_approaches
    usage/adding_problems
 
