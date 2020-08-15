@@ -1,0 +1,299 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Approaches &#8212; ExpensiveOptimBenchmark 2020 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Extending" href="extending/extending.html" />
+    <link rel="prev" title="Problems" href="problems.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="approaches">
+<h1>Approaches<a class="headerlink" href="#approaches" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="hyperopt">
+<h2>HyperOpt<a class="headerlink" href="#hyperopt" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list">
+<dt class="field-odd">publications</dt>
+<dd class="field-odd"><p><a class="bibtex reference internal" href="index.html#bergstra2013making" id="id1">[BYC13]</a>.</p>
+</dd>
+<dt class="field-even">bibtex</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bergstra2013making</span></code></p>
+</dd>
+<dt class="field-odd">repository</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://github.com/hyperopt/hyperopt">GitHub</a></p>
+</dd>
+<dt class="field-even">parameters</dt>
+<dd class="field-even"><dl class="option-list">
+<dt><kbd><span class="option">--rand-evals</span></kbd></dt>
+<dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 3)</p>
+</dd>
+<dt><kbd><span class="option">--int-conversion-mode</span></kbd></dt>
+<dd><p>How to convert integer variables. Choose from <code class="docutils literal notranslate"><span class="pre">quniform</span></code> or <code class="docutils literal notranslate"><span class="pre">randint</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">quniform</span></code>)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div>
+<div class="section" id="random-search-via-hyperopt">
+<h2>Random Search (via HyperOpt)<a class="headerlink" href="#random-search-via-hyperopt" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">publications</dt>
+<dd class="field-odd"><p><a class="bibtex reference internal" href="index.html#bergstra2013making" id="id2">[BYC13]</a>.</p>
+</dd>
+<dt class="field-even">bibtex</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bergstra2013making</span></code></p>
+</dd>
+<dt class="field-odd">repository</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://github.com/hyperopt/hyperopt">GitHub</a></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="smac3">
+<h2>SMAC3<a class="headerlink" href="#smac3" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list">
+<dt class="field-odd">publications</dt>
+<dd class="field-odd"><p><a class="bibtex reference internal" href="index.html#hutter2010sequential-extended" id="id4">[HHLB10]</a>, <a class="bibtex reference internal" href="index.html#hutter2011sequential" id="id5">[HHLB11]</a></p>
+</dd>
+<dt class="field-even">bibtex</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">hutter2010sequential-extended</span></code>, <code class="docutils literal notranslate"><span class="pre">hutter2011sequential</span></code></p>
+</dd>
+<dt class="field-odd">repository</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://github.com/automl/SMAC3">GitHub</a></p>
+</dd>
+<dt class="field-even">parameters</dt>
+<dd class="field-even"><dl class="option-list">
+<dt><kbd><span class="option">--rand-evals</span></kbd></dt>
+<dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 3)</p>
+</dd>
+<dt><kbd><span class="option">--deterministic</span></kbd></dt>
+<dd><p>Whether to run SMAC in deterministic mode. (default: false)</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Non-deterministic mode spends a significant portion of its evaluation budget re-evaluating previous solutions. Enabling deterministic mode disables this, and may therefore provide better performance.</p>
+</div>
+</dd>
+</dl>
+</dd>
+</dl>
+</div>
+<div class="section" id="idone">
+<h2>IDONE<a class="headerlink" href="#idone" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list">
+<dt class="field-odd">publications</dt>
+<dd class="field-odd"><p>tbd</p>
+</dd>
+<dt class="field-even">bibtex</dt>
+<dd class="field-even"><p>tbd</p>
+</dd>
+<dt class="field-odd">repository</dt>
+<dd class="field-odd"><p>tbd</p>
+</dd>
+<dt class="field-even">parameters</dt>
+<dd class="field-even"><dl class="option-list">
+<dt><kbd><span class="option">--rand-evals</span></kbd></dt>
+<dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 5)</p>
+</dd>
+<dt><kbd><span class="option">--model</span></kbd></dt>
+<dd><p>The kind of model to use. Choose between <code class="docutils literal notranslate"><span class="pre">basic</span></code> and <code class="docutils literal notranslate"><span class="pre">advanced</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">advanced</span></code>)</p>
+</dd>
+<dt><kbd><span class="option">--binarize-categorical</span></kbd></dt>
+<dd><p>Whether to binarize categorical variables. Will turn a categorical variable with <span class="math notranslate nohighlight">\(k\)</span> possible values, into <span class="math notranslate nohighlight">\(\log_2(k)\)</span> binary (0 or 1) categorical variables. (default: false)</p>
+</dd>
+<dt><kbd><span class="option">--binarize-int</span></kbd></dt>
+<dd><p>Whether to binarize integer variables. Similar to <code class="docutils literal notranslate"><span class="pre">--binarize-categorical</span></code>, will turn a integer variable with <span class="math notranslate nohighlight">\(k\)</span> possible values, into <span class="math notranslate nohighlight">\(\log_2(k)\)</span> binary (0 or 1) integer variables. (default: false)</p>
+</dd>
+<dt><kbd><span class="option">--sampling</span></kbd></dt>
+<dd><p>What kind of random sampling to perform to motivate exploration. Can be <code class="docutils literal notranslate"><span class="pre">none</span></code>, <code class="docutils literal notranslate"><span class="pre">thompson</span></code> or <code class="docutils literal notranslate"><span class="pre">uniform</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">none</span></code>)</p>
+</dd>
+<dt><kbd><span class="option">--scaling</span></kbd></dt>
+<dd><p>Whether to perform scaling based on the first sample. (default: false)</p>
+</dd>
+<dt><kbd><span class="option">--expl-prob</span></kbd></dt>
+<dd><p>Sets the probability of performing an exploration step for each variable. Can be <code class="docutils literal notranslate"><span class="pre">normal</span></code> or <code class="docutils literal notranslate"><span class="pre">larger</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">normal</span></code>)</p>
+</dd>
+<dt><kbd><span class="option">--internal-logging</span></kbd></dt>
+<dd><p>Whether to emit <code class="docutils literal notranslate"><span class="pre">IDONE</span></code>’s internal logfiles. (default: false)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div>
+<div class="section" id="mvrsm">
+<h2>MVRSM<a class="headerlink" href="#mvrsm" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list">
+<dt class="field-odd">publications</dt>
+<dd class="field-odd"><p><a class="bibtex reference internal" href="index.html#bliek2020black" id="id7">[BVdW20]</a></p>
+</dd>
+<dt class="field-even">bibtex</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bliek2020black</span></code></p>
+</dd>
+<dt class="field-odd">repository</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://github.com/lbliek/MVRSM">GitHub</a></p>
+</dd>
+<dt class="field-even">parameters</dt>
+<dd class="field-even"><dl class="option-list">
+<dt><kbd><span class="option">--rand-evals</span></kbd></dt>
+<dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 5)</p>
+</dd>
+<dt><kbd><span class="option">--model</span></kbd></dt>
+<dd><p>The kind of model to use. Choose between <code class="docutils literal notranslate"><span class="pre">basic</span></code> and <code class="docutils literal notranslate"><span class="pre">advanced</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">advanced</span></code>)</p>
+</dd>
+<dt><kbd><span class="option">--binarize-categorical</span></kbd></dt>
+<dd><p>Whether to binarize categorical variables. Will turn a categorical variable with <span class="math notranslate nohighlight">\(k\)</span> possible values, into <span class="math notranslate nohighlight">\(\log_2(k)\)</span> binary (0 or 1) categorical variables. (default: false)</p>
+</dd>
+<dt><kbd><span class="option">--scaling</span></kbd></dt>
+<dd><p>Whether to perform scaling based on the first sample. (default: false)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div>
+<div class="section" id="cocabo">
+<h2>CoCaBO<a class="headerlink" href="#cocabo" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">publications</dt>
+<dd class="field-odd"><p><a class="bibtex reference internal" href="index.html#ru2019bayesian" id="id9">[RAN+19]</a></p>
+</dd>
+<dt class="field-even">bibtex</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">ru2019bayesian</span></code></p>
+</dd>
+<dt class="field-odd">repository</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://github.com/rubinxin/CoCaBO_code">GitHub</a></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="bayesianoptimization">
+<h2>bayesianoptimization<a class="headerlink" href="#bayesianoptimization" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">bibtex</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bayesianoptimization</span></code></p>
+</dd>
+<dt class="field-even">repository</dt>
+<dd class="field-even"><p><a class="reference external" href="https://github.com/fmfn/BayesianOptimization">GitHub</a></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="pygpgo">
+<h2>pyGPGO<a class="headerlink" href="#pygpgo" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">publications</dt>
+<dd class="field-odd"><p><a class="bibtex reference internal" href="index.html#jimenez2017" id="id12">[JG17]</a></p>
+</dd>
+<dt class="field-even">bibtex</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">pygpgo</span></code>, <code class="docutils literal notranslate"><span class="pre">Jimenez2017</span></code></p>
+</dd>
+<dt class="field-odd">repository</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://github.com/josejimenezluna/pyGPGO">GitHub</a></p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ExpensiveOptimBenchmark</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="problems.html">Problems</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Approaches</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hyperopt">HyperOpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#random-search-via-hyperopt">Random Search (via HyperOpt)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#smac3">SMAC3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#idone">IDONE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mvrsm">MVRSM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cocabo">CoCaBO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bayesianoptimization">bayesianoptimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pygpgo">pyGPGO</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extending/extending.html">Extending</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="problems.html" title="previous chapter">Problems</a></li>
+      <li>Next: <a href="extending/extending.html" title="next chapter">Extending</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Arthur Guijt, Laurens Bliek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/approaches.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

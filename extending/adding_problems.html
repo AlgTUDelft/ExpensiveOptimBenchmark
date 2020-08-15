@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adding Problems &#8212; ExpensiveOptimBenchmark 2020 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Adding Approaches" href="adding_approaches.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="adding-problems">
+<span id="id1"></span><h1>Adding Problems<a class="headerlink" href="#adding-problems" title="Permalink to this headline">¶</a></h1>
+<p>Adding a new benchmark problem consists of the following steps:</p>
+<ol class="arabic simple">
+<li><p>Define a problem class</p></li>
+<li><p>Create a problem instance constructor</p></li>
+<li><p>Add the problem to the <code class="docutils literal notranslate"><span class="pre">problems</span></code> dictionary in <code class="docutils literal notranslate"><span class="pre">run_experiment.py</span></code></p></li>
+</ol>
+<div class="section" id="define-a-problem-class">
+<h2>Define a problem class<a class="headerlink" href="#define-a-problem-class" title="Permalink to this headline">¶</a></h2>
+<p>A problem instance is defined to be a ‘bundle’ of an evaluation function, alongside a search space specification. This bundle is specified by subclassing <code class="docutils literal notranslate"><span class="pre">BaseProblem</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>from ..base import BaseProblem
+
+class &lt;name&gt;(BaseProblem):
+
+    def __init__(self, ...):
+        ...
+
+    def evaluate(self, x):
+        ...
+
+    def lbs(self):
+        ...
+
+    def ubs(self):
+        ...
+
+    def vartype(self):
+        ...
+
+    def dims(self):
+        ...
+
+    def __str__(self):
+        ...
+</pre></div>
+</div>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">__init__(self)</span></code></dt><dd><p>The class initializer. Add instance parameters here.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">evaluate(self,</span> <span class="pre">x)</span></code></dt><dd><p>The evaluation function, <code class="docutils literal notranslate"><span class="pre">x</span></code> is a 1d numpy array of length <code class="docutils literal notranslate"><span class="pre">dims</span></code>. Should return the objective value.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">lbs(self)</span></code> and <code class="docutils literal notranslate"><span class="pre">ubs(self)</span></code></dt><dd><p>Should both return vectors of length <code class="docutils literal notranslate"><span class="pre">dims</span></code>, containing the lower and upper bounds of the problem respectively. Bounds are both inclusive.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">vartype(self)</span></code></dt><dd><p>Should return a vector of length <code class="docutils literal notranslate"><span class="pre">dims</span></code> containing the variable type of each variable. Value can be <code class="docutils literal notranslate"><span class="pre">cont</span></code> for continuous, <code class="docutils literal notranslate"><span class="pre">int</span></code> for integer, <code class="docutils literal notranslate"><span class="pre">cat</span></code> for categorical.</p>
+<p>Prefer <code class="docutils literal notranslate"><span class="pre">int</span></code> in case the order of values matters, otherwise use <code class="docutils literal notranslate"><span class="pre">cat</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">dims(self)</span></code></dt><dd><p>Return the number of dimensions.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="create-a-problem-instance-constructor">
+<h2>Create a problem instance constructor<a class="headerlink" href="#create-a-problem-instance-constructor" title="Permalink to this headline">¶</a></h2>
+<p>The parameters of a problem instance are passed as command line arguments. The processing of these arguments is performed by the instance constructor function.</p>
+<p>The function has a fixed function signature, and returns a list of problem instances:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">construct_</span><span class="o">&lt;</span><span class="n">name</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">return</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Returning a list allows parameters to define a set of instances, rather than only encode a single instance at a time.</p>
+</div>
+<div class="section" id="adding-the-problem-to-run-experiment-py">
+<h2>Adding the problem to <code class="docutils literal notranslate"><span class="pre">run_experiment.py</span></code><a class="headerlink" href="#adding-the-problem-to-run-experiment-py" title="Permalink to this headline">¶</a></h2>
+<p>Finally the problem can be added to the command line parser in <code class="docutils literal notranslate"><span class="pre">run_experiment.py</span></code> by adding the following entry to the <code class="docutils literal notranslate"><span class="pre">problems</span></code> dictionary:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;&lt;problem-name&gt;&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;--&lt;arg-0&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;--&lt;arg-1&gt;&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">}</span>
+    <span class="s1">&#39;defaults&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;--&lt;arg-0&gt;&#39;</span><span class="p">:</span> <span class="s1">&#39;100&#39;</span><span class="p">,</span>
+        <span class="o">...</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;constructor&#39;</span><span class="p">:</span> <span class="n">construct_</span><span class="o">&lt;</span><span class="n">name</span><span class="o">&gt;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>With this entry added, the following should run an experiment with the newly added problem:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python ./expensiveoptimbenchmark/run_experiment.py &lt;global config&gt; &lt;problem-name&gt; &lt;problem-args&gt; &lt;approach-0-name&gt; &lt;approach-0-args&gt; &lt;approach-1-name&gt; &lt;approach-1-args&gt;
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Make sure to run a small experiment first to verify everything works as expected!</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">ExpensiveOptimBenchmark</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../problems.html">Problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../approaches.html">Approaches</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="extending.html">Extending</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="adding_approaches.html">Adding Approaches</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Adding Problems</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="extending.html">Extending</a><ul>
+      <li>Previous: <a href="adding_approaches.html" title="previous chapter">Adding Approaches</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Arthur Guijt, Laurens Bliek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/extending/adding_problems.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

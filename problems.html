@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Problems &#8212; ExpensiveOptimBenchmark 2020 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Approaches" href="approaches.html" />
+    <link rel="prev" title="Welcome to ExpensiveOptimBenchmark’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="problems">
+<h1>Problems<a class="headerlink" href="#problems" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="windmill-wake-simulator">
+<h2>Windmill Wake Simulator<a class="headerlink" href="#windmill-wake-simulator" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list">
+<dt class="field-odd">bibtex</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">floris2020</span></code></p>
+</dd>
+<dt class="field-even">repository</dt>
+<dd class="field-even"><p><a class="reference external" href="https://github.com/NREL/floris">GitHub</a></p>
+</dd>
+<dt class="field-odd">parameters</dt>
+<dd class="field-odd"><dl class="option-list">
+<dt><kbd><span class="option">-n</span></kbd></dt>
+<dd><p>The number of windmills to be placed. (default: 3)</p>
+</dd>
+<dt><kbd><span class="option">-w</span></kbd></dt>
+<dd><p>The width of the area in which the windmills are to be placed. (default: 1000)</p>
+</dd>
+<dt><kbd><span class="option">-h</span></kbd></dt>
+<dd><p>The height of the area in which the windmills are to be placed. (default: 1000)</p>
+</dd>
+<dt><kbd><span class="option">--wind-seed</span></kbd></dt>
+<dd><p>The random seed used for generating the distribution and strength of the wind. (default: 0)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">dimensionality</dt>
+<dd class="field-even"><p><span class="math notranslate nohighlight">\(2n\)</span></p>
+</dd>
+<dt class="field-odd">description</dt>
+<dd class="field-odd"><p>…</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="electrostatic-precipitator">
+<h2>Electrostatic Precipitator*<a class="headerlink" href="#electrostatic-precipitator" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">publications</dt>
+<dd class="field-odd"><p><a class="bibtex reference internal" href="index.html#daniels2018suite" id="id1">[DRE+18]</a></p>
+</dd>
+<dt class="field-even">bibtex</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">daniels2018suite</span></code></p>
+</dd>
+<dt class="field-odd">repository</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://bitbucket.org/arahat/cfd-test-problem-suite/">BitBucket</a></p>
+</dd>
+<dt class="field-even">parameters</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">dimensionality</dt>
+<dd class="field-odd"><p><span class="math notranslate nohighlight">\(49\)</span></p>
+</dd>
+<dt class="field-even">description</dt>
+<dd class="field-even"><p>…</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="hpo-xgboost">
+<h2>HPO / XGBoost<a class="headerlink" href="#hpo-xgboost" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list">
+<dt class="field-odd">parameters</dt>
+<dd class="field-odd"><dl class="option-list">
+<dt><kbd><span class="option">--folder</span></kbd></dt>
+<dd><p>The folder containing the unpacked files of the <a class="reference external" href="http://archive.ics.uci.edu/ml/datasets/Steel+Plates+Faults">Steel Plates Faults</a> dataset. (required)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">dataset</dt>
+<dd class="field-even"><p>Dataset provided by Semeion, Research Center of Sciences of Communication, Via Sersale 117, 00128, Rome, Italy. www.semeion.it</p>
+</dd>
+<dt class="field-odd">dimensionality</dt>
+<dd class="field-odd"><p><span class="math notranslate nohighlight">\(135\)</span></p>
+</dd>
+<dt class="field-even">description</dt>
+<dd class="field-even"><p>…</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ExpensiveOptimBenchmark</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Problems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#windmill-wake-simulator">Windmill Wake Simulator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#electrostatic-precipitator">Electrostatic Precipitator*</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hpo-xgboost">HPO / XGBoost</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="approaches.html">Approaches</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending/extending.html">Extending</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to ExpensiveOptimBenchmark’s documentation!</a></li>
+      <li>Next: <a href="approaches.html" title="next chapter">Approaches</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Arthur Guijt, Laurens Bliek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/problems.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

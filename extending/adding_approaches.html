@@ -1,0 +1,232 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adding Approaches &#8212; ExpensiveOptimBenchmark 2020 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Adding Problems" href="adding_problems.html" />
+    <link rel="prev" title="Extending" href="extending.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="adding-approaches">
+<span id="id1"></span><h1>Adding Approaches<a class="headerlink" href="#adding-approaches" title="Permalink to this headline">¶</a></h1>
+<p>Adding a new approch to the benchmark suite consists of a few steps:</p>
+<ol class="arabic simple">
+<li><p>Writing a wrapper. Which works as an adaptor for dealing with approach-specific pecularities.</p></li>
+<li><p>Writing an executor. Validates and processes command line arguments and passes them on to the wrapper for performing an experimental run of the approach on a problem.</p></li>
+<li><p>Add the approach to the <code class="docutils literal notranslate"><span class="pre">solvers</span></code> dictionary.</p></li>
+</ol>
+<div class="section" id="creating-the-wrapper">
+<h2>Creating the wrapper<a class="headerlink" href="#creating-the-wrapper" title="Permalink to this headline">¶</a></h2>
+<p>The wrapper is often placed under <code class="docutils literal notranslate"><span class="pre">expensiveoptimbenchmark/solvers/&lt;name&gt;/w&lt;name&gt;.py</span></code> and acts as an adaptor between the approach itself and the benchmark suite:</p>
+<ol class="arabic simple">
+<li><p>Convert the problem specification to the input of the approach.</p></li>
+<li><p>Attach the monitor to objective function</p></li>
+<li><p>Run the approach on the problem</p></li>
+<li><p>Return the solution and the monitor.</p></li>
+</ol>
+<p>For examples refer to the already wrapped approaches under <code class="docutils literal notranslate"><span class="pre">expensiveoptimbenchmark/solvers/</span></code>.</p>
+<p>A problem specifies 5 methods:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">dims</span></code></dt><dd><p>An integer specifying the number of dimensions.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">lbs</span></code> and <code class="docutils literal notranslate"><span class="pre">ubs</span></code></dt><dd><p>An array of length <code class="docutils literal notranslate"><span class="pre">dims()</span></code>, specifying the lower and upper bound of each variable respectively</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">vartype</span></code></dt><dd><p>An array of length <code class="docutils literal notranslate"><span class="pre">dims()</span></code>, specifying whether a variable is continuous (<code class="docutils literal notranslate"><span class="pre">cont</span></code>), integer (<code class="docutils literal notranslate"><span class="pre">int</span></code>) or categorical (<code class="docutils literal notranslate"><span class="pre">cat</span></code>). A variable is generally chosen to be integer when order matters, and otherwise categorical.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">dependencies</span></code></dt><dd><p>An array of length <code class="docutils literal notranslate"><span class="pre">dims()</span></code>, which is <code class="docutils literal notranslate"><span class="pre">None</span></code> if the variable at this position does not have any dependencies, and is otherwise a dictionary containing <code class="docutils literal notranslate"><span class="pre">on</span></code> – specifying the variable index that the variable is depndent on – as well as <code class="docutils literal notranslate"><span class="pre">values</span></code> specifying the set of values that cause a variable to be active.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>How to specify a problem is documented under <a class="reference internal" href="adding_problems.html#adding-problems"><span class="std std-ref">Adding Problems</span></a>.</p>
+</div>
+<p>The monitor is a particular tool to keep track of evaluations performed and time spent on both deciding on a point (referred to as <code class="docutils literal notranslate"><span class="pre">model_time</span></code> in the output csv file) and the time spent on evaluating this point (<code class="docutils literal notranslate"><span class="pre">eval_time</span></code>).</p>
+<p>The class <code class="docutils literal notranslate"><span class="pre">Monitor</span></code> is located in <code class="docutils literal notranslate"><span class="pre">expensiveoptimbenchmark/solvers/utils.py</span></code> and can easily be imported via:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">Monitor</span>
+</pre></div>
+</div>
+<p>Constructing a <code class="docutils literal notranslate"><span class="pre">Monitor</span></code> requires a string as argument, specifying the name of the approach. Additionally, this string should include additional information about the parameterization of the approach:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mon</span> <span class="o">=</span> <span class="n">Monitor</span><span class="p">(</span><span class="s2">&quot;&lt;name&gt;/fast&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The monitor has a set of four markers: <code class="docutils literal notranslate"><span class="pre">begin</span></code>, <code class="docutils literal notranslate"><span class="pre">end</span></code>, <code class="docutils literal notranslate"><span class="pre">commit_start_eval</span></code> and <code class="docutils literal notranslate"><span class="pre">commit_end_eval</span></code>. The first two – <code class="docutils literal notranslate"><span class="pre">begin</span></code> and <code class="docutils literal notranslate"><span class="pre">end</span></code> – are used to mark the beginning and start of the full run of an approach, whereas the last two – <code class="docutils literal notranslate"><span class="pre">commit_start_eval</span></code> and <code class="docutils literal notranslate"><span class="pre">commit_end_eval</span></code> – are used to mark the beginning and end of an evaluation.</p>
+<p>A general layout of the wrapper with an optimizer which accepts a function is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_variables</span><span class="p">(</span><span class="n">problem</span><span class="p">):</span>
+    <span class="c1"># ... approach specific code here ...</span>
+
+<span class="k">def</span> <span class="nf">optimize_optimizer</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">max_evals</span><span class="p">,</span> <span class="n">rand_evals</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="c1"># ... approach specific code here ...</span>
+    <span class="c1"># spec = get_variables(problem)</span>
+
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x_in</span><span class="p">):</span>
+        <span class="c1"># ... approach specific code here ...</span>
+        <span class="c1"># eg. x = x_in</span>
+        <span class="n">mon</span><span class="o">.</span><span class="n">commit_start_eval</span><span class="p">()</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">problem</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">mon</span><span class="o">.</span><span class="n">commit_end_eval</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">r</span>
+
+    <span class="c1"># ... approach specific code here ...</span>
+    <span class="c1"># eg. optimizer = Optimizer(f, spec)</span>
+
+    <span class="n">mon</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="c1"># ... approach specific code here ...</span>
+    <span class="c1"># eg. optimizer.optimize()</span>
+    <span class="n">mon</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+
+    <span class="c1"># ... approach specific code here ...</span>
+    <span class="c1"># eg. return optimizer.best_x, optimizer.best_obj, mon</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="creating-the-executor-and-adding-the-approach">
+<h2>Creating the executor and adding the approach<a class="headerlink" href="#creating-the-executor-and-adding-the-approach" title="Permalink to this headline">¶</a></h2>
+<p>The executor is responsible for parsing the command line arguments specific to an approach, and running the approach with these parameters. An executor has a fixed function signature:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">execute_</span><span class="o">&lt;</span><span class="n">name</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">max_eval</span><span class="p">,</span> <span class="n">log</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">solvers.</span><span class="o">&lt;</span><span class="n">name</span><span class="o">&gt;.</span><span class="n">w</span><span class="o">&lt;</span><span class="n">name</span><span class="o">&gt;</span> <span class="kn">import</span> <span class="nn">optimize_</span><span class="o">&lt;</span><span class="n">name</span><span class="o">&gt;</span>
+    <span class="c1"># ... process params ...</span>
+    <span class="k">return</span>  <span class="n">optimize_</span><span class="o">&lt;</span><span class="n">name</span><span class="o">&gt;</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">max_eval</span><span class="p">,</span>
+</pre></div>
+</div>
+<p>Special attention has been given to the number of initial random evaluations of an objective function, as such it is recommended to use <code class="docutils literal notranslate"><span class="pre">--rand-evals</span></code> for this value. If <code class="docutils literal notranslate"><span class="pre">--rand-evals-all</span></code> is set, <code class="docutils literal notranslate"><span class="pre">--rand-evals</span></code> will be set to this value among all approaches as default, overriding the approach specific default.</p>
+<p>Finally the approach can be added to the solvers dictionary in <code class="docutils literal notranslate"><span class="pre">run_experiment.py</span></code>. An entry of this dictionary has the following format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;&lt;name&gt;&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;--rand-evals&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">},</span>
+    <span class="s1">&#39;defaults&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;--rand-evals&#39;</span><span class="p">:</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span>
+        <span class="o">...</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;executor&#39;</span><span class="p">:</span> <span class="n">execute_</span><span class="o">&lt;</span><span class="n">name</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="s1">&#39;check&#39;</span><span class="p">:</span> <span class="n">nop</span> <span class="c1"># or check_&lt;name&gt;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl>
+<dt><strong>args</strong></dt><dd><p>A <code class="docutils literal notranslate"><span class="pre">set</span></code> of command line arguments.</p>
+</dd>
+<dt><strong>defaults</strong></dt><dd><p>A <code class="docutils literal notranslate"><span class="pre">dict</span></code> of default values for command line arguments.</p>
+</dd>
+<dt><strong>executor</strong></dt><dd><p>The executor function you have defined previously.</p>
+<p>Called for every repetition of an approach.</p>
+</dd>
+<dt><strong>check</strong></dt><dd><p>The check function. If you want to run any checks before starting the experiment, a check function can be provided. One can for example verify that the parameter values are valid, or that all required packages are installed and present.</p>
+<p>Called once before starting all experimental runs.</p>
+</dd>
+</dl>
+<p>With all this done, your approach should be runnable with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python ./expensiveoptimbenchmark/run_experiment.py &lt;global config&gt; &lt;problem-name&gt; &lt;problem-args&gt; &lt;approach-0-name&gt; &lt;approach-0-args&gt; &lt;approach-1-name&gt; &lt;approach-1-args&gt;
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Make sure to run a small experiment first to verify everything works as expected!</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">ExpensiveOptimBenchmark</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../problems.html">Problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../approaches.html">Approaches</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="extending.html">Extending</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Adding Approaches</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adding_problems.html">Adding Problems</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="extending.html">Extending</a><ul>
+      <li>Previous: <a href="extending.html" title="previous chapter">Extending</a></li>
+      <li>Next: <a href="adding_problems.html" title="next chapter">Adding Problems</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Arthur Guijt, Laurens Bliek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/extending/adding_approaches.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
