@@ -15,7 +15,7 @@ Welcome to ExpensiveOptimBenchmark's documentation!
 
    extending/extending
 
-.. bibliography:: bibliography.bib
+   zzreferences
 
 Indices and tables
 ==================

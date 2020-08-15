@@ -59,14 +59,20 @@ CoCaBO
 :publications: :cite:`ru2019bayesian`
 :bibtex:      ``ru2019bayesian``
 :repository:   `GitHub <https://github.com/rubinxin/CoCaBO_code>`_
+:parameters:
+    --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 24)
 
 bayesianoptimization
 --------------------
 :bibtex:      ``bayesianoptimization``
 :repository:   `GitHub <https://github.com/fmfn/BayesianOptimization>`_
+:parameters:
+    --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 5)
 
 pyGPGO
 ------
 :publications: :cite:`Jimenez2017`
 :bibtex:      ``pygpgo``, ``Jimenez2017``
 :repository:   `GitHub <https://github.com/josejimenezluna/pyGPGO>`_
+:parameters:
+    --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 3)
