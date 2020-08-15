@@ -170,5 +170,8 @@ $RECYCLE.BIN/
 .vscode/settings.json
 
 # log files
-expensiveoptimbenchmark/results/
-expensiveoptimbenchmark/runhistory.json
+results
+runhistory.json
+
+# directory for storing data in
+data
