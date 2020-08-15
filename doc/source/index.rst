@@ -13,9 +13,11 @@ Welcome to ExpensiveOptimBenchmark's documentation!
    problems
    approaches
 
-   usage/adding_approaches
-   usage/adding_problems
+   extending/extending
 
+References
+==========
+.. bibliography:: bibliography.bib
 
 Indices and tables
 ==================
