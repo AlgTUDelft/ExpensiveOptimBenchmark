@@ -19,9 +19,11 @@ ghpages: | build
 	git stash
 	$(eval commit_hash := $(shell git rev-parse HEAD))
 	git checkout gh-pages
+	git pull
 	cp -r ./build/html/* ../
 	git add --all
 	git commit -m "Update documentation.\n\nFrom reversion: $(commit_hash)"
+	git push
 	git checkout -
 	git stash pop
 	cd doc
