@@ -7,9 +7,10 @@ import os
 # Return nice labels
 def convert_feature_label(y_feature):
     if y_feature == 'iter_best_fitness':
-        return 'Best fitness value'
+        return 'Objective'
     else:
         return y_feature
+
 
 # Plot iter log files from a folder path
 def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None):
