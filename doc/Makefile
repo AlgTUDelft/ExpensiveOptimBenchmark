@@ -20,7 +20,7 @@ ghpages: | build
 	$(eval commit_hash := $(shell git rev-parse HEAD))
 	cd ..
 	git checkout gh-pages
-	cp -r ./build/html/* ../
+	cp -r ./doc/build/html/* ../
 	git add --all
 	git commit -m "Update documentation.\n\nFrom reversion: $(commit_hash)"
 	git checkout -
