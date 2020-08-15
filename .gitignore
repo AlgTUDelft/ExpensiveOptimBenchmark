@@ -175,3 +175,6 @@ runhistory.json
 
 # directory for storing data in
 data
+
+# Do not commit the original documentation directory
+doc
