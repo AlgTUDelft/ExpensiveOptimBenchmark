@@ -75,6 +75,12 @@ HPO / XGBoost
 -------------
 :parameters:
     --folder   The folder containing the unpacked files of the `Steel Plates Faults <http://archive.ics.uci.edu/ml/datasets/Steel+Plates+Faults>`_ dataset. (required)
+    --time-limit   The time limit for a single evaluation of the objective function in seconds. (default: 8)
+        **TODO:** Setting this parameter still needs to be implemented.
+
+        .. important::
+            The default time limit is based on a **Intel(R) Xeon(R) Gold 6148 CPU @ 2.40GHz**, adjust accordingly to hardware used.
+        
 :dataset:        Dataset provided by Semeion, Research Center of Sciences of Communication, Via Sersale 117, 00128, Rome, Italy. www.semeion.it 
 :dimensionality: :math:`135`
 :runtime:
@@ -83,11 +89,4 @@ HPO / XGBoost
 
         plot_time_hist("hpo_rs.csv.xz")
 
-:parameters:
-    --time-limit   The time limit for a single evaluation of the objective function in seconds. (default: 8)
-        **TODO:** Setting this parameter still needs to be implemented.
-
-        .. important::
-            The default time limit is based on a **Intel(R) Xeon(R) Gold 6148 CPU @ 2.40GHz**, adjust accordingly to hardware used.
-        
 :description: ...
