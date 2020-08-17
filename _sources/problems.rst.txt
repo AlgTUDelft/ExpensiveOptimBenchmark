@@ -11,11 +11,12 @@ Problems
     import pandas as pd
     import numpy as np
     import matplotlib.pyplot as plt
+    from scipy.stats import norm, gamma, chi, chi2, beta, expon
 
     is_doc = os.getcwd().endswith('doc')
     datadir = "./source/data/" if is_doc else "./data"
 
-    def plot_time_hist(csv):
+    def plot_time_hist(csv, dist=None, filter=None, scale=1):
         esp_times = pd.read_csv(os.path.join(datadir, csv))['iter_eval_time']
 
         esp_times_n = len(esp_times)
@@ -34,15 +35,24 @@ Problems
         # Add histogram
         ax.hist(esp_times)
 
-        # Overlay gaussian
-        x = np.linspace(esp_times_min, esp_times_max, 200)
-        y = (esp_times_n / (esp_times_std * np.sqrt(2))) * np.exp(-1/2*((x - esp_times_mean) / esp_times_std)**2)
-        ax.plot(x, y)
+        # Overlay distribution
+        if dist is not None:
+            x = np.linspace(esp_times_min, esp_times_max, 200)
+            if filter is None:
+                data = esp_times
+            else:
+                data = esp_times[filter(esp_times)]
+
+            dist_f = dist(*dist.fit(data * scale))
+
+            data_n = len(data)
+            y = data_n * dist_f.pdf(x * scale)
+            ax.plot(x, y)
 
         ax.text(0.01, 0.99, f"$\\mu: {esp_times_mean:.2f}$\n$\sigma: {esp_times_std:.2f}$", horizontalalignment='left',
         verticalalignment='top', transform=ax.transAxes)
 
-        fig.show()
+        # fig.show()
 
 Windmill Wake Simulator
 -----------------------
@@ -67,7 +77,7 @@ Electrostatic Precipitator*
     .. jupyter-execute::
         :hide-code:
 
-        plot_time_hist("esp_rs.csv.xz")
+        plot_time_hist("esp_rs.csv.xz", dist=norm)
 
 :description: ...
 
@@ -87,6 +97,7 @@ HPO / XGBoost
     .. jupyter-execute::
         :hide-code:
 
-        plot_time_hist("hpo_rs.csv.xz")
+        # plot_time_hist("hpo_rs.csv.xz", dist=norm, filter=lambda x: x < 8.0)
+        plot_time_hist("hpo_rs.csv.xz", dist=norm)
 
 :description: ...
