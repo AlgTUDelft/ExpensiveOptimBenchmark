@@ -27,7 +27,6 @@ ghpages: | build
 	git push
 	git checkout -
 	if [ -n "$(stash_hash)" ]; then git stash apply "$(stash_hash)"; fi
-	cd doc
 
 build:
 	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
