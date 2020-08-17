@@ -16,8 +16,9 @@ help:
 
 # Place the current build in the gh-pages branch.
 ghpages: | build
-	git stash
+	$(eval stash_hash := $(shell git stash create))
 	$(eval commit_hash := $(shell git rev-parse HEAD))
+	git reset --hard HEAD
 	git checkout gh-pages
 	git pull
 	cp -r ./build/html/* ../
@@ -25,7 +26,7 @@ ghpages: | build
 	git commit -m "Update documentation.\n\nFrom reversion: $(commit_hash)"
 	git push
 	git checkout -
-	git stash pop
+	if [ -n "$(stash_hash)" ]; then git stash apply "$(stash_hash)"; fi
 	cd doc
 
 build:
