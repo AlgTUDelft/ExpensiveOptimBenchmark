@@ -5,7 +5,7 @@ HyperOpt
 --------
 :publications: :cite:`bergstra2013making`.
 :bibtex:      ``bergstra2013making``
-:repository:   `GitHub <https://github.com/hyperopt/hyperopt>`_
+:repository:   `GitHub <https://github.com/hyperopt/hyperopt>`_, `PyPI <https://pypi.org/project/hyperopt/>`_
 :supports:    ``cont``, ``int``, ``cat``
 :parameters:
     --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 3)
@@ -16,13 +16,13 @@ Random Search (via HyperOpt)
 :publications: :cite:`bergstra2013making`.
 :bibtex:      ``bergstra2013making``
 :supports:    ``cont``, ``int``, ``cat``
-:repository:   `GitHub <https://github.com/hyperopt/hyperopt>`_
+:repository:   `GitHub <https://github.com/hyperopt/hyperopt>`_, `PyPI <https://pypi.org/project/hyperopt/>`_
 
 SMAC3
 -----
 :publications: :cite:`hutter2010sequential-extended`, :cite:`hutter2011sequential`
 :bibtex:      ``hutter2010sequential-extended``, ``hutter2011sequential``
-:repository:   `GitHub <https://github.com/automl/SMAC3>`_
+:repository:   `GitHub <https://github.com/automl/SMAC3>`_, `PyPI <https://pypi.org/project/smac/>`_
 :supports:    ``cont``, ``int``, ``cat``
 :parameters:
     --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 3)
@@ -75,7 +75,7 @@ CoCaBO
 bayesianoptimization
 --------------------
 :bibtex:      ``bayesianoptimization``
-:repository:   `GitHub <https://github.com/fmfn/BayesianOptimization>`_
+:repository:   `GitHub <https://github.com/fmfn/BayesianOptimization>`_, `PyPI <https://pypi.org/project/bayesian-optimization/>`_
 :supports:    ``cont``, ``int`` (via rounding), ``cat`` (interpreted as integer, via rounding)
 :parameters:
     --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 5)
@@ -84,7 +84,7 @@ pyGPGO
 ------
 :publications: :cite:`Jimenez2017`
 :bibtex:      ``pygpgo``, ``Jimenez2017``
-:repository:   `GitHub <https://github.com/josejimenezluna/pyGPGO>`_
+:repository:   `GitHub <https://github.com/josejimenezluna/pyGPGO>`_, `PyPI <https://pypi.org/project/pyGPGO/>`_
 :supports:      ``cont``, ``int`` (via rounding), ``cat`` (interpreted as integer, via rounding)
     
     .. note:: Built-in support for integers is not used due to crashes.
