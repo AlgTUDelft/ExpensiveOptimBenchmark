@@ -59,6 +59,7 @@ def optimize_CoCaBO(problem, max_evals, init_points=24, kernel_mix=0.5, log=None
     Cmap = [var['domain'] for var in variables if var['type'] == 'categorical']
     # I do not know.
     assert len(C) < d, "CoCaBO requires at least one variable to be continuous."
+    assert len(C) > 0, "CoCaBO requires at least one variable to be discrete."
     # assert len(C) > 0, "CoCaBO on continuous variables only..."
     max_eval_budget = max_evals - init_points
     assert max_eval_budget > 0, "CoCaBo requires at least one non-random evaluation."
