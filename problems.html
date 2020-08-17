@@ -8,11 +8,14 @@
     <title>Problems &#8212; ExpensiveOptimBenchmark 2020 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/language_data.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -36,6 +39,14 @@
             
   <div class="section" id="problems">
 <h1>Problems<a class="headerlink" href="#problems" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Evaluation runtimes are measured on a <strong>Intel(R) Xeon(R) Gold 6148 CPU &#64; 2.40GHz</strong> CPU, using random search.</p>
+</div>
+<div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+</div>
+</div>
 <div class="section" id="windmill-wake-simulator">
 <h2>Windmill Wake Simulator<a class="headerlink" href="#windmill-wake-simulator" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list">
@@ -71,7 +82,7 @@
 </div>
 <div class="section" id="electrostatic-precipitator">
 <h2>Electrostatic Precipitator*<a class="headerlink" href="#electrostatic-precipitator" title="Permalink to this headline">¶</a></h2>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">publications</dt>
 <dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#daniels2018suite" id="id1">[DRE+18]</a></p>
 </dd>
@@ -87,8 +98,15 @@
 <dt class="field-odd">dimensionality</dt>
 <dd class="field-odd"><p><span class="math notranslate nohighlight">\(49\)</span></p>
 </dd>
-<dt class="field-even">description</dt>
-<dd class="field-even"><p>…</p>
+<dt class="field-even">runtime</dt>
+<dd class="field-even"><div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/problems_1_1.png" src="_images/problems_1_1.png" />
+</div>
+</div>
+</dd>
+<dt class="field-odd">description</dt>
+<dd class="field-odd"><p>…</p>
 </dd>
 </dl>
 </div>
@@ -107,6 +125,25 @@
 </dd>
 <dt class="field-odd">dimensionality</dt>
 <dd class="field-odd"><p><span class="math notranslate nohighlight">\(135\)</span></p>
+</dd>
+<dt class="field-even">runtime</dt>
+<dd class="field-even"><div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/problems_2_1.png" src="_images/problems_2_1.png" />
+</div>
+</div>
+</dd>
+<dt class="field-odd">parameters</dt>
+<dd class="field-odd"><dl class="option-list">
+<dt><kbd><span class="option">--time-limit</span></kbd></dt>
+<dd><p>The time limit for a single evaluation of the objective function in seconds. (default: 8)
+<strong>TODO:</strong> Setting this parameter still needs to be implemented.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The default time limit is based on a <strong>Intel(R) Xeon(R) Gold 6148 CPU &#64; 2.40GHz</strong>, adjust accordingly to hardware used.</p>
+</div>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">description</dt>
 <dd class="field-even"><p>…</p>
