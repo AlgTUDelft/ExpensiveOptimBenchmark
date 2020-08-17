@@ -16,7 +16,7 @@ help:
 
 # Place the current build in the gh-pages branch.
 ghpages: | build
-	$(eval stash_hash := $(shell git stash create))
+	$(eval stash_hash := $(shell git stash create --all))
 	$(eval commit_hash := $(shell git rev-parse HEAD))
 	git reset --hard HEAD
 	git checkout gh-pages
