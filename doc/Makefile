@@ -23,7 +23,7 @@ ghpages: | build
 	git pull
 	cp -r ./build/html/* ../
 	git add --all
-	git commit -m "Update documentation.\n\nFrom reversion: $(commit_hash)"
+	git commit -m "Update documentation.\n\nFrom reversion: $(commit_hash)" || true
 	git push
 	git checkout -
 	if [ -n "$(stash_hash)" ]; then git stash apply "$(stash_hash)"; fi
