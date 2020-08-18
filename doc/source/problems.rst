@@ -10,6 +10,7 @@ Problems
     import os
     import pandas as pd
     import numpy as np
+    import matplotlib.patheffects as pe
     import matplotlib.pyplot as plt
     from scipy.stats import norm, gamma, chi, chi2, beta, expon
 
@@ -49,8 +50,8 @@ Problems
             y = data_n * dist_f.pdf(x * scale)
             ax.plot(x, y)
 
-        ax.text(0.01, 0.99, f"$\\mu: {esp_times_mean:.2f}$\n$\sigma: {esp_times_std:.2f}$", horizontalalignment='left',
-        verticalalignment='top', transform=ax.transAxes)
+        txt = ax.text(0.01, 0.99, f"$\\mu: {esp_times_mean:.2f}$\n$\sigma: {esp_times_std:.2f}$", horizontalalignment='left', verticalalignment='top', transform=ax.transAxes)
+        txt.set_path_effects([pe.Stroke(linewidth=3, foreground='white'), pe.Normal()])
 
 Windmill Wake Simulator
 -----------------------
