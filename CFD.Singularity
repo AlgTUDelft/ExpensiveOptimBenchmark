@@ -5,6 +5,7 @@ Stage: spython-base
 %environment
 export PYTHONPATH=$PYTHONPATH:/home/openfoam/cfd-test-problem-suite/Exeter_CFD_Problems/:/home/openfoam/cfd-test-problem-suite/Exeter_CFD_Problems/data
 export WM_MPLIB=SYSTEMOPENMPI
+export JULIA_DEPOT_PATH=/opt/juliapkg
 
 %files
 ./requirements.txt ./requirements_eob.txt
