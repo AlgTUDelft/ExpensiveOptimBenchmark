@@ -1,6 +1,7 @@
+from .base import BaseProblem
 import numpy as np
 
-class Convex:
+class Convex(BaseProblem):
 
     def __init__(self, d, instance_seed, noise_seed=None, noise_factor=1.0):
         self.d = d

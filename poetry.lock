@@ -195,7 +195,7 @@ dev = ["tox", "bumpversion (<1)", "sphinx (<2)", "PyTest (<5)", "PyTest-Cov (<2.
 category = "main"
 description = "Docutils -- Python Documentation Utilities"
 name = "docutils"
-optional = true
+optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 version = "0.16"
 
@@ -644,7 +644,7 @@ wcwidth = "*"
 category = "main"
 description = "Cross-platform lib for process and system monitoring in Python."
 name = "psutil"
-optional = true
+optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "5.7.2"
 
@@ -715,7 +715,7 @@ typing-extensions = ">=3.7.4"
 category = "main"
 description = "A small Python library to limit the resources used by a function by executing it inside a subprocess."
 name = "pynisher"
-optional = true
+optional = false
 python-versions = "*"
 version = "0.5.0"
 
@@ -1024,6 +1024,25 @@ setuptools = ">=41.2"
 
 [[package]]
 category = "main"
+description = "XGBoost Python Package"
+name = "xgboost"
+optional = false
+python-versions = ">=3.5"
+version = "1.1.1"
+
+[package.dependencies]
+numpy = "*"
+scipy = "*"
+
+[package.extras]
+dask = ["dask", "pandas", "distributed"]
+datatable = ["datatable"]
+pandas = ["pandas"]
+plotting = ["graphviz", "matplotlib"]
+scikit-learn = ["scikit-learn"]
+
+[[package]]
+category = "main"
 description = "Backport of pathlib-compatible object wrapper for zip files"
 marker = "python_version < \"3.8\""
 name = "zipp"
@@ -1040,7 +1059,7 @@ julia = ["julia"]
 smac = ["smac"]
 
 [metadata]
-content-hash = "37de298a33fc1e7fc73c51fcea71cf99dcf67e9ed2d6fa3c76dfd6e15a45a7bc"
+content-hash = "a39c589d52e053dc88e92f9eb9d28b23bf8b428138b01f45163418eaaab73250"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1649,6 +1668,12 @@ wrapt = [
 xarray = [
     {file = "xarray-0.16.0-py3-none-any.whl", hash = "sha256:e38452dbbb9f7b1938ae23b81ca7d66d1109818040048ec42e59c0c738cbe8f3"},
     {file = "xarray-0.16.0.tar.gz", hash = "sha256:665de4253fcf951e7a6954313b77164d7efca2bd820f0a518b7c25ea46ee43cb"},
+]
+xgboost = [
+    {file = "xgboost-1.1.1-py3-none-macosx_10_13_x86_64.macosx_10_14_x86_64.macosx_10_15_x86_64.whl", hash = "sha256:911b2fe8689073ffa65f5b51552233d2a874f6fb0f670775c9c416cae0d2b0cb"},
+    {file = "xgboost-1.1.1-py3-none-manylinux2010_x86_64.whl", hash = "sha256:483c49c6ea0d0ccfa607f5847613bb5deeca91a31f8bc79dc933017b3a4a27f1"},
+    {file = "xgboost-1.1.1-py3-none-win_amd64.whl", hash = "sha256:e52c8a831efe18c42b35e5ea699eec77cba0db52dfb66b264f32451c31bb5d75"},
+    {file = "xgboost-1.1.1.tar.gz", hash = "sha256:45741bb6c3a09b050b974baec8353d649d0e730a9d78dc0382c998d53b8e89b3"},
 ]
 zipp = [
     {file = "zipp-3.1.0-py3-none-any.whl", hash = "sha256:aa36550ff0c0b7ef7fa639055d797116ee891440eac1a56f378e2d3179e0320b"},
