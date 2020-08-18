@@ -34,7 +34,7 @@ wget https://julialang-s3.julialang.org/bin/linux/x64/1.5/julia-1.5.0-linux-x86_
 tar -xvzf julia-1.5.0-linux-x86\_64.tar.gz
 ln -s "$PWD"/julia-1.5.0/bin/julia /bin/
 export JULIA_DEPOT_PATH=/opt/julia
-julia -e 'using Pkg; ENV["PYTHON"]="python3.7"; pkg"add PyCall"'
+julia -e 'using Pkg; ENV["PYTHON"]="python3.7"; pkg"add PyCall NLopt Distributions"'
 chmod -R 645 /opt/julia
 python3.7 -c "import julia; julia.install()"
 
