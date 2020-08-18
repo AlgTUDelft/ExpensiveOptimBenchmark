@@ -5,7 +5,7 @@ from julia import Main
 Main.include("./expensiveoptimbenchmark/solvers/DONEjl/vendor/DONEs.jl")
 DONEs = Main.DONEs
 
-def minimize_DONEjl(f, lb, ub, rand_evals, max_evals, hyperparams):
+def minimize_DONEjl(f, lb, ub, rand_evals, max_evals, hyperparams, progressbar=True):
     n_vars      = len(lb)
     n_basis     = hyperparams.get('n_basis', 1000) # larger with more n_vars (high dim)
     sigma_coeff = hyperparams.get('sigma_coeff', 0.1) # / sqrt(n_vars)
@@ -24,7 +24,13 @@ def minimize_DONEjl(f, lb, ub, rand_evals, max_evals, hyperparams):
     done = DONEs.DONE(rfe, lbs, ubs, sigma_s, sigma_f)
     best_x = None
     best_y = np.inf
-    for i in tqdm(range(max_evals)):
+
+    if progressbar:
+        idxiter = tqdm(range(max_evals))
+    else:
+        idxiter = range(max_evals)
+    
+    for i in idxiter:
         if i < rand_evals:
             xi = rng.uniform(lbs, ubs)
             yi = f(xi)
