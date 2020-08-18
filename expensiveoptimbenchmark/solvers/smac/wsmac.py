@@ -4,6 +4,7 @@ import math
 # Variable types
 from smac.configspace import ConfigurationSpace
 from ConfigSpace.hyperparameters import UniformFloatHyperparameter, UniformIntegerHyperparameter, CategoricalHyperparameter
+from ConfigSpace.conditions import InCondition
 
 # 
 from smac.facade.smac_hpo_facade import SMAC4HPO
@@ -32,18 +33,28 @@ def get_variable(problem, varidx):
 
 def get_variables(problem):
     cs = ConfigurationSpace()
+    params = []
     for i in range(problem.dims()):
-        cs.add_hyperparameter(get_variable(problem, i))
+        param = get_variable(problem, i)
+        params.append(param)
+        cs.add_hyperparameter(param)
+    
+    for (i, c) in enumerate(problem.dependencies()):
+        if c is None:
+            continue
+        j = c['on']
+        s = c['values']
+        cs.add_condition(InCondition(params[i], params[j], list(s)))
 
     return cs
 
 def optimize_smac(problem, max_evals, rand_evals=1, deterministic=False, log=None):
-    
-    n = problem.dims()
+    n = len(problem.vartype())
+    nlog10 = math.ceil(math.log10(n))
     
     mon = Monitor(f"smac{'/det' if deterministic else ''}{'/ac' if n > 40 else ''}", problem, log=log)
     def f(cfg):
-        xvec = np.array([cfg[k] for k, t in zip(cfg, problem.vartype())])
+        xvec = np.array([cfg.get(f'v{varidx:0{nlog10}}') for varidx, t in enumerate(problem.vartype())])
         mon.commit_start_eval()
         r = float(problem.evaluate(xvec))
         mon.commit_end_eval(xvec, r)

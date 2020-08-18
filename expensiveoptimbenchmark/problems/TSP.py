@@ -1,9 +1,10 @@
+from .base import BaseProblem
 import os.path
 import numpy as np
 import tsplib95
 import networkx
 
-class TSP:
+class TSP(BaseProblem):
 
     def __init__(self, name, W, n_iter, noise_seed=None, noise_factor=1):
         self.name = name

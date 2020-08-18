@@ -1,7 +1,8 @@
+from .base import BaseProblem
 import numpy as np
 from scipy.optimize import rosen
 
-class RosenbrockInt:
+class RosenbrockInt(BaseProblem):
 
     def __init__(self, d, dolog=False, noise_seed=None, noise_factor=1e-6):
         self.ub = 10

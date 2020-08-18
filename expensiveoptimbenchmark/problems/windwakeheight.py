@@ -1,8 +1,10 @@
+from base import BaseProblem
+
 import numpy as np
 import floris.tools as wfct
 import logging
 
-class WindWakeHeightLayout:
+class WindWakeHeightLayout(BaseProblem):
 
     def __init__(self, file, n_turbines=3, wind_seed=0, width=1000, length=1000, heights=[90, 95, 100, 105, 110], plant_kwv=None):
         self.file = file

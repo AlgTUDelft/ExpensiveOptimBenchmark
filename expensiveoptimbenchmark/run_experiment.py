@@ -94,6 +94,16 @@ def construct_windwakeh(params):
 
     return [WindWakeHeightLayout(sim_info_file, n_turbines=n_turbines, wind_seed=wind_seed, width=width, height=height)]
 
+def construct_automlnaive(params):
+    from problems.steelfoldplateclassifier import SteelFoldPlate
+    instance_info_folder = params['--folder']
+    return [SteelFoldPlate(instance_info_folder, naive=True)]
+
+def construct_automl(params):
+    from problems.steelfoldplateclassifier import SteelFoldPlate
+    instance_info_folder = params['--folder']
+    return [SteelFoldPlate(instance_info_folder)]
+
 # Summary of problems and their parameters.
 problems = {
     'tsp': {
@@ -155,6 +165,16 @@ problems = {
             '--wind-seed': '0'
         },
         'constructor': construct_windwakeh
+    },
+    'automlnaive': {
+        'args': {'--folder'},
+        'defaults': {},
+        'constructor': construct_automlnaive
+    },
+    'automl': {
+        'args': {'--folder'},
+        'defaults': {},
+        'constructor': construct_automl
     }
 }
 
@@ -384,7 +404,7 @@ solvers = {
     }
 }
 
-general_args = {'--repetitions', '--max-eval', '--out-path', '--write-every', '--rand-eval-all'}
+general_args = {'--repetitions', '--max-eval', '--out-path', '--write-every', '--rand-evals-all'}
 
 # Parse
 general = {
@@ -506,7 +526,7 @@ repetitions = int(general['--repetitions'])
 max_eval = int(general['--max-eval'])
 out_path = general['--out-path']
 write_every = None if general['--write-every'] == "none" else int(general['--write-every'])
-rand_evals_default = general.get('--rand-eval-all')
+rand_evals_default = general.get('--rand-evals-all')
 
 if write_every is not None and write_every <= 0:
     print(f"`--write-every should have a value > 1.")

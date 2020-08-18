@@ -2,11 +2,13 @@
 # Modified to work with the general benchmark layout:
 # - Added lower bounds, upper bounds, variable type, dimensionality and descriptor functions. 
 
+from .base import BaseProblem
+
 from itertools import combinations
 import numpy as np
 
 
-class Linear():
+class Linear(BaseProblem):
     """ Function that is linear in arbitrary features of discrete and continuous variables """
 
     def __init__(
