@@ -292,6 +292,7 @@ def execute_SA(params, problem, max_eval, log):
 
 def check_DONEjl():
     from solvers.DONEjl.wDONEjl import minimize_DONEjl
+    import numpy as np
     # Do a quick run as warmup.
     minimize_DONEjl(lambda x: x**2, np.ones(3) * -1, np.ones(1), 10, {})
 
