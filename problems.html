@@ -39,6 +39,7 @@
             
   <div class="section" id="problems">
 <h1>Problems<a class="headerlink" href="#problems" title="Permalink to this headline">¶</a></h1>
+<p>All evaluation functions provided by the benchmark suite are required to be minimized. If the objective value of the original underlying problem is to be maximized, the evaluation function provided has its value multiplied by <span class="math notranslate nohighlight">\(-1\)</span>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Evaluation runtimes are measured on a <strong>Intel(R) Xeon(R) Gold 6148 CPU &#64; 2.40GHz</strong> CPU, using random search.</p>
@@ -73,21 +74,27 @@
 </dl>
 </dd>
 <dt class="field-even">dimensionality</dt>
-<dd class="field-even"><p><span class="math notranslate nohighlight">\(2n\)</span></p>
+<dd class="field-even"><p><span class="math notranslate nohighlight">\(2n\)</span>, all continuous (<code class="docutils literal notranslate"><span class="pre">cont</span></code>)</p>
+</dd>
+<dt class="field-odd">noisy</dt>
+<dd class="field-odd"><p>Yes (TODO)</p>
+</dd>
+<dt class="field-even">constraints</dt>
+<dd class="field-even"><p>Windmills are not allowed to be located within a factor of two of each others’ radius, this constraint has been incorporated into the objective function.</p>
 </dd>
 <dt class="field-odd">description</dt>
-<dd class="field-odd"><p>…</p>
+<dd class="field-odd"><p>The layout of the windmills in a wind farm has noticeable impact on the amount of energy it produces. This benchmark problem employs the <a class="reference external" href="https://github.com/NREL/floris">FLORIS</a> wake simulator to analyse how much power production is lost by having windmills be located in each others wake. The objective is to maximize power production.</p>
 </dd>
 </dl>
 </div>
 <div class="section" id="electrostatic-precipitator">
 <h2>Electrostatic Precipitator*<a class="headerlink" href="#electrostatic-precipitator" title="Permalink to this headline">¶</a></h2>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">publications</dt>
-<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#daniels2018suite" id="id1">[DRE+18]</a></p>
+<dd class="field-odd"><p>(<a class="bibtex reference internal" href="zzreferences.html#daniels2018suite" id="id1">[DRE+18]</a>)</p>
 </dd>
 <dt class="field-even">bibtex</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">daniels2018suite</span></code></p>
+<dd class="field-even"><p>(<code class="docutils literal notranslate"><span class="pre">daniels2018suite</span></code>)</p>
 </dd>
 <dt class="field-odd">repository</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://bitbucket.org/arahat/cfd-test-problem-suite/">BitBucket</a></p>
@@ -96,17 +103,31 @@
 <dd class="field-even"><p>None</p>
 </dd>
 <dt class="field-odd">dimensionality</dt>
-<dd class="field-odd"><p><span class="math notranslate nohighlight">\(49\)</span></p>
+<dd class="field-odd"><p><span class="math notranslate nohighlight">\(49\)</span> - all categorical (<code class="docutils literal notranslate"><span class="pre">cat</span></code>)</p>
 </dd>
-<dt class="field-even">runtime</dt>
-<dd class="field-even"><div class="jupyter_cell docutils container">
+</dl>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><strong>TODO</strong> The data used for the two blocks below is for ESP3, not ESP.
+I do not expect any difference in terms of running time, but a proper run needs to be done to verify the objective values.</p>
+</div>
+<dl class="field-list">
+<dt class="field-odd">runtime</dt>
+<dd class="field-odd"><div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
 <img alt="_images/problems_1_0.png" src="_images/problems_1_0.png" />
 </div>
 </div>
 </dd>
+<dt class="field-even">fitness</dt>
+<dd class="field-even"><div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/problems_2_0.png" src="_images/problems_2_0.png" />
+</div>
+</div>
+</dd>
 <dt class="field-odd">description</dt>
-<dd class="field-odd"><p>…</p>
+<dd class="field-odd"><p>An Electrostatic Precipitator is a large gas filtering installation, whose efficiency and efficiacy is dependent on how well the intake gas is distributed. This installation has slots – named baffles – which can be of various types, each having a different impact on the distribution. This benchmark problem employs the OpenFOAM Computational Fluid Dynamics simulator, implemented as part of the <a class="reference external" href="https://bitbucket.org/arahat/cfd-test-problem-suite/">CFD Test Problem Suite</a> by Daniels et al. . The goal is to find a configuration that has the best resulting distribution.</p>
 </dd>
 </dl>
 </div>
@@ -119,7 +140,8 @@
 <dd><p>The folder containing the unpacked files of the <a class="reference external" href="http://archive.ics.uci.edu/ml/datasets/Steel+Plates+Faults">Steel Plates Faults</a> dataset. (required)</p>
 </dd>
 <dt><kbd><span class="option">--time-limit</span></kbd></dt>
-<dd><p>The time limit for a single evaluation of the objective function in seconds. (default: 8)
+<dd><p>The time limit for a single evaluation of the objective function in seconds.
+A that requires more time than what time time limit allows will return an objective value of 0 (default: 8)
 <strong>TODO:</strong> Setting this parameter still needs to be implemented.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
@@ -132,17 +154,24 @@
 <dd class="field-even"><p>Dataset provided by Semeion, Research Center of Sciences of Communication, Via Sersale 117, 00128, Rome, Italy. www.semeion.it</p>
 </dd>
 <dt class="field-odd">dimensionality</dt>
-<dd class="field-odd"><p><span class="math notranslate nohighlight">\(135\)</span></p>
+<dd class="field-odd"><p><span class="math notranslate nohighlight">\(135\)</span> - <span class="math notranslate nohighlight">\(117\)</span> categorical (<code class="docutils literal notranslate"><span class="pre">cat</span></code>), <span class="math notranslate nohighlight">\(7\)</span> integer (<code class="docutils literal notranslate"><span class="pre">int</span></code>), <span class="math notranslate nohighlight">\(11\)</span> continuous (<code class="docutils literal notranslate"><span class="pre">cont</span></code>), contains conditionals</p>
 </dd>
 <dt class="field-even">runtime</dt>
 <dd class="field-even"><div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
-<img alt="_images/problems_2_0.png" src="_images/problems_2_0.png" />
+<img alt="_images/problems_3_0.png" src="_images/problems_3_0.png" />
 </div>
 </div>
 </dd>
-<dt class="field-odd">description</dt>
-<dd class="field-odd"><p>…</p>
+<dt class="field-odd">fitness</dt>
+<dd class="field-odd"><div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/problems_4_0.png" src="_images/problems_4_0.png" />
+</div>
+</div>
+</dd>
+<dt class="field-even">description</dt>
+<dd class="field-even"><p>Machine Learning approaches often have a large amount of hyperparameters of varying types. This benchmark makes use of scikit-learn to build an XGBoost classifier with per-feature preprocessing. Evaluation of a solution is performed by k-fold cross validation, with the goal to maximize accuracy.</p>
 </dd>
 </dl>
 </div>

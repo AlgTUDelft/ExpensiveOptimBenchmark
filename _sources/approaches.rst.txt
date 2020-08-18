@@ -33,9 +33,9 @@ SMAC3
 
 IDONE
 -----
-:publications: tbd 
-:bibtex:       tbd
-:repository:   tbd
+:publications: :cite:`bliek2019black` 
+:bibtex:       ``bliek2019black``
+:repository:   `BitBucket <https://bitbucket.org/lbliek2/idone>`_
 :supports:   ``int``, ``cat`` (as interpreted as integer / binarized)
 :parameters:
     --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 5)
