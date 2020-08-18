@@ -1,8 +1,10 @@
+from .base import BaseProblem
+
 import subprocess
 import numpy as np
 import os
 
-class DockerCFDBenchmarkProblem:
+class DockerCFDBenchmarkProblem(BaseProblem):
 
     def __init__(self, name, d, lbs, ubs, vartype, direction, errval):
         self.name = name

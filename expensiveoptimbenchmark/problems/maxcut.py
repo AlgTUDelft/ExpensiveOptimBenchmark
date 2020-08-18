@@ -1,9 +1,10 @@
+from .base import BaseProblem
 import numpy as np
 import networkx as nx
 import os
 from random import Random
 
-class MaxCut:
+class MaxCut(BaseProblem):
 
     def __init__(self, d, graph_seed = 42, noise_seed = None, noise_factor = 1):
         self.ub = 1

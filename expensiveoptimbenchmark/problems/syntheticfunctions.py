@@ -10,12 +10,13 @@
 # For license relevant to the original work,
 # see /problems/solvers/CoCaBO/vendor/LICENSE
 
+from .base import BaseProblem
 import numpy as np
 from scipy.optimize import rosen
 
 # Wrapper
 
-class MixedFunction:
+class MixedFunction(BaseProblem):
     def __init__(self, name, f, n_vars_d, n_vars_c, lbs, ubs, is_discrete_categorical, dolog=False):
         self.name = name
         self.f = f
