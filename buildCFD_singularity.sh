@@ -1,0 +1,1 @@
+sudo singularity build ./CFD.sif ./CFD.Singularity

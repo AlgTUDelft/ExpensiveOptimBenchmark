@@ -15,6 +15,8 @@ RUN python3.7 -m pip install -r requirements_eob.txt
 
 COPY expensiveoptimbenchmark ./expensiveoptimbenchmark
 
+RUN bash ./expensiveoptimbenchmark/problems/ESP2/patch.sh
+
 RUN ln -s ./dockerCall.sh ./evaluate.sh
 
-ENTRYPOINT [ "/bin/bash", "-l", "-c" ]
+# ENTRYPOINT [ "/bin/bash", "-l", "-c" ]

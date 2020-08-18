@@ -15,13 +15,13 @@ def get_variable(problem, varidx, params):
     elif vartype == 'int':
         icm = params.get('int_conversion_mode')
         if icm == 'randint':
-            return hp.randint(f'v{varidx}', ub - lb + 1)
+            return hp.randint(f'v{varidx}', int(ub - lb + 1))
         elif icm == 'quniform':
-            return hp.quniform(f'v{varidx}', lb, ub, 1)
+            return hp.quniform(f'v{varidx}', int(lb), int(ub), 1)
         else:
             raise ValueError(f'Unknown int conversion rule. Try using `quniform` or `randint`.')
     elif vartype == 'cat':
-        return hp.randint(f'v{varidx}', ub - lb + 1)
+        return hp.randint(f'v{varidx}', int(ub - lb + 1))
     else:
         raise ValueError(f'Variable of type {vartype} supported by HyperOpt (or not added to the converter yet).')
 
