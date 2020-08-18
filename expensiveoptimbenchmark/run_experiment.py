@@ -7,6 +7,13 @@ from itertools import product
 os.environ['OPENBLAS_NUM_THREADS'] = '1'
 os.environ['MKL_NUM_THREADS'] = '1'
 
+# Workaround for statically linked libpython on ubuntu.
+# Used for the container!
+import platform
+from julia.api import Julia
+if 'ubuntu' in platform.platform().lower():
+    jl = Julia(compiled_modules=False)
+
 def parse_numerical_range(s):
     range_ = s.split(":")
     if len(range_) == 1:
@@ -281,12 +288,6 @@ def execute_SA(params, problem, max_eval, log):
     return optimize_SA(problem, max_eval, log=log)
 
 def check_DONEjl():
-    # Workaround for statically linked libpython on ubuntu.
-    # Used for the container!
-    import platform
-    from julia.api import Julia
-    if 'ubuntu' in platform.platform().lower():
-        jl = Julia(compiled_modules=False)
     from solvers.DONEjl.wDONEjl import optimize_DONEjl
 
 def execute_DONEjl(params, problem, max_eval, log):
