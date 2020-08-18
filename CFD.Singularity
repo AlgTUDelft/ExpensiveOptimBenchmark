@@ -32,7 +32,7 @@ python3.7 -m pip install -r requirements_eob.txt
 wget https://julialang-s3.julialang.org/bin/linux/x64/1.5/julia-1.5.0-linux-x86_64.tar.gz
 tar -xvzf julia-1.5.0-linux-x86\_64.tar.gz
 ln -s "$PWD"/julia-1.5.0/bin/julia /bin/
-python -c "import julia; julia.install()"
+python3.7 -c "import julia; julia.install()"
 
 # bash ./expensiveoptimbenchmark/problems/ESP2/patch.sh
 ln -s /home/openfoam/cfd-test-problem-suite/dockerCall.sh /evaluate.sh
