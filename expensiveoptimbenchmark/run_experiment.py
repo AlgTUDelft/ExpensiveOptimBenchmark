@@ -9,10 +9,13 @@ os.environ['MKL_NUM_THREADS'] = '1'
 
 # Workaround for statically linked libpython on ubuntu.
 # Used for the container!
-import platform
-from julia.api import Julia
-if 'ubuntu' in platform.platform().lower():
-    jl = Julia(compiled_modules=False)
+try:
+    import platform
+    if 'ubuntu' in platform.platform().lower() and 'donejl' in sys.argv:
+        from julia.api import Julia
+        jl = Julia(compiled_modules=False)
+except Exception as e:
+    pass
 
 def parse_numerical_range(s):
     range_ = s.split(":")
