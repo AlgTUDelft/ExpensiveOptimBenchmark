@@ -280,6 +280,15 @@ def execute_SA(params, problem, max_eval, log):
 
     return optimize_SA(problem, max_eval, log=log)
 
+def check_DONEjl():
+    # Workaround for statically linked libpython on ubuntu.
+    # Used for the container!
+    import platform
+    from julia.api import Julia
+    if 'ubuntu' in platform.platform().lower():
+        jl = Julia(compiled_modules=False)
+    from solvers.DONEjl.wDONEjl import optimize_DONEjl
+
 def execute_DONEjl(params, problem, max_eval, log):
     from solvers.DONEjl.wDONEjl import optimize_DONEjl
 
@@ -390,7 +399,7 @@ solvers = {
             '--sigma-f': '0.1',
         },
         'executor': execute_DONEjl,
-        'check': nop
+        'check': check_DONEjl
     },
     'sa': {
         'args': set(),

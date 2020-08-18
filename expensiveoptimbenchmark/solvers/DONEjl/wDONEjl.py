@@ -1,13 +1,6 @@
 import numpy as np
 from tqdm import tqdm
 
-# Workaround for statically linked libpython on ubuntu.
-# Used for the container!
-import platform
-from julia.api import Julia
-if 'ubuntu' in platform.platform().lower():
-    jl = Julia(compiled_modules=False)
-
 from julia import Main
 Main.include("./expensiveoptimbenchmark/solvers/DONEjl/vendor/DONEs.jl")
 DONEs = Main.DONEs
