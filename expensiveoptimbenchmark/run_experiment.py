@@ -622,7 +622,8 @@ while len(args) > i:
     # into surprises later
     try:
         solver['info']['check']()
-    except:
+    except Exception as e:
+        print(e)
         print(f"Dependencies for {solver['name']} seem to be missing.")
         print(f"Did you install the relevant extras?")
         sys.exit(-1)
