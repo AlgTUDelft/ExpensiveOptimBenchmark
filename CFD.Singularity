@@ -20,11 +20,10 @@ expensiveoptimbenchmark /home/openfoam/expensiveoptimbenchmark
 ./expensiveoptimbenchmark/problems/ESP2/evaluateSimulation4.py /home/openfoam/cfd-test-problem-suite/Exeter_CFD_Problems/ESP/evaluateSimulation4.py
 
 %post
-
 apt-get install -y software-properties-common &&\
 add-apt-repository ppa:deadsnakes/ppa &&\
 apt-get update &&\
-apt-get install -y build-essential python3-pip python3-tk python3.7 python3.7-dev swig &&\
+apt-get install -y build-essential python3-pip python3-tk python3.7 python3.7-dev swig libstdc++6 &&\
 python3.7 -m pip install --upgrade pip &&\
 python3.7 -m pip install --upgrade cython setuptools wheel
 python3.7 -m pip install -r requirements_eob.txt
