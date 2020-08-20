@@ -18,7 +18,8 @@ help:
 ghpages: | build
 	$(eval stash_hash := $(shell git stash create --all))
 	$(eval commit_hash := $(shell git rev-parse HEAD))
-	git reset --hard HEAD
+	echo "Stored working directory. Run git stash apply \"$(stash_hash)\" to recover."
+	cd .. && git clean -df
 	git checkout gh-pages
 	git pull
 	cp -r ./build/html/* ../
