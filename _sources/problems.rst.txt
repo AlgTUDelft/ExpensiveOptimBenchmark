@@ -82,9 +82,6 @@ Electrostatic Precipitator*
 :parameters:    None
 :dimensionality: :math:`49` - all categorical (``cat``)
 
-.. important:: **TODO** The data used for the two blocks below is for ESP3, not ESP.
-    I do not expect any difference in terms of running time, but a proper run needs to be done to verify the objective values.
-
 :runtime:
     .. jupyter-execute::
         :hide-code:
