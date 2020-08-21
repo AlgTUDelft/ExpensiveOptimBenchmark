@@ -54,7 +54,10 @@ MVRSM
 :repository:   `GitHub <https://github.com/lbliek/MVRSM>`_
 :supports:    ``cont``, ``int``, ``cat`` (as interpreted as integer / binarized).
 
-    Currently requires at least one discrete (``int``, ``cat``) variable.
+    .. note:: 
+        Note that behaviour differs (defaults to a fixed 1000 of basis functions) in the case that the function
+        is only continuous.
+    
 :parameters:
     --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 5)
     --model   The kind of model to use. Choose between ``basic`` and ``advanced``. (default: ``advanced``)
