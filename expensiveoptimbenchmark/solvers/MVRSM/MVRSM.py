@@ -131,9 +131,13 @@ def MVRSM_minimize(obj, x0, lb, ub, num_int, max_evals, rand_evals=0, enable_sca
 			
 
 			#Add the same number of basis functions as for the discrete variables
-			for j in range(math.ceil(num_discr_basisfunctions/num_int)):
-			#or just add 1000 of them
-			#for j in range(1000):
+			if num_int > 0:
+				num_cont_basisfunctions = math.ceil(num_discr_basisfunctions/num_int)
+			else:
+				# Without integers, default to 1000.
+				num_cont_basisfunctions = 1000
+
+			for j in range(num_cont_basisfunctions):
 				b = (b2-b1)*np.random.random()+b1
 				W.append(np.copy(tempW[k,:]))
 				B.append([-float(b)])
