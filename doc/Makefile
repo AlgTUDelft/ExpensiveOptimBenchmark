@@ -16,7 +16,7 @@ help:
 
 # Place the current build in the gh-pages branch.
 ghpages: | build
-	$(eval stash_hash := $(shell git stash create --all))
+	$(eval stash_hash := $(shell cd .. && git stash create --all))
 	$(eval commit_hash := $(shell git rev-parse HEAD))
 	echo "Stored working directory. Run git stash apply \"$(stash_hash)\" to recover."
 	cd .. && git clean -df
