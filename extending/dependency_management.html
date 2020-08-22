@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dependency Management &#8212; ExpensiveOptimBenchmark 2020 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Adding Approaches" href="adding_approaches.html" />
+    <link rel="prev" title="Extending" href="extending.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="dependency-management">
+<span id="id1"></span><h1>Dependency Management<a class="headerlink" href="#dependency-management" title="Permalink to this headline">¶</a></h1>
+<p>When adding new approaches (<a class="reference internal" href="adding_approaches.html#adding-approaches"><span class="std std-ref">Adding Approaches</span></a>) or new problems (<a class="reference internal" href="adding_problems.html#adding-problems"><span class="std std-ref">Adding Problems</span></a>), a common requirement is to add new python libraries into the environment.</p>
+<p>Furthermore, when running experiments it is required to have an environment defined in which all dependencies are installed.</p>
+<p>This project utilizes <a class="reference external" href="https://python-poetry.org/">Poetry</a> to handle the configuration and management of these environments.</p>
+<p>In addition, the requirements in the container are installed from the <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file. Which can be created/updated by poetry by running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">export</span> <span class="o">-</span><span class="n">E</span> <span class="n">julia</span> <span class="o">-</span><span class="n">E</span> <span class="n">smac</span> <span class="o">-</span><span class="n">f</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span> <span class="o">&gt;</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>A short summary of the most important commands of poetry is as follows. See also <a class="reference external" href="https://python-poetry.org/docs/cli/">Poetry’s CLI Documentation</a>.</p>
+<p><strong>Setting up the environment</strong>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry install
+</pre></div>
+</div>
+<p><strong>Updating the environment</strong>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry update
+</pre></div>
+</div>
+<p><strong>Adding a new dependency</strong> (via PyPI or git respectively):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry add pendulum
+poetry add git+https://github.com/sdispater/pendulum.git#develop
+</pre></div>
+</div>
+<p><strong>Running a single command inside the environment</strong>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry run python ...
+</pre></div>
+</div>
+<p><strong>Opening a shell (command prompt) inside the environment</strong>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry shell
+</pre></div>
+</div>
+<div class="section" id="docker-and-singularity">
+<h2>Docker and Singularity<a class="headerlink" href="#docker-and-singularity" title="Permalink to this headline">¶</a></h2>
+<p>Not all dependencies are neccesarily restricted to Python. For example the CFD Simulator OpenFOAM is a binary that cannot be installed though poetry.</p>
+<p>Take a look at <code class="docutils literal notranslate"><span class="pre">CFD.Dockerfile</span></code> and <code class="docutils literal notranslate"><span class="pre">CFD.Singularity</span></code> for the specifications of these containers.</p>
+<div class="section" id="docker">
+<h3>Docker<a class="headerlink" href="#docker" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Windows does not use sudo as a prefix.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Note that any files written inside the docker container, stay in the container, unless the directory is mounted in the host filesystem.</p>
+<p>If you want to export any files, for example the results of any experiments ran, <a class="reference external" href="https://docs.docker.com/storage/bind-mounts/">create a bind mount</a>.</p>
+</div>
+<p><strong>Building the container</strong>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo docker build -t cfdbench . -f ./CFD.Dockerfile
+</pre></div>
+</div>
+<p><strong>Running a command inside the container</strong>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo docker run cfdbench ...
+</pre></div>
+</div>
+<p><strong>Obtaining a shell inside the container</strong>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo docker run -it cfdbench bash
+</pre></div>
+</div>
+</div>
+<div class="section" id="singularity">
+<h3>Singularity<a class="headerlink" href="#singularity" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Singularity only works on Linux</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Unlike docker, Singularity by default mounts the current users’ home directory and the current working directory.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Singularity’s filesystem is by default read-only, apart from mounted directories. Any problems or approaches that neccesitate the creation of new files within, may fail due to this.</p>
+<p>Refer to <a class="reference external" href="https://sylabs.io/guides/3.6/user-guide/persistent_overlays.html">Persistent Overlays</a> in the Singularity documentation for solutions.</p>
+</div>
+<p><strong>Building the container</strong>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo singularity build ./CFD.sif ./CFD.Singularity
+</pre></div>
+</div>
+<p><strong>Running a command inside the container</strong>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>singularity run ./CFD.sif ...
+</pre></div>
+</div>
+<p><strong>Obtaining a shell inside the container</strong>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>singularity shell ./CFD.sif.
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">ExpensiveOptimBenchmark</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../problems.html">Problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../approaches.html">Approaches</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="extending.html">Extending</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Dependency Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adding_approaches.html">Adding Approaches</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adding_problems.html">Adding Problems</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../zzreferences.html">References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="extending.html">Extending</a><ul>
+      <li>Previous: <a href="extending.html" title="previous chapter">Extending</a></li>
+      <li>Next: <a href="adding_approaches.html" title="next chapter">Adding Approaches</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Arthur Guijt, Laurens Bliek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/extending/dependency_management.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
