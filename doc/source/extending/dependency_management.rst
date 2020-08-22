@@ -1,9 +1,9 @@
-.. _dependency_management:
+.. _dependency-management:
 
 Dependency Management
 =====================
 
-When adding new approaches (:ref:`adding_approaches`) or new problems (:ref:`adding_problems`), a common requirement is to add new python libraries into the environment.
+When adding new approaches (:ref:`adding-approaches`) or new problems (:ref:`adding-problems`), a common requirement is to add new python libraries into the environment.
 
 Furthermore, when running experiments it is required to have an environment defined in which all dependencies are installed.
 
