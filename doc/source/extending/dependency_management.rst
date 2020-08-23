@@ -7,13 +7,13 @@ When adding new approaches (:ref:`adding-approaches`) or new problems (:ref:`add
 
 Furthermore, when running experiments it is required to have an environment defined in which all dependencies are installed.
 
-This project utilizes `Poetry <https://python-poetry.org/>`_ to handle the configuration and management of these environments.
+This project utilizes `Poetry <https://python-poetry.org/>`__ to handle the configuration and management of these environments.
 
 In addition, the requirements in the container are installed from the ``requirements.txt`` file. Which can be created/updated by poetry by running::
 
     poetry export -E julia -E smac -f requirements.txt > requirements.txt
 
-A short summary of the most important commands of poetry is as follows. See also `Poetry's CLI Documentation <https://python-poetry.org/docs/cli/>`_.
+A short summary of the most important commands of poetry is as follows. See also `Poetry's CLI Documentation <https://python-poetry.org/docs/cli/>`__.
 
 .. highlight:: shell
 
@@ -53,7 +53,7 @@ Docker
 .. warning:: 
     Note that any files written inside the docker container, stay in the container, unless the directory is mounted in the host filesystem.
 
-    If you want to export any files, for example the results of any experiments ran, `create a bind mount <https://docs.docker.com/storage/bind-mounts/>`_.
+    If you want to export any files, for example the results of any experiments ran, `create a bind mount <https://docs.docker.com/storage/bind-mounts/>`__.
 
 
 **Building the container**::
@@ -79,7 +79,7 @@ Singularity
 .. warning:: 
     Singularity's filesystem is by default read-only, apart from mounted directories. Any problems or approaches that neccesitate the creation of new files within, may fail due to this.
 
-    Refer to `Persistent Overlays <https://sylabs.io/guides/3.6/user-guide/persistent_overlays.html>`_ in the Singularity documentation for solutions.
+    Refer to `Persistent Overlays <https://sylabs.io/guides/3.6/user-guide/persistent_overlays.html>`__ in the Singularity documentation for solutions.
 
 **Building the container**::
 
