@@ -63,7 +63,7 @@ All evaluation functions provided by the benchmark suite are required to be mini
 Windmill Wake Simulator
 -----------------------
 :bibtex:     ``floris2020``
-:repository:  `GitHub <https://github.com/NREL/floris>`_
+:repository:  `GitHub <https://github.com/NREL/floris>`__
 :parameters:
     -n   The number of windmills to be placed. (default: 3)
     -w   The width of the area in which the windmills are to be placed. (default: 1000)
@@ -72,13 +72,13 @@ Windmill Wake Simulator
 :dimensionality: :math:`2n`, all continuous (``cont``)
 :noisy: Yes (TODO)
 :constraints: Windmills are not allowed to be located within a factor of two of each others' radius, this constraint has been incorporated into the objective function.
-:description: The layout of the windmills in a wind farm has noticeable impact on the amount of energy it produces. This benchmark problem employs the `FLORIS <https://github.com/NREL/floris>`_ wake simulator to analyse how much power production is lost by having windmills be located in each others wake. The objective is to maximize power production.
+:description: The layout of the windmills in a wind farm has noticeable impact on the amount of energy it produces. This benchmark problem employs the `FLORIS <https://github.com/NREL/floris>`__ wake simulator to analyse how much power production is lost by having windmills be located in each others wake. The objective is to maximize power production.
 
 Electrostatic Precipitator*
 ---------------------------
 :publications: (:cite:`daniels2018suite`)
 :bibtex:      (``daniels2018suite``)
-:repository:   `BitBucket <https://bitbucket.org/arahat/cfd-test-problem-suite/>`_
+:repository:   `BitBucket <https://bitbucket.org/arahat/cfd-test-problem-suite/>`__
 :parameters:    None
 :dimensionality: :math:`49` - all categorical (``cat``)
 
@@ -94,12 +94,12 @@ Electrostatic Precipitator*
 
         plot_hist("esp_rs.csv.xz", 'iter_fitness')
 
-:description: An Electrostatic Precipitator is a large gas filtering installation, whose efficiency and efficiacy is dependent on how well the intake gas is distributed. This installation has slots -- named baffles -- which can be of various types, each having a different impact on the distribution. This benchmark problem employs the OpenFOAM Computational Fluid Dynamics simulator, implemented as part of the `CFD Test Problem Suite <https://bitbucket.org/arahat/cfd-test-problem-suite/>`_ by Daniels et al. . The goal is to find a configuration that has the best resulting distribution.
+:description: An Electrostatic Precipitator is a large gas filtering installation, whose efficiency and efficiacy is dependent on how well the intake gas is distributed. This installation has slots -- named baffles -- which can be of various types, each having a different impact on the distribution. This benchmark problem employs the OpenFOAM Computational Fluid Dynamics simulator, implemented as part of the `CFD Test Problem Suite <https://bitbucket.org/arahat/cfd-test-problem-suite/>`__ by Daniels et al. . The goal is to find a configuration that has the best resulting distribution.
 
 HPO / XGBoost
 -------------
 :parameters:
-    --folder   The folder containing the unpacked files of the `Steel Plates Faults <http://archive.ics.uci.edu/ml/datasets/Steel+Plates+Faults>`_ dataset. (required)
+    --folder   The folder containing the unpacked files of the `Steel Plates Faults <http://archive.ics.uci.edu/ml/datasets/Steel+Plates+Faults>`__ dataset. (required)
     --time-limit   The time limit for a single evaluation of the objective function in seconds.
         A that requires more time than what time time limit allows will return an objective value of 0 (default: 8)
         **TODO:** Setting this parameter still needs to be implemented.
