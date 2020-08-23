@@ -5,7 +5,7 @@ HyperOpt
 --------
 :publications: :cite:`bergstra2013making`.
 :bibtex:      ``bergstra2013making``
-:repository:   `GitHub <https://github.com/hyperopt/hyperopt>`_, `PyPI <https://pypi.org/project/hyperopt/>`_
+:repository:   `GitHub <https://github.com/hyperopt/hyperopt>`__, `PyPI <https://pypi.org/project/hyperopt/>`__
 :supports:    ``cont``, ``int``, ``cat``
 :parameters:
     --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 3)
@@ -16,13 +16,13 @@ Random Search (via HyperOpt)
 :publications: :cite:`bergstra2013making`.
 :bibtex:      ``bergstra2013making``
 :supports:    ``cont``, ``int``, ``cat``
-:repository:   `GitHub <https://github.com/hyperopt/hyperopt>`_, `PyPI <https://pypi.org/project/hyperopt/>`_
+:repository:   `GitHub <https://github.com/hyperopt/hyperopt>`__, `PyPI <https://pypi.org/project/hyperopt/>`__
 
 SMAC3
 -----
 :publications: :cite:`hutter2010sequential-extended`, :cite:`hutter2011sequential`
 :bibtex:      ``hutter2010sequential-extended``, ``hutter2011sequential``
-:repository:   `GitHub <https://github.com/automl/SMAC3>`_, `PyPI <https://pypi.org/project/smac/>`_
+:repository:   `GitHub <https://github.com/automl/SMAC3>`__, `PyPI <https://pypi.org/project/smac/>`__
 :supports:    ``cont``, ``int``, ``cat``
 :parameters:
     --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 3)
@@ -35,7 +35,7 @@ IDONE
 -----
 :publications: :cite:`bliek2019black` 
 :bibtex:       ``bliek2019black``
-:repository:   `BitBucket <https://bitbucket.org/lbliek2/idone>`_
+:repository:   `BitBucket <https://bitbucket.org/lbliek2/idone>`__
 :supports:   ``int``, ``cat`` (as interpreted as integer / binarized)
 :parameters:
     --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 5)
@@ -51,7 +51,7 @@ MVRSM
 -----
 :publications: :cite:`bliek2020black`
 :bibtex:      ``bliek2020black``
-:repository:   `GitHub <https://github.com/lbliek/MVRSM>`_
+:repository:   `GitHub <https://github.com/lbliek/MVRSM>`__
 :supports:    ``cont``, ``int``, ``cat`` (as interpreted as integer / binarized).
 
     .. note:: 
@@ -68,7 +68,7 @@ CoCaBO
 ------
 :publications: :cite:`ru2019bayesian`
 :bibtex:      ``ru2019bayesian``
-:repository:   `GitHub <https://github.com/rubinxin/CoCaBO_code>`_
+:repository:   `GitHub <https://github.com/rubinxin/CoCaBO_code>`__
 :supports:    ``cont``, ``int`` (interpreted as categorical), ``cat``. 
 
     Currently requires at least one continuous (``cont``) and one discrete (``int``, ``cat``) variable.
@@ -78,7 +78,7 @@ CoCaBO
 bayesianoptimization
 --------------------
 :bibtex:      ``bayesianoptimization``
-:repository:   `GitHub <https://github.com/fmfn/BayesianOptimization>`_, `PyPI <https://pypi.org/project/bayesian-optimization/>`_
+:repository:   `GitHub <https://github.com/fmfn/BayesianOptimization>`__, `PyPI <https://pypi.org/project/bayesian-optimization/>`__
 :supports:    ``cont``, ``int`` (via rounding), ``cat`` (interpreted as integer, via rounding)
 :parameters:
     --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 5)
@@ -87,7 +87,7 @@ pyGPGO
 ------
 :publications: :cite:`Jimenez2017`
 :bibtex:      ``pygpgo``, ``Jimenez2017``
-:repository:   `GitHub <https://github.com/josejimenezluna/pyGPGO>`_, `PyPI <https://pypi.org/project/pyGPGO/>`_
+:repository:   `GitHub <https://github.com/josejimenezluna/pyGPGO>`__, `PyPI <https://pypi.org/project/pyGPGO/>`__
 :supports:      ``cont``, ``int`` (via rounding), ``cat`` (interpreted as integer, via rounding)
     
     .. note:: Built-in support for integers is not used due to crashes.
