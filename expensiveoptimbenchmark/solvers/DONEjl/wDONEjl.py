@@ -7,11 +7,11 @@ DONEs = Main.DONEs
 
 def minimize_DONEjl(f, lb, ub, rand_evals, max_evals, hyperparams, progressbar=True):
     n_vars      = len(lb)
-    n_basis     = hyperparams.get('n_basis', 1000) # larger with more n_vars (high dim)
-    sigma_coeff = hyperparams.get('sigma_coeff', 0.1) # / sqrt(n_vars)
-    # 0.1 for n_vars < 10
-    # after that, scale with square root.
-    sigma_def   = np.minimum(0.1, 0.1 / np.sqrt(n_vars) * np.sqrt(10))
+    n_basis     = hyperparams.get('n_basis', 2000) # generally larger with more n_vars (high dim)
+    
+    sigma_coeff = hyperparams.get('sigma_coeff', 0.1 if n_vars < 100 else 1 / sqrt(n_vars) )
+    
+    sigma_def   = 0.1 if n_vars < 100 else 1 / sqrt(n_vars)
     sigma_s     = hyperparams.get('sigma_s', sigma_def)
     sigma_f     = hyperparams.get('sigma_f', sigma_def)
 
