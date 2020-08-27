@@ -30,6 +30,21 @@ SMAC3
 
         .. warning:: Non-deterministic mode spends a significant portion of its evaluation budget re-evaluating previous solutions. Enabling deterministic mode disables this, and may therefore provide better performance.
         
+DONE
+----
+:publications: :cite:`DONEpaper`
+:bibtex:      ``DONEpaper``
+:repository:   `GitHub <https://github.com/rdoelman/DONEs.jl>`__
+:supports:    ``cont``
+:parameters:
+    --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 0)
+    --n-basis   The number of basis functions (default: 2000)
+    --sigma-coeff    Variance of initial random fourier expansion coefficients. (default: :math:`\min(0.1, {d}^{-0.5})`, with :math:`d` the dimensionality of the function under test)
+    --sigma-s    Variance for surrogate exploration (default: :math:`\min(0.1, {d}^{-0.5})`, with :math:`d` the dimensionality of the function under test)
+    --sigma-f    Variance for function exploration (default: :math:`\min(0.1, {d}^{-0.5})`, with :math:`d` the dimensionality of the function under test)
+
+.. note:: DONE is sensitive to its parameters. The default sigma values are for a normalized search space. If either the input or output values are very large, performance may suffer.
+
 
 IDONE
 -----
