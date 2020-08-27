@@ -73,12 +73,15 @@ def construct_rosen_cont(params):
 def construct_linearmivabo(params):
     from problems.linear_MIVABOfunction import Linear
 
+    num_vars_d = int(params.get('--dd'))
+    num_vars_c = int(params.get('--dc'))
+
     maybe_seed = params.get('--seed')
     seeds = parse_numerical_ranges(maybe_seed) if maybe_seed is not None else [None]
     laplace = params['--laplace'] in ['true','t', 'yes', 'y']
     noisy = params['--noisy'] in ['true','t', 'yes', 'y']
 
-    return [Linear(noisy=noisy, laplace=laplace, seed=seed) for seed in seeds]
+    return [Linear(n_vars=num_vars_d+num_vars_c, n_vars_d=num_vars_d, noisy=noisy, laplace=laplace, seed=seed) for seed in seeds]
 
 # floris wake simulator
 def construct_windwake(params):
@@ -161,8 +164,10 @@ problems = {
         'constructor': construct_convex
     },
     'linearmivabo': {
-        'args': {'--seed', '--laplace', '--noisy'}, # TODO: make this approach configurable.
+        'args': {'--dd', '--dc', '--seed', '--laplace', '--noisy'}, # TODO: make this approach configurable.
         'defaults': {
+            '--dd': '8',
+            '--dc': '8',
             '--laplace': 'y',
             '--noisy': 'n'
         },

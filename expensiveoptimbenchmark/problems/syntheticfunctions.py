@@ -34,8 +34,10 @@ class MixedFunction(BaseProblem):
     
     def evaluate(self, x):
         if self.dolog:
-            return np.log(self.f(x) + 1)
-        return self.f(x)
+            r = np.log(self.f(x) + 1)
+        else:
+            r = self.f(x)
+        return float(r)
 
     def lbs(self):
         return self.lb
