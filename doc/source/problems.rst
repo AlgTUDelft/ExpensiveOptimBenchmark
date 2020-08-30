@@ -72,7 +72,6 @@ Windmill Wake Simulator
     --wind-seed  The random seed used for generating the distribution and strength of the wind. (default: 0)
     --n-samples  The number of random wind strength samples to evaluate. More is less noisy but takes more time. Passing the string ``None`` will use a fixed set of wind strengths (previous behaviour, fast, no noise) (default: 5)
 :dimensionality: :math:`2n`, all continuous (``cont``)
-:noisy: Yes (TODO)
 :constraints: Windmills are not allowed to be located within a factor of two of each others' radius, this constraint has been incorporated into the objective function.
 :description: The layout of the windmills in a wind farm has noticeable impact on the amount of energy it produces. This benchmark problem employs the `FLORIS <https://github.com/NREL/floris>`__ wake simulator to analyse how much power production is lost by having windmills be located in each others wake. The objective is to maximize power production.
 
