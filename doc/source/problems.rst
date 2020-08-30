@@ -65,10 +65,12 @@ Windmill Wake Simulator
 :bibtex:     ``floris2020``
 :repository:  `GitHub <https://github.com/NREL/floris>`__
 :parameters:
+    --file   The path to the windpark/windmill specification. We recommend using `example_input.json <https://raw.githubusercontent.com/NREL/floris/master/examples/example_input.json>`__ from the FLORIS repository. (required)
     -n   The number of windmills to be placed. (default: 3)
     -w   The width of the area in which the windmills are to be placed. (default: 1000)
     -h   The height of the area in which the windmills are to be placed. (default: 1000)
     --wind-seed  The random seed used for generating the distribution and strength of the wind. (default: 0)
+    --n-samples  The number of random wind strength samples to evaluate. More is less noisy but takes more time. Passing the string ``None`` will use a fixed set of wind strengths (previous behaviour, fast, no noise) (default: 5)
 :dimensionality: :math:`2n`, all continuous (``cont``)
 :noisy: Yes (TODO)
 :constraints: Windmills are not allowed to be located within a factor of two of each others' radius, this constraint has been incorporated into the objective function.
