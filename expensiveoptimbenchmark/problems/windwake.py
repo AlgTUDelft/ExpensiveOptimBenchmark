@@ -6,13 +6,16 @@ import logging
 
 class WindWakeLayout(BaseProblem):
 
-    def __init__(self, file, n_turbines=3, wind_seed=0, width=1000, height=1000):
+    def __init__(self, file, n_turbines=3, wind_seed=0, width=1000, height=1000, n_samples=5):
         self.file = file
         self.wind_seed = wind_seed
         self.n_turbines = n_turbines
         self.width = width
         self.height = height
-        self.wd, self.ws, self.freq = self._gen_random_wind(wind_seed)
+        # How many times to sample the matrix. Default is to use a fixed sample.
+        self.n_samples = n_samples
+        self.wind_rng = np.random.RandomState(wind_seed)
+        self.wd, self.ws, self.freq = self._gen_random_wind()
         # self.loggerclass = logging.getLoggerClass()
         self.fi = wfct.floris_interface.FlorisInterface(self.file)
         # Set number of turbines
@@ -24,14 +27,14 @@ class WindWakeLayout(BaseProblem):
         # Default polygon (covers entire area)
         self.boundaries = [[0.0, 0.0], [width, 0.0], [width, height], [0.0, height]]
         # Scaling factor, set to 1 in order to avoid scaling.
-        aep_initial = 1
-        self.lo = wfct.optimization.scipy.layout.LayoutOptimization(self.fi, self.boundaries, self.wd, self.ws, self.freq, aep_initial)
+        self.aep_initial = 1
+        self.lo = wfct.optimization.scipy.layout.LayoutOptimization(self.fi, self.boundaries, self.wd, self.ws, self.freq, self.aep_initial)
         # Use the default minimum distance that floris themselves use.
         self.min_dist = self.lo.min_dist
         # logging.setLoggerClass(self.loggerclass)
 
-    def _gen_random_wind(self, seed):
-        rng = np.random.RandomState(seed)
+    def _gen_random_wind(self):
+        rng = self.wind_rng
         wd = np.arange(0.0, 360.0, 5.0)
         ws = 8.0 + rng.randn(len(wd)) * 0.5
         freq = np.abs(np.sort(rng.randn(len(wd))))
@@ -46,7 +49,17 @@ class WindWakeLayout(BaseProblem):
         if c1 < 0 or c2 < 0:
             return 0.0
 
-        obj = self.lo._AEP_layout_opt(x)
+        if self.n_samples is None:
+            obj = self.lo._AEP_layout_opt(x)
+        else:
+            obj = 0.0
+            for _ in range(self.n_samples):
+                # Resample wind speed
+                self.ws = 8.0 + self.wind_rng.randn(len(self.wd)) * 0.5
+                self.lo = wfct.optimization.scipy.layout.LayoutOptimization(self.fi, self.boundaries, self.wd, self.ws, self.freq, self.aep_initial)
+                obj += self.lo._AEP_layout_opt(x)
+            obj = obj / self.n_samples
+
         return obj
 
     def lbs(self):

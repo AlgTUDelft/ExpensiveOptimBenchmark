@@ -72,12 +72,13 @@ def construct_linearmivabo(params):
 def construct_windwake(params):
     from problems.windwake import WindWakeLayout
     sim_info_file = params['--file']
+    n_samples = int(params['--n-samples']) if params['--n-samples'] != 'None' else None
     wind_seed = int(params['--wind-seed'])
     n_turbines = int(params['-n'])
     width = int(params['-w'])
     height = int(params['-h'])
 
-    return [WindWakeLayout(sim_info_file, n_turbines=n_turbines, wind_seed=wind_seed, width=width, height=height)]
+    return [WindWakeLayout(sim_info_file, n_turbines=n_turbines, wind_seed=wind_seed, width=width, height=height, n_samples=n_samples)]
 
 # MaxCut function
 def construct_maxcut(params):
@@ -144,12 +145,13 @@ problems = {
         'constructor': construct_linearmivabo
     },
     'windwake': {
-        'args': {'--file', '-n', '-w', '-h', '--wind-seed'},
+        'args': {'--file', '-n', '-w', '-h', '--wind-seed', '--n-samples'},
         'defaults': {
             '-n': '3',
             '-w': '1000',
             '-h': '1000',
-            '--wind-seed': '0'
+            '--wind-seed': '0',
+            '--n-samples': '5'
         },
         'constructor': construct_windwake
     },
