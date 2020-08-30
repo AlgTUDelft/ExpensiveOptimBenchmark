@@ -59,6 +59,9 @@
 </dd>
 <dt class="field-odd">parameters</dt>
 <dd class="field-odd"><dl class="option-list">
+<dt><kbd><span class="option">--file</span></kbd></dt>
+<dd><p>The path to the windpark/windmill specification. We recommend using <a class="reference external" href="https://raw.githubusercontent.com/NREL/floris/master/examples/example_input.json">example_input.json</a> from the FLORIS repository. (required)</p>
+</dd>
 <dt><kbd><span class="option">-n</span></kbd></dt>
 <dd><p>The number of windmills to be placed. (default: 3)</p>
 </dd>
@@ -71,19 +74,19 @@
 <dt><kbd><span class="option">--wind-seed</span></kbd></dt>
 <dd><p>The random seed used for generating the distribution and strength of the wind. (default: 0)</p>
 </dd>
+<dt><kbd><span class="option">--n-samples</span></kbd></dt>
+<dd><p>The number of random wind strength samples to evaluate. More is less noisy but takes more time. Passing the string <code class="docutils literal notranslate"><span class="pre">None</span></code> will use a fixed set of wind strengths (previous behaviour, fast, no noise) (default: 5)</p>
+</dd>
 </dl>
 </dd>
 <dt class="field-even">dimensionality</dt>
 <dd class="field-even"><p><span class="math notranslate nohighlight">\(2n\)</span>, all continuous (<code class="docutils literal notranslate"><span class="pre">cont</span></code>)</p>
 </dd>
-<dt class="field-odd">noisy</dt>
-<dd class="field-odd"><p>Yes (TODO)</p>
+<dt class="field-odd">constraints</dt>
+<dd class="field-odd"><p>Windmills are not allowed to be located within a factor of two of each others’ radius, this constraint has been incorporated into the objective function.</p>
 </dd>
-<dt class="field-even">constraints</dt>
-<dd class="field-even"><p>Windmills are not allowed to be located within a factor of two of each others’ radius, this constraint has been incorporated into the objective function.</p>
-</dd>
-<dt class="field-odd">description</dt>
-<dd class="field-odd"><p>The layout of the windmills in a wind farm has noticeable impact on the amount of energy it produces. This benchmark problem employs the <a class="reference external" href="https://github.com/NREL/floris">FLORIS</a> wake simulator to analyse how much power production is lost by having windmills be located in each others wake. The objective is to maximize power production.</p>
+<dt class="field-even">description</dt>
+<dd class="field-even"><p>The layout of the windmills in a wind farm has noticeable impact on the amount of energy it produces. This benchmark problem employs the <a class="reference external" href="https://github.com/NREL/floris">FLORIS</a> wake simulator to analyse how much power production is lost by having windmills be located in each others wake. The objective is to maximize power production.</p>
 </dd>
 </dl>
 </div>
