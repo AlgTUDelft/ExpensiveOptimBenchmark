@@ -74,17 +74,35 @@ Windmill Wake Simulator
 :dimensionality: :math:`2n`, all continuous (``cont``)
 :constraints: Windmills are not allowed to be located within a factor of two of each others' radius, this constraint has been incorporated into the objective function.
 :description: The layout of the windmills in a wind farm has noticeable impact on the amount of energy it produces. This benchmark problem employs the `FLORIS <https://github.com/NREL/floris>`__ wake simulator to analyse how much power production is lost by having windmills be located in each others wake. The objective is to maximize power production.
-:runtime: (at ``-n`` = 3)
+:runtime:
+    **At ``-n`` = 3:**
+
     .. jupyter-execute::
         :hide-code:
 
         plot_hist("windwake_rs.csv.xz", 'iter_eval_time', dist=norm)
 
-:fitness: (at ``-n`` = 3)
+    **At ``-n`` = 5:**
+
+    .. jupyter-execute::
+        :hide-code:
+
+        plot_hist("windwake_rs_5.csv.xz", 'iter_eval_time', dist=norm)
+
+:fitness:
+    **At ``-n`` = 3:**
+
     .. jupyter-execute::
         :hide-code:
 
         plot_hist("windwake_rs.csv.xz", 'iter_fitness')
+
+    **At ``-n`` = 5:**
+
+    .. jupyter-execute::
+        :hide-code:
+
+        plot_hist("windwake_rs_5.csv.xz", 'iter_fitness')
 
 
 Electrostatic Precipitator*
