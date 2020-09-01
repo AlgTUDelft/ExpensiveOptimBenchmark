@@ -76,6 +76,6 @@ class WindWakeLayout(BaseProblem):
         return self.n_turbines * 2
 
     def __str__(self):
-        return f"WindWakeLayout(file={self.file},n_turbines={self.n_turbines},wind_seed={self.wind_seed})"
+        return f"WindWakeLayout(file={self.file},n_turbines={self.n_turbines},width={self.width},height={self.height},wind_seed={self.wind_seed})"
 
     
