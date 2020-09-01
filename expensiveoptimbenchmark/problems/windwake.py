@@ -6,12 +6,13 @@ import logging
 
 class WindWakeLayout(BaseProblem):
 
-    def __init__(self, file, n_turbines=3, wind_seed=0, width=1000, height=1000, n_samples=5):
+    def __init__(self, file, n_turbines=3, wind_seed=0, width=None, height=None, n_samples=5):
         self.file = file
         self.wind_seed = wind_seed
         self.n_turbines = n_turbines
-        self.width = width
-        self.height = height
+        
+        self.width = width if width is not None else 333.33 * n_turbines
+        self.height = height if height is not None else 333.33 * n_turbines
         # How many times to sample the matrix. Default is to use a fixed sample.
         self.n_samples = n_samples
         self.wind_rng = np.random.RandomState(wind_seed)

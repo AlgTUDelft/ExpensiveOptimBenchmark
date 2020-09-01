@@ -75,8 +75,8 @@ def construct_windwake(params):
     n_samples = int(params['--n-samples']) if params['--n-samples'] != 'None' else None
     wind_seed = int(params['--wind-seed'])
     n_turbines = int(params['-n'])
-    width = int(params['-w'])
-    height = int(params['-h'])
+    width = int(params['-w']) if params['-w'] != 'None' else None
+    height = int(params['-h']) if params['-h'] != 'None' else None
 
     return [WindWakeLayout(sim_info_file, n_turbines=n_turbines, wind_seed=wind_seed, width=width, height=height, n_samples=n_samples)]
 
@@ -148,8 +148,8 @@ problems = {
         'args': {'--file', '-n', '-w', '-h', '--wind-seed', '--n-samples'},
         'defaults': {
             '-n': '3',
-            '-w': '1000',
-            '-h': '1000',
+            '-w': 'None',
+            '-h': 'None',
             '--wind-seed': '0',
             '--n-samples': '5'
         },
