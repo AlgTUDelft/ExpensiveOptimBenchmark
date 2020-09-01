@@ -67,13 +67,43 @@ Windmill Wake Simulator
 :parameters:
     --file   The path to the windpark/windmill specification. We recommend using `example_input.json <https://raw.githubusercontent.com/NREL/floris/master/examples/example_input.json>`__ from the FLORIS repository. (required)
     -n   The number of windmills to be placed. (default: 3)
-    -w   The width of the area in which the windmills are to be placed. (default: 1000)
-    -h   The height of the area in which the windmills are to be placed. (default: 1000)
+    -w   The width of the area in which the windmills are to be placed. (default: 333.33 * ``-n``)
+    -h   The height of the area in which the windmills are to be placed. (default: 333.33 * ``-n``)
     --wind-seed  The random seed used for generating the distribution and strength of the wind. (default: 0)
     --n-samples  The number of random wind strength samples to evaluate. More is less noisy but takes more time. Passing the string ``None`` will use a fixed set of wind strengths (previous behaviour, fast, no noise) (default: 5)
 :dimensionality: :math:`2n`, all continuous (``cont``)
 :constraints: Windmills are not allowed to be located within a factor of two of each others' radius, this constraint has been incorporated into the objective function.
 :description: The layout of the windmills in a wind farm has noticeable impact on the amount of energy it produces. This benchmark problem employs the `FLORIS <https://github.com/NREL/floris>`__ wake simulator to analyse how much power production is lost by having windmills be located in each others wake. The objective is to maximize power production.
+:runtime:
+    **At ``-n`` = 3:**
+
+    .. jupyter-execute::
+        :hide-code:
+
+        plot_hist("windwake_rs.csv.xz", 'iter_eval_time', dist=norm)
+
+    **At ``-n`` = 5:**
+
+    .. jupyter-execute::
+        :hide-code:
+
+        plot_hist("windwake_rs_5.csv.xz", 'iter_eval_time', dist=norm)
+
+:fitness:
+    **At ``-n`` = 3:**
+
+    .. jupyter-execute::
+        :hide-code:
+
+        plot_hist("windwake_rs.csv.xz", 'iter_fitness')
+
+    **At ``-n`` = 5:**
+
+    .. jupyter-execute::
+        :hide-code:
+
+        plot_hist("windwake_rs_5.csv.xz", 'iter_fitness')
+
 
 Electrostatic Precipitator*
 ---------------------------

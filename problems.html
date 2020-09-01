@@ -66,10 +66,10 @@
 <dd><p>The number of windmills to be placed. (default: 3)</p>
 </dd>
 <dt><kbd><span class="option">-w</span></kbd></dt>
-<dd><p>The width of the area in which the windmills are to be placed. (default: 1000)</p>
+<dd><p>The width of the area in which the windmills are to be placed. (default: 333.33 * <code class="docutils literal notranslate"><span class="pre">-n</span></code>)</p>
 </dd>
 <dt><kbd><span class="option">-h</span></kbd></dt>
-<dd><p>The height of the area in which the windmills are to be placed. (default: 1000)</p>
+<dd><p>The height of the area in which the windmills are to be placed. (default: 333.33 * <code class="docutils literal notranslate"><span class="pre">-n</span></code>)</p>
 </dd>
 <dt><kbd><span class="option">--wind-seed</span></kbd></dt>
 <dd><p>The random seed used for generating the distribution and strength of the wind. (default: 0)</p>
@@ -87,6 +87,34 @@
 </dd>
 <dt class="field-even">description</dt>
 <dd class="field-even"><p>The layout of the windmills in a wind farm has noticeable impact on the amount of energy it produces. This benchmark problem employs the <a class="reference external" href="https://github.com/NREL/floris">FLORIS</a> wake simulator to analyse how much power production is lost by having windmills be located in each others wake. The objective is to maximize power production.</p>
+</dd>
+<dt class="field-odd">runtime</dt>
+<dd class="field-odd"><p><strong>At ``-n`` = 3:</strong></p>
+<div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/problems_1_0.png" src="_images/problems_1_0.png" />
+</div>
+</div>
+<p><strong>At ``-n`` = 5:</strong></p>
+<div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/problems_2_0.png" src="_images/problems_2_0.png" />
+</div>
+</div>
+</dd>
+<dt class="field-even">fitness</dt>
+<dd class="field-even"><p><strong>At ``-n`` = 3:</strong></p>
+<div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/problems_3_0.png" src="_images/problems_3_0.png" />
+</div>
+</div>
+<p><strong>At ``-n`` = 5:</strong></p>
+<div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/problems_4_0.png" src="_images/problems_4_0.png" />
+</div>
+</div>
 </dd>
 </dl>
 </div>
@@ -111,14 +139,14 @@
 <dt class="field-even">runtime</dt>
 <dd class="field-even"><div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
-<img alt="_images/problems_1_0.png" src="_images/problems_1_0.png" />
+<img alt="_images/problems_5_0.png" src="_images/problems_5_0.png" />
 </div>
 </div>
 </dd>
 <dt class="field-odd">fitness</dt>
 <dd class="field-odd"><div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
-<img alt="_images/problems_2_0.png" src="_images/problems_2_0.png" />
+<img alt="_images/problems_6_0.png" src="_images/problems_6_0.png" />
 </div>
 </div>
 </dd>
@@ -155,14 +183,14 @@ A that requires more time than what time time limit allows will return an object
 <dt class="field-even">runtime</dt>
 <dd class="field-even"><div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
-<img alt="_images/problems_3_0.png" src="_images/problems_3_0.png" />
+<img alt="_images/problems_7_0.png" src="_images/problems_7_0.png" />
 </div>
 </div>
 </dd>
 <dt class="field-odd">fitness</dt>
 <dd class="field-odd"><div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
-<img alt="_images/problems_4_0.png" src="_images/problems_4_0.png" />
+<img alt="_images/problems_8_0.png" src="_images/problems_8_0.png" />
 </div>
 </div>
 </dd>
