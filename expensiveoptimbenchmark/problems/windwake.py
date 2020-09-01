@@ -26,7 +26,7 @@ class WindWakeLayout(BaseProblem):
         self.fi.reinitialize_flow_field(layout_array=(rand_layout_x, rand_layout_y))
 
         # Default polygon (covers entire area)
-        self.boundaries = [[0.0, 0.0], [width, 0.0], [width, height], [0.0, height]]
+        self.boundaries = [[0.0, 0.0], [self.width, 0.0], [self.width, self.height], [0.0, self.height]]
         # Scaling factor, set to 1 in order to avoid scaling.
         self.aep_initial = 1
         self.lo = wfct.optimization.scipy.layout.LayoutOptimization(self.fi, self.boundaries, self.wd, self.ws, self.freq, self.aep_initial)
