@@ -47,13 +47,13 @@ python3.7 ./expensiveoptimbenchmark/run_experiment.py --repetitions=25 --out-pat
 **Linear MiVaBO (default) (executed 7x in parellel)**
 
 ```bash
-python3.7 ./expensiveoptimbenchmark/run_experiment.py --repetitions=1 --out-path=./results/linearmivabo/ --max-eval=2024 --rand-evals-all=24 linearmivabo --dd=119 --dc=119 --seed=111 --noisy=y --laplace=n randomsearch hyperopt mvrsm smac"
+python3.7 ./expensiveoptimbenchmark/run_experiment.py --repetitions=1 --out-path=./results/linearmivabo/  --max-eval=224 --rand-evals-all=24 linearmivabo --seed=111:118 --noisy=y --laplace=n randomsearch hyperopt mvrsm smac
 ```
 
 **Linear MiVaBO (large) (executed 7x in parellel)**
 
 ```bash
-python3.7 ./expensiveoptimbenchmark/run_experiment.py --repetitions=1 --out-path=./results/linearmivabo-large/ --max-eval=2024 --rand-evals-all=24 linearmivabo --dd=119 --dc=119 --seed=111 --noisy=y --laplace=n randomsearch hyperopt mvrsm smac"
+python3.7 ./expensiveoptimbenchmark/run_experiment.py --repetitions=1 --out-path=./results/linearmivabo-large/ --max-eval=2024 --rand-evals-all=24 linearmivabo --dd=119 --dc=119 --seed=111 --noisy=y --laplace=n randomsearch hyperopt mvrsm smac
 ```
 
 **Ackley 53 (executed 7x in parellel)**
