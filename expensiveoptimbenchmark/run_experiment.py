@@ -64,10 +64,14 @@ def construct_rosen_int(params):
     else:
         return [RosenbrockInt(d, logscale) for d in ds]
 
-def construct_rosen_cont(params):
-    from problems.rosenbrock_cont import RosenbrockCont
-    ds = parse_numerical_ranges(params['-d'])
-    return [RosenbrockCont(d) for d in ds]
+# Rosenbrock (configurable)
+def construct_rosenbrock(params):
+    from problems.rosenbrock import Rosenbrock
+    assert params['--n-int'] != '0' or params['--n-cont'] != '0', "Rosenbrock: Set at least one of --n-int, --n-cont"
+    d_ints = parse_numerical_ranges(params['--n-int'])
+    d_conts = parse_numerical_ranges(params['--n-cont'])
+    logscale = params['--logscale'] in ['true','t', 'yes', 'y']
+    return [Rosenbrock(d_int, d_cont, logscale) for d_int, d_cont in product(d_ints, d_conts)]
 
 # Linear MIVABO Function
 def construct_linearmivabo(params):
@@ -87,12 +91,13 @@ def construct_linearmivabo(params):
 def construct_windwake(params):
     from problems.windwake import WindWakeLayout
     sim_info_file = params['--file']
+    n_samples = int(params['--n-samples']) if params['--n-samples'] != 'None' else None
     wind_seed = int(params['--wind-seed'])
     n_turbines = int(params['-n'])
-    width = int(params['-w'])
-    height = int(params['-h'])
+    width = int(params['-w']) if params['-w'] != 'None' else None
+    height = int(params['-h']) if params['-h'] != 'None' else None
 
-    return [WindWakeLayout(sim_info_file, n_turbines=n_turbines, wind_seed=wind_seed, width=width, height=height)]
+    return [WindWakeLayout(sim_info_file, n_turbines=n_turbines, wind_seed=wind_seed, width=width, height=height, n_samples=n_samples)]
 
 # MaxCut function
 def construct_maxcut(params):
@@ -142,19 +147,14 @@ problems = {
         },
         'constructor': construct_rosen_int
     },
-    'rosen-int': {
-        'args': {'-d'},
+    'rosenbrock': {
+        'args': {'--n-int', '--n-cont', '--logscale'},
         'defaults': {
-            '-d': '2'
+            '--n-int': '0',
+            '--n-cont': '0',
+            '--logscale': 'f',
         },
-        'constructor': construct_rosen_int
-    },
-    'rosen-cont': {
-        'args': {'-d'},
-        'defaults': {
-            '-d': '2'
-        },
-        'constructor': construct_rosen_cont
+        'constructor': construct_rosenbrock
     },
     'convex': {
         'args': {'--seed', '-d'},
@@ -174,12 +174,13 @@ problems = {
         'constructor': construct_linearmivabo
     },
     'windwake': {
-        'args': {'--file', '-n', '-w', '-h', '--wind-seed'},
+        'args': {'--file', '-n', '-w', '-h', '--wind-seed', '--n-samples'},
         'defaults': {
             '-n': '3',
-            '-w': '1000',
-            '-h': '1000',
-            '--wind-seed': '0'
+            '-w': 'None',
+            '-h': 'None',
+            '--wind-seed': '0',
+            '--n-samples': '5'
         },
         'constructor': construct_windwake
     },
