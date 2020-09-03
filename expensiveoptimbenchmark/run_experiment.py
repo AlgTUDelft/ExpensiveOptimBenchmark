@@ -9,6 +9,10 @@ os.environ['MKL_NUM_THREADS'] = '1'
 
 # Workaround for statically linked libpython on ubuntu.
 # Used for the container!
+# This needs to be done before scikit.optimize is imported
+# (the reason for this is unknown, but a system library needs
+#  a newer version in this case.)
+# NOTE: An import happens due to the rosenbrock test function.
 try:
     import platform
     if 'ubuntu' in platform.platform().lower() and 'donejl' in sys.argv:
