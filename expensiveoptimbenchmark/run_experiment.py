@@ -54,6 +54,15 @@ def construct_rosen(params):
     else:
         return [RosenbrockInt(d, logscale) for d in ds]
 
+# Rosenbrock (configurable)
+def construct_rosenbrock(params):
+    from problems.rosenbrock import Rosenbrock
+    assert params['--n-int'] != '0' or params['--n-cont'] != '0', "Rosenbrock: Set at least one of --n-int, --n-cont"
+    d_ints = parse_numerical_ranges(params['--n-int'])
+    d_conts = parse_numerical_ranges(params['--n-cont'])
+    logscale = params['--logscale'] in ['true','t', 'yes', 'y']
+    return [Rosenbrock(d_int, d_cont, logscale) for d_int, d_cont in product(d_ints, d_conts)]
+
 # Linear MIVABO Function
 def construct_linearmivabo(params):
     from problems.linear_MIVABOfunction import Linear
@@ -126,6 +135,15 @@ problems = {
             '--binarize': 'f'
         },
         'constructor': construct_rosen
+    },
+    'rosenbrock': {
+        'args': {'--n-int', '--n-cont', '--logscale'},
+        'defaults': {
+            '--n-int': '0',
+            '--n-cont': '0',
+            '--logscale': 'f',
+        },
+        'constructor': construct_rosenbrock
     },
     'convex': {
         'args': {'--seed', '-d'},
