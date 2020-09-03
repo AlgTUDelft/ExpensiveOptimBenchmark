@@ -18,7 +18,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.decomposition import PCA
 
 
-class SteelFoldPlate(BaseProblem):
+class HPOSFP(BaseProblem):
 
     def __init__(self, folder, naive=False):
         self.folder = folder
@@ -69,7 +69,7 @@ class SteelFoldPlate(BaseProblem):
             return self.deps_v
 
     def __str__(self):
-        return f"SteelFoldPlate()"
+        return f"HPOSFP(naive={self.naive})"
 
 def load_data(directory):
     # File containing the header names

@@ -121,15 +121,15 @@ def construct_windwakeh(params):
 
     return [WindWakeHeightLayout(sim_info_file, n_turbines=n_turbines, wind_seed=wind_seed, width=width, height=height)]
 
-def construct_automlnaive(params):
-    from problems.steelfoldplateclassifier import SteelFoldPlate
+def construct_hponaive(params):
+    from problems.hpo import HPOSFP
     instance_info_folder = params['--folder']
-    return [SteelFoldPlate(instance_info_folder, naive=True)]
+    return [HPOSFP(instance_info_folder, naive=True)]
 
-def construct_automl(params):
-    from problems.steelfoldplateclassifier import SteelFoldPlate
+def construct_hpo(params):
+    from problems.hpo import HPOSFP
     instance_info_folder = params['--folder']
-    return [SteelFoldPlate(instance_info_folder)]
+    return [HPOSFP(instance_info_folder)]
 
 # Summary of problems and their parameters.
 problems = {
@@ -206,15 +206,15 @@ problems = {
         },
         'constructor': construct_windwakeh
     },
-    'automlnaive': {
+    'hponaive': {
         'args': {'--folder'},
         'defaults': {},
-        'constructor': construct_automlnaive
+        'constructor': construct_hponaive
     },
-    'automl': {
+    'hpo': {
         'args': {'--folder'},
         'defaults': {},
-        'constructor': construct_automl
+        'constructor': construct_hpo
     }
 }
 
