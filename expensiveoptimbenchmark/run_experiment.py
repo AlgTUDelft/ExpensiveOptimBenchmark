@@ -7,6 +7,20 @@ from itertools import product
 os.environ['OPENBLAS_NUM_THREADS'] = '1'
 os.environ['MKL_NUM_THREADS'] = '1'
 
+# Workaround for statically linked libpython on ubuntu.
+# Used for the container!
+# This needs to be done before scikit.optimize is imported
+# (the reason for this is unknown, but a system library needs
+#  a newer version in this case.)
+# NOTE: An import happens due to the rosenbrock test function.
+try:
+    import platform
+    if 'ubuntu' in platform.platform().lower() and 'donejl' in sys.argv:
+        from julia.api import Julia
+        jl = Julia(compiled_modules=False)
+except Exception as e:
+    pass
+
 def parse_numerical_range(s):
     range_ = s.split(":")
     if len(range_) == 1:
@@ -43,7 +57,7 @@ def construct_convex(params):
     return [Convex(d, seed) for d, seed in product(ds, seeds)]
 
 # IntRosenbrock
-def construct_rosen(params):
+def construct_rosen_int(params):
     from problems.rosenbrock_int import RosenbrockInt
     from problems.rosenbrock_binarized import RosenbrockBinarized
     ds = parse_numerical_ranges(params['-d'])
@@ -127,6 +141,7 @@ problems = {
         },
         'constructor': construct_tsp
     },
+    # Have rosen-int under the name rosen for backwards compat.
     'rosen': {
         'args': {'-d', '--logscale', '--binarize'},
         'defaults': {
@@ -134,7 +149,7 @@ problems = {
             '--logscale': 'f',
             '--binarize': 'f'
         },
-        'constructor': construct_rosen
+        'constructor': construct_rosen_int
     },
     'rosenbrock': {
         'args': {'--n-int', '--n-cont', '--logscale'},
@@ -285,6 +300,33 @@ def execute_SA(params, problem, max_eval, log):
 
     return optimize_SA(problem, max_eval, log=log)
 
+def check_DONEjl():
+    from solvers.DONEjl.wDONEjl import minimize_DONEjl
+    import numpy as np
+    # Do a quick run as warmup.
+    minimize_DONEjl(lambda x: sum(x**2), np.ones(3) * -1, np.ones(3), 2, 10, {}, progressbar=False)
+
+def execute_DONEjl(params, problem, max_eval, log):
+    from solvers.DONEjl.wDONEjl import optimize_DONEjl
+
+    rand_evals = int(params['--rand-evals'])
+
+    hyperparams = {}
+
+    # Number of basis functions.
+    if params["--n-basis"] is not None:
+        hyperparams['n_basis'] = int(params["--n-basis"]),
+    # Variance of generated basis function coefficients.
+    if params["--sigma-coeff"] is not None:
+        hyperparams['sigma_coeff'] = float(params["--sigma-coeff"])
+    # Variational parameters.
+    if params["--sigma-s"] is not None:
+        hyperparams['sigma_s'] = float(params["--sigma-s"])
+    if params["--sigma-f"] is not None:
+        hyperparams['sigma_f'] = float(params["--sigma-f"])
+    # TODO: More parameters
+
+    return optimize_DONEjl(problem, rand_evals, max_eval, hyperparams, log=log)
 
 # Hyperopt TPE
 def execute_hyperopt(params, problem, max_eval, log):
@@ -370,6 +412,18 @@ solvers = {
         },
         'executor': execute_MVRSM,
         'check': nop
+    },
+    'donejl': {
+        'args': {'--rand-evals', '--n-basis', '--sigma-coeff', '--sigma-s', '--sigma-f'},
+        'defaults': {
+            '--rand-evals': '0',
+            '--n-basis': None,
+            '--sigma-coeff': None,
+            '--sigma-s': None,
+            '--sigma-f': None,
+        },
+        'executor': execute_DONEjl,
+        'check': check_DONEjl
     },
     'sa': {
         'args': set(),
@@ -592,7 +646,8 @@ while len(args) > i:
     # into surprises later
     try:
         solver['info']['check']()
-    except:
+    except Exception as e:
+        print(e)
         print(f"Dependencies for {solver['name']} seem to be missing.")
         print(f"Did you install the relevant extras?")
         sys.exit(-1)
