@@ -26,6 +26,8 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
             
         # Initialise figure
         fig = plt.figure()
+        
+        plt.style.use('seaborn-colorblind')
         ax = fig.add_subplot()
 
         for (solver, iter_df) in problem_df.groupby('approach'):
@@ -68,7 +70,6 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
             line.set_marker(valid_markers[i])
             line.set_markevery(5)
 
-        plt.style.use('seaborn-colorblind')
         plt.grid(True)
 
         # Display
