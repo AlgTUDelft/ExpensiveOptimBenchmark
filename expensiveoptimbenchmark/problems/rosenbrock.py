@@ -37,4 +37,4 @@ class Rosenbrock(BaseProblem):
         return self.d
 
     def __str__(self):
-        return f"RosenbrockInt(d_int={self.d_int}, d_cont={self.d_cont}, log={self.dolog})"
+        return f"Rosenbrock(d_int={self.d_int}, d_cont={self.d_cont}, log={self.dolog})"
