@@ -3,6 +3,7 @@ From: frehbach/cfd-test-problem-suite
 Stage: spython-base
 
 %environment
+export PATH=$PATH:/home/openfoam/platforms/linux64GccDPInt32Opt/bin
 export PYTHONPATH=$PYTHONPATH:/home/openfoam/cfd-test-problem-suite/Exeter_CFD_Problems/:/home/openfoam/cfd-test-problem-suite/Exeter_CFD_Problems/data
 export WM_MPLIB=SYSTEMOPENMPI
 export JULIA_DEPOT_PATH=:/opt/julia
