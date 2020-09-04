@@ -54,16 +54,15 @@ def optimize_DONEjl(problem, rand_evals, max_evals, hyperparams, log=None):
     lb = problem.lbs()
     ub = problem.ubs()
 
-    supported = (problem.vartype() == 'cont')
-
-    if not (supported).all():
-        raise ValueError(f'Variable of types {np.unique(problem.vartype()[np.logical_not(supported)])} are not supported by DONEjl.')
-
+    rounded = (problem.vartype() != 'cont')
+    
     mon = Monitor(f"DONEjl", problem, log=log)
     def f(x):
+        xr = np.asarray(x)
+        xr[rounded] = np.round(xr[rounded])
         mon.commit_start_eval()
-        r = problem.evaluate(x)
-        mon.commit_end_eval(x, r)
+        r = problem.evaluate(xr)
+        mon.commit_end_eval(xr, r)
         return r
     
     mon.start()
