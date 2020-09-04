@@ -407,7 +407,7 @@ solvers = {
         'defaults': {
             '--model': 'advanced',
             '--binarize-categorical': 'false',
-            '--rand-evals': '1',
+            '--rand-evals': '5',
             '--scaling': 'true'
         },
         'executor': execute_MVRSM,
