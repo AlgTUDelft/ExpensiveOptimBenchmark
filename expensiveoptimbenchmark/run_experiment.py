@@ -416,7 +416,7 @@ solvers = {
     'donejl': {
         'args': {'--rand-evals', '--n-basis', '--sigma-coeff', '--sigma-s', '--sigma-f'},
         'defaults': {
-            '--rand-evals': '0',
+            '--rand-evals': '5',
             '--n-basis': None,
             '--sigma-coeff': None,
             '--sigma-s': None,
