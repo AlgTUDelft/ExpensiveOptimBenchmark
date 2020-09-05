@@ -66,7 +66,7 @@ PitzDaily = DockerCFDBenchmarkProblem("PitzDaily",
     10,
     [-0.01, -0.05, -0.01, -0.05, -0.01, -0.05, -0.01, -0.05, -0.01, -0.05],
     [0.287397, 0.014, 0.287397, 0.014, 0.287397, 0.014 , 0.287397, 0.014, 0.287397, 0.014],
-    ['cont'] * 10, "min", 1.0)
+    ['cont'] * 10, "min", 2.0)
 
 KaplanDuct = DockerCFDBenchmarkProblem("KaplanDuct", 4, 
     [720.0, -1050.5, 726.99988, -710.0],
