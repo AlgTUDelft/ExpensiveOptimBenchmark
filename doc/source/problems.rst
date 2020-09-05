@@ -72,7 +72,7 @@ Windmill Wake Simulator
     --wind-seed  The random seed used for generating the distribution and strength of the wind. (default: 0)
     --n-samples  The number of random wind strength samples to evaluate. More is less noisy but takes more time. Passing the string ``None`` will use a fixed set of wind strengths (previous behaviour, fast, no noise) (default: 5)
 :dimensionality: :math:`2n`, all continuous (``cont``)
-:constraints: Windmills are not allowed to be located within a factor of two of each others' radius, this constraint has been incorporated into the objective function.
+:constraints: Windmills are not allowed to be located within a factor of two of each others' radius, this constraint has been incorporated into the objective function. Violations will result in an objective value of :math:`0.0`.
 :description: The layout of the windmills in a wind farm has noticeable impact on the amount of energy it produces. This benchmark problem employs the `FLORIS <https://github.com/NREL/floris>`__ wake simulator to analyse how much power production is lost by having windmills be located in each others wake. The objective is to maximize power production.
 :runtime:
     **At ``-n`` = 3:**
@@ -127,6 +127,30 @@ Electrostatic Precipitator*
 
 :description: An Electrostatic Precipitator is a large gas filtering installation, whose efficiency and efficiacy is dependent on how well the intake gas is distributed. This installation has slots -- named baffles -- which can be of various types, each having a different impact on the distribution. This benchmark problem employs the OpenFOAM Computational Fluid Dynamics simulator, implemented as part of the `CFD Test Problem Suite <https://bitbucket.org/arahat/cfd-test-problem-suite/>`__ by Daniels et al. . The goal is to find a configuration that has the best resulting distribution.
 
+PitzDaily
+---------
+:publications: :cite:`daniels2018suite`
+:bibtex:      ``daniels2018suite``
+:repository:   `BitBucket <https://bitbucket.org/arahat/cfd-test-problem-suite/>`__
+:parameters:    None
+:dimensionality: :math:`10` - all continuous (``cont``)
+
+:runtime:
+    .. jupyter-execute::
+        :hide-code:
+
+        plot_hist("pitzdaily_rs.csv.xz", 'iter_eval_time', dist=norm)
+
+:fitness:
+    .. jupyter-execute::
+        :hide-code:
+
+        plot_hist("pitzdaily_rs.csv.xz", 'iter_fitness')
+
+:constraints: Points must lie in a polygon, constraint violations will result in an objective value of :math:`1.0`.
+
+:description: 
+
 HPO / XGBoost
 -------------
 :parameters:
@@ -152,5 +176,7 @@ HPO / XGBoost
         :hide-code:
 
         plot_hist("hpo_rs.csv.xz", 'iter_fitness')
+
+:constraints: Time it limited to 8s (on our machine), violations result in an objective value of :math:`0.0`.
 
 :description: Machine Learning approaches often have a large amount of hyperparameters of varying types. This benchmark makes use of scikit-learn to build an XGBoost classifier with per-feature preprocessing. Evaluation of a solution is performed by k-fold cross validation, with the goal to maximize accuracy.
