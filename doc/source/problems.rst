@@ -180,3 +180,12 @@ HPO / XGBoost
 :constraints: Time it limited to 8s (on our machine), violations result in an objective value of :math:`0.0`.
 
 :description: Machine Learning approaches often have a large amount of hyperparameters of varying types. This benchmark makes use of scikit-learn to build an XGBoost classifier with per-feature preprocessing. Evaluation of a solution is performed by k-fold cross validation, with the goal to maximize accuracy.
+
+Rosenbrock
+----------
+:parameters:
+    --n-int   The number of dimensions that are required to be integer (expressed as :math:`i` in the dimensionality below)
+    --n-cont   The number of dimensions that are required to be continuous (expressed as :math:`c` in the dimensionality below)
+    --logscale   Whether to take the log of the rosenbrock function instead of scaling.
+:dimensionality: :math:`c + i`, 
+:description: The rosenbrock function with a configurable amount of integer and continuous variables. Non-expensive problem included to test whether approaches work.
