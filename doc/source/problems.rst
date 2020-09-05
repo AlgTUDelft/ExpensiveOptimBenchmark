@@ -187,5 +187,5 @@ Rosenbrock
     --n-int   The number of dimensions that are required to be integer (expressed as :math:`i` in the dimensionality below)
     --n-cont   The number of dimensions that are required to be continuous (expressed as :math:`c` in the dimensionality below)
     --logscale   Whether to take the log of the rosenbrock function instead of scaling.
-:dimensionality: :math:`c + i`, 
+:dimensionality: :math:`i + c`, :math:`i` integer (``int``), :math:`c` continuous (``cont``)
 :description: The rosenbrock function with a configurable amount of integer and continuous variables. Non-expensive problem included to test whether approaches work.
