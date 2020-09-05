@@ -1,9 +1,12 @@
 import numpy as np
 import math
 from tqdm import tqdm
+from pathlib import Path
+
+DONEs_loc = Path(__file__).parent.absolute().joinpath("./vendor/DONEs.jl").__str__()
 
 from julia import Main
-Main.include("./expensiveoptimbenchmark/solvers/DONEjl/vendor/DONEs.jl")
+Main.include(DONEs_loc)
 DONEs = Main.DONEs
 
 def minimize_DONEjl(f, lb, ub, rand_evals, max_evals, hyperparams, progressbar=True):
