@@ -13,7 +13,7 @@ def minimize_DONEjl(f, lb, ub, rand_evals, max_evals, hyperparams, progressbar=T
     n_vars      = len(lb)
     n_basis     = hyperparams.get('n_basis', 2000) # generally larger with more n_vars (high dim)
     
-    sigma_coeff = hyperparams.get('sigma_coeff', 0.1 if n_vars < 100 else 1 / sqrt(n_vars) )
+    sigma_coeff = hyperparams.get('sigma_coeff', 0.1 if n_vars < 100 else 1 / math.sqrt(n_vars) )
     
     sigma_def   = 0.1 if n_vars < 100 else 1.0 / math.sqrt(n_vars)
     sigma_s     = hyperparams.get('sigma_s', sigma_def)
