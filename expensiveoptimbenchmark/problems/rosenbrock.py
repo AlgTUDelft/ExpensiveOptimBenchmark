@@ -4,9 +4,9 @@ from scipy.optimize import rosen
 
 class Rosenbrock(BaseProblem):
 
-    def __init__(self, d_int, d_cont, dolog=False, noise_seed=None, noise_factor=1e-6):
-        self.ub = 10
-        self.lb = -5
+    def __init__(self, d_int, d_cont, lb=-5, ub=10, dolog=False, noise_seed=None, noise_factor=1e-6):
+        self.ub = ub
+        self.lb = lb
         self.d_int = d_int
         self.d_cont = d_cont
         d = d_int + d_cont

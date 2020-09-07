@@ -74,8 +74,10 @@ def construct_rosenbrock(params):
     assert params['--n-int'] != '0' or params['--n-cont'] != '0', "Rosenbrock: Set at least one of --n-int, --n-cont"
     d_ints = parse_numerical_ranges(params['--n-int'])
     d_conts = parse_numerical_ranges(params['--n-cont'])
+    lb = float(params['--lb'])
+    ub = float(params['--ub'])
     logscale = params['--logscale'] in ['true','t', 'yes', 'y']
-    return [Rosenbrock(d_int, d_cont, logscale) for d_int, d_cont in product(d_ints, d_conts)]
+    return [Rosenbrock(d_int, d_cont, lb, ub, logscale) for d_int, d_cont in product(d_ints, d_conts)]
 
 # Linear MIVABO Function
 def construct_linearmivabo(params):
@@ -152,10 +154,12 @@ problems = {
         'constructor': construct_rosen_int
     },
     'rosenbrock': {
-        'args': {'--n-int', '--n-cont', '--logscale'},
+        'args': {'--n-int', '--n-cont', '--lb', '--ub', '--logscale'},
         'defaults': {
             '--n-int': '0',
             '--n-cont': '0',
+            '--lb': '-5',
+            '--ub': '15',
             '--logscale': 'f',
         },
         'constructor': construct_rosenbrock
