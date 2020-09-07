@@ -21,6 +21,7 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
 
     # Read log files
     iter_dfs = pd.concat(pd.read_csv(f) for f in file_list)
+    iter_dfs['exp_id'] = iter_dfs['exp_id'].astype(str)
 
     for (problem, problem_df) in iter_dfs.groupby('problem'):
             
