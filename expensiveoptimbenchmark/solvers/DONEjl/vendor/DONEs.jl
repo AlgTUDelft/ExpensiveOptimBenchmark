@@ -170,7 +170,7 @@ function update_optimal_input!(alg::DONE)
     opt.min_objective = myfunc
 
     x0 = project_on_bounds(alg.current_optimal_x + rand(alg.surrogate_exploration_prob_dist),alg.lower_bound,alg.upper_bound)
-    (minf,minx,ret) = NLopt.optimize(opt, zeros(Float64,alg.n))
+    (minf,minx,ret) = NLopt.optimize(opt, x0)
     alg.current_optimal_x[:] = minx
     return minx
 end
