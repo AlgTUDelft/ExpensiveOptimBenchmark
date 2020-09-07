@@ -23,13 +23,25 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
     iter_dfs = pd.concat(pd.read_csv(f) for f in file_list)
     iter_dfs['exp_id'] = iter_dfs['exp_id'].astype(str)
 
-    for (problem, problem_df) in iter_dfs.groupby('problem'):
-            
+    for (problem, problem_df_view) in iter_dfs.groupby('problem'):
+        problem_df = problem_df_view.copy()
+
         # Initialise figure
         fig = plt.figure()
         
         plt.style.use('seaborn-colorblind')
         ax = fig.add_subplot()
+
+        dolog = y_feature.startswith('log_')
+        if dolog:
+            y_feature = y_feature[4:]
+
+        if y_feature.startswith('norm_'):
+            y_feature = y_feature[5:]
+            y_feature_min = problem_df[y_feature].min()
+            y_feature_max = problem_df[y_feature].max()
+            problem_df['normed_y'] = (problem_df[y_feature] - y_feature_min) / (y_feature_max - y_feature_min)
+            y_feature = 'normed_y'
 
         for (solver, iter_df) in problem_df.groupby('approach'):
             # solver = iter_df['approach'].values[0]
@@ -63,7 +75,8 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
         plt.ylabel(convert_feature_label(y_feature))
         plt.xlabel("Iteration index")
         plt.xlim(mean_fitness_value.index[0], mean_fitness_value.index[-1])
-
+        if dolog:
+            plt.yscale("log")
 
         # Give all lines different markers
         valid_markers = ([item[0] for item in markers.MarkerStyle.markers.items() if item[1] is not 'nothing' and not item[1].startswith('tick') and not item[1].startswith('caret')])
@@ -77,7 +90,7 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
         plt.legend()
 
         if save_file is not None:
-            fig.savefig(f"{save_file}_{problem}.png")
+            fig.savefig(save_file)
     
     # Show all at once.
     # if save_file is None:
@@ -86,12 +99,18 @@ def plot_iter_file(folder_path, y_feature = 'iter_best_fitness', save_file=None)
 if __name__ == "__main__":
     import sys
     folder_path = sys.argv[1]
-    if len(sys.argv) > 2 and sys.argv[2] != '_':
+    if len(sys.argv) > 2 and not sys.argv[2].endswith('_'):
         feature = sys.argv[2]
     else:
-        feature = 'iter_best_fitness'
+        if len(sys.argv[2]) == 1:
+            feature = 'iter_best_fitness'
+        else:
+            feature = sys.argv[2] + 'iter_best_fitness'
     if len(sys.argv) > 3:
-        save_file = sys.argv[3]
+        if sys.argv[3].endswith("_"):
+            save_file = f"{save_file}_{problem}.png"
+        else:
+            save_file = sys.argv[3]
     else:
         save_file = None
     plot_iter_file(folder_path, feature, save_file)
