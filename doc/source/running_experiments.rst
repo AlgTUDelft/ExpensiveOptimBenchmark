@@ -77,9 +77,11 @@ Running these problems provides a few options:
     - Run directly on your machine itself, with admin rights if neccesary for docker (eg. on Mac and Linux).
 
     .. code-block:: shell
+    
         python ./expensiveoptimbenchmark/run_experiment.py ...
 
 .. _installation-notes:
+
 Installation Notes
 ------------------
 Usage of the containers is recommended, which provides all requirements for all approaches and problems.
