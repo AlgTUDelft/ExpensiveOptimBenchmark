@@ -38,7 +38,7 @@
           <div class="body" role="main">
             
   <div class="section" id="problems">
-<h1>Problems<a class="headerlink" href="#problems" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>Problems<a class="headerlink" href="#problems" title="Permalink to this headline">¶</a></h1>
 <p>All evaluation functions provided by the benchmark suite are required to be minimized. If the objective value of the original underlying problem is to be maximized, the evaluation function provided has its value multiplied by <span class="math notranslate nohighlight">\(-1\)</span>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -57,8 +57,11 @@
 <dt class="field-even">repository</dt>
 <dd class="field-even"><p><a class="reference external" href="https://github.com/NREL/floris">GitHub</a></p>
 </dd>
-<dt class="field-odd">parameters</dt>
-<dd class="field-odd"><dl class="option-list">
+<dt class="field-odd">problem-key</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">windwake</span></code></p>
+</dd>
+<dt class="field-even">parameters</dt>
+<dd class="field-even"><dl class="option-list">
 <dt><kbd><span class="option">--file</span></kbd></dt>
 <dd><p>The path to the windpark/windmill specification. We recommend using <a class="reference external" href="https://raw.githubusercontent.com/NREL/floris/master/examples/example_input.json">example_input.json</a> from the FLORIS repository. (required)</p>
 </dd>
@@ -79,17 +82,17 @@
 </dd>
 </dl>
 </dd>
-<dt class="field-even">dimensionality</dt>
-<dd class="field-even"><p><span class="math notranslate nohighlight">\(2n\)</span>, all continuous (<code class="docutils literal notranslate"><span class="pre">cont</span></code>)</p>
+<dt class="field-odd">dimensionality</dt>
+<dd class="field-odd"><p><span class="math notranslate nohighlight">\(2n\)</span>, all continuous (<code class="docutils literal notranslate"><span class="pre">cont</span></code>)</p>
 </dd>
-<dt class="field-odd">constraints</dt>
-<dd class="field-odd"><p>Windmills are not allowed to be located within a factor of two of each others’ radius, this constraint has been incorporated into the objective function.</p>
+<dt class="field-even">constraints</dt>
+<dd class="field-even"><p>Windmills are not allowed to be located within a factor of two of each others’ radius, this constraint has been incorporated into the objective function. Violations will result in an objective value of <span class="math notranslate nohighlight">\(0.0\)</span>.</p>
 </dd>
-<dt class="field-even">description</dt>
-<dd class="field-even"><p>The layout of the windmills in a wind farm has noticeable impact on the amount of energy it produces. This benchmark problem employs the <a class="reference external" href="https://github.com/NREL/floris">FLORIS</a> wake simulator to analyse how much power production is lost by having windmills be located in each others wake. The objective is to maximize power production.</p>
+<dt class="field-odd">description</dt>
+<dd class="field-odd"><p>The layout of the windmills in a wind farm has noticeable impact on the amount of energy it produces. This benchmark problem employs the <a class="reference external" href="https://github.com/NREL/floris">FLORIS</a> wake simulator to analyse how much power production is lost by having windmills be located in each others wake. The objective is to maximize power production.</p>
 </dd>
-<dt class="field-odd">runtime</dt>
-<dd class="field-odd"><p><strong>At ``-n`` = 3:</strong></p>
+<dt class="field-even">runtime</dt>
+<dd class="field-even"><p><strong>At ``-n`` = 3:</strong></p>
 <div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
 <img alt="_images/problems_1_0.png" src="_images/problems_1_0.png" />
@@ -102,8 +105,8 @@
 </div>
 </div>
 </dd>
-<dt class="field-even">fitness</dt>
-<dd class="field-even"><p><strong>At ``-n`` = 3:</strong></p>
+<dt class="field-odd">fitness</dt>
+<dd class="field-odd"><p><strong>At ``-n`` = 3:</strong></p>
 <div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
 <img alt="_images/problems_3_0.png" src="_images/problems_3_0.png" />
@@ -122,7 +125,7 @@
 <h2>Electrostatic Precipitator*<a class="headerlink" href="#electrostatic-precipitator" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list">
 <dt class="field-odd">publications</dt>
-<dd class="field-odd"><p>(<a class="bibtex reference internal" href="zzreferences.html#daniels2018suite" id="id1">[DRE+18]</a>)</p>
+<dd class="field-odd"><p>(<a class="bibtex reference internal" href="zzreferences.html#daniels2018suite" id="id2">[DRE+18]</a>)</p>
 </dd>
 <dt class="field-even">bibtex</dt>
 <dd class="field-even"><p>(<code class="docutils literal notranslate"><span class="pre">daniels2018suite</span></code>)</p>
@@ -130,36 +133,84 @@
 <dt class="field-odd">repository</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://bitbucket.org/arahat/cfd-test-problem-suite/">BitBucket</a></p>
 </dd>
-<dt class="field-even">parameters</dt>
-<dd class="field-even"><p>None</p>
+<dt class="field-even">problem-key</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">esp</span></code></p>
 </dd>
-<dt class="field-odd">dimensionality</dt>
-<dd class="field-odd"><p><span class="math notranslate nohighlight">\(49\)</span> - all categorical (<code class="docutils literal notranslate"><span class="pre">cat</span></code>)</p>
+<dt class="field-odd">parameters</dt>
+<dd class="field-odd"><p>None</p>
 </dd>
-<dt class="field-even">runtime</dt>
-<dd class="field-even"><div class="jupyter_cell docutils container">
+<dt class="field-even">dimensionality</dt>
+<dd class="field-even"><p><span class="math notranslate nohighlight">\(49\)</span> - all categorical (<code class="docutils literal notranslate"><span class="pre">cat</span></code>)</p>
+</dd>
+<dt class="field-odd">runtime</dt>
+<dd class="field-odd"><div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
 <img alt="_images/problems_5_0.png" src="_images/problems_5_0.png" />
 </div>
 </div>
 </dd>
-<dt class="field-odd">fitness</dt>
-<dd class="field-odd"><div class="jupyter_cell docutils container">
+<dt class="field-even">fitness</dt>
+<dd class="field-even"><div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
 <img alt="_images/problems_6_0.png" src="_images/problems_6_0.png" />
 </div>
 </div>
 </dd>
-<dt class="field-even">description</dt>
-<dd class="field-even"><p>An Electrostatic Precipitator is a large gas filtering installation, whose efficiency and efficiacy is dependent on how well the intake gas is distributed. This installation has slots – named baffles – which can be of various types, each having a different impact on the distribution. This benchmark problem employs the OpenFOAM Computational Fluid Dynamics simulator, implemented as part of the <a class="reference external" href="https://bitbucket.org/arahat/cfd-test-problem-suite/">CFD Test Problem Suite</a> by Daniels et al. . The goal is to find a configuration that has the best resulting distribution.</p>
+<dt class="field-odd">description</dt>
+<dd class="field-odd"><p>An Electrostatic Precipitator is a large gas filtering installation, whose efficiency and efficiacy is dependent on how well the intake gas is distributed. This installation has slots – named baffles – which can be of various types, each having a different impact on the distribution. This benchmark problem employs the OpenFOAM Computational Fluid Dynamics simulator, implemented as part of the <a class="reference external" href="https://bitbucket.org/arahat/cfd-test-problem-suite/">CFD Test Problem Suite</a> by Daniels et al. . The goal is to find a configuration that has the best resulting distribution.</p>
 </dd>
+</dl>
+</div>
+<div class="section" id="pitzdaily">
+<h2>PitzDaily<a class="headerlink" href="#pitzdaily" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list">
+<dt class="field-odd">publications</dt>
+<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#daniels2018suite" id="id3">[DRE+18]</a></p>
+</dd>
+<dt class="field-even">bibtex</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">daniels2018suite</span></code></p>
+</dd>
+<dt class="field-odd">repository</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://bitbucket.org/arahat/cfd-test-problem-suite/">BitBucket</a></p>
+</dd>
+<dt class="field-even">problem-key</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">pitzdaily</span></code></p>
+</dd>
+<dt class="field-odd">parameters</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">dimensionality</dt>
+<dd class="field-even"><p><span class="math notranslate nohighlight">\(10\)</span> - all continuous (<code class="docutils literal notranslate"><span class="pre">cont</span></code>)</p>
+</dd>
+<dt class="field-odd">runtime</dt>
+<dd class="field-odd"><div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/problems_7_0.png" src="_images/problems_7_0.png" />
+</div>
+</div>
+</dd>
+<dt class="field-even">fitness</dt>
+<dd class="field-even"><div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/problems_8_0.png" src="_images/problems_8_0.png" />
+</div>
+</div>
+</dd>
+<dt class="field-odd">constraints</dt>
+<dd class="field-odd"><p>Points must lie in a polygon, constraint violations will result in an objective value of <span class="math notranslate nohighlight">\(1.0\)</span>.</p>
+</dd>
+<dt class="field-even">description</dt>
+<dd class="field-even"><p></p></dd>
 </dl>
 </div>
 <div class="section" id="hpo-xgboost">
 <h2>HPO / XGBoost<a class="headerlink" href="#hpo-xgboost" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list">
-<dt class="field-odd">parameters</dt>
-<dd class="field-odd"><dl class="option-list">
+<dt class="field-odd">problem-key</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">hpo</span></code></p>
+</dd>
+<dt class="field-even">parameters</dt>
+<dd class="field-even"><dl class="option-list">
 <dt><kbd><span class="option">--folder</span></kbd></dt>
 <dd><p>The folder containing the unpacked files of the <a class="reference external" href="http://archive.ics.uci.edu/ml/datasets/Steel+Plates+Faults">Steel Plates Faults</a> dataset. (required)</p>
 </dd>
@@ -174,28 +225,58 @@ A that requires more time than what time time limit allows will return an object
 </dd>
 </dl>
 </dd>
-<dt class="field-even">dataset</dt>
-<dd class="field-even"><p>Dataset provided by Semeion, Research Center of Sciences of Communication, Via Sersale 117, 00128, Rome, Italy. www.semeion.it</p>
+<dt class="field-odd">dataset</dt>
+<dd class="field-odd"><p>Dataset provided by Semeion, Research Center of Sciences of Communication, Via Sersale 117, 00128, Rome, Italy. www.semeion.it</p>
 </dd>
-<dt class="field-odd">dimensionality</dt>
-<dd class="field-odd"><p><span class="math notranslate nohighlight">\(135\)</span> - <span class="math notranslate nohighlight">\(117\)</span> categorical (<code class="docutils literal notranslate"><span class="pre">cat</span></code>), <span class="math notranslate nohighlight">\(7\)</span> integer (<code class="docutils literal notranslate"><span class="pre">int</span></code>), <span class="math notranslate nohighlight">\(11\)</span> continuous (<code class="docutils literal notranslate"><span class="pre">cont</span></code>), contains conditionals</p>
+<dt class="field-even">dimensionality</dt>
+<dd class="field-even"><p><span class="math notranslate nohighlight">\(135\)</span> - <span class="math notranslate nohighlight">\(117\)</span> categorical (<code class="docutils literal notranslate"><span class="pre">cat</span></code>), <span class="math notranslate nohighlight">\(7\)</span> integer (<code class="docutils literal notranslate"><span class="pre">int</span></code>), <span class="math notranslate nohighlight">\(11\)</span> continuous (<code class="docutils literal notranslate"><span class="pre">cont</span></code>), contains conditionals</p>
 </dd>
-<dt class="field-even">runtime</dt>
-<dd class="field-even"><div class="jupyter_cell docutils container">
-<div class="cell_output docutils container">
-<img alt="_images/problems_7_0.png" src="_images/problems_7_0.png" />
-</div>
-</div>
-</dd>
-<dt class="field-odd">fitness</dt>
+<dt class="field-odd">runtime</dt>
 <dd class="field-odd"><div class="jupyter_cell docutils container">
 <div class="cell_output docutils container">
-<img alt="_images/problems_8_0.png" src="_images/problems_8_0.png" />
+<img alt="_images/problems_9_0.png" src="_images/problems_9_0.png" />
 </div>
 </div>
+</dd>
+<dt class="field-even">fitness</dt>
+<dd class="field-even"><div class="jupyter_cell docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/problems_10_0.png" src="_images/problems_10_0.png" />
+</div>
+</div>
+</dd>
+<dt class="field-odd">constraints</dt>
+<dd class="field-odd"><p>Time it limited to 8s (on our machine), violations result in an objective value of <span class="math notranslate nohighlight">\(0.0\)</span>.</p>
 </dd>
 <dt class="field-even">description</dt>
 <dd class="field-even"><p>Machine Learning approaches often have a large amount of hyperparameters of varying types. This benchmark makes use of scikit-learn to build an XGBoost classifier with per-feature preprocessing. Evaluation of a solution is performed by k-fold cross validation, with the goal to maximize accuracy.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="rosenbrock">
+<h2>Rosenbrock<a class="headerlink" href="#rosenbrock" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list">
+<dt class="field-odd">problem-key</dt>
+<dd class="field-odd"><p>rosenbrock</p>
+</dd>
+<dt class="field-even">parameters</dt>
+<dd class="field-even"><dl class="option-list">
+<dt><kbd><span class="option">--n-int</span></kbd></dt>
+<dd><p>The number of dimensions that are required to be integer (expressed as <span class="math notranslate nohighlight">\(i\)</span> in the dimensionality below)</p>
+</dd>
+<dt><kbd><span class="option">--n-cont</span></kbd></dt>
+<dd><p>The number of dimensions that are required to be continuous (expressed as <span class="math notranslate nohighlight">\(c\)</span> in the dimensionality below)</p>
+</dd>
+<dt><kbd><span class="option">--logscale</span></kbd></dt>
+<dd><p>Whether to take the log of the rosenbrock function instead of scaling.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">dimensionality</dt>
+<dd class="field-odd"><p><span class="math notranslate nohighlight">\(i + c\)</span>, <span class="math notranslate nohighlight">\(i\)</span> integer (<code class="docutils literal notranslate"><span class="pre">int</span></code>), <span class="math notranslate nohighlight">\(c\)</span> continuous (<code class="docutils literal notranslate"><span class="pre">cont</span></code>)</p>
+</dd>
+<dt class="field-even">description</dt>
+<dd class="field-even"><p>The rosenbrock function with a configurable amount of integer and continuous variables. Non-expensive problem included to test whether approaches work.</p>
 </dd>
 </dl>
 </div>
@@ -223,10 +304,13 @@ A that requires more time than what time time limit allows will return an object
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Problems</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#windmill-wake-simulator">Windmill Wake Simulator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#electrostatic-precipitator">Electrostatic Precipitator*</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pitzdaily">PitzDaily</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hpo-xgboost">HPO / XGBoost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rosenbrock">Rosenbrock</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="approaches.html">Approaches</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running_experiments.html">Running Experiments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extending/extending.html">Extending</a></li>
 <li class="toctree-l1"><a class="reference internal" href="zzreferences.html">References</a></li>
 </ul>

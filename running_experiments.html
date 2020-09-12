@@ -1,0 +1,247 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Running Experiments &#8212; ExpensiveOptimBenchmark 2020 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Extending" href="extending/extending.html" />
+    <link rel="prev" title="Approaches" href="approaches.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="running-experiments">
+<h1>Running Experiments<a class="headerlink" href="#running-experiments" title="Permalink to this headline">¶</a></h1>
+<p>Running experiments is done through <code class="docutils literal notranslate"><span class="pre">expensiveoptimbenchmark/run_experiment.py</span></code>. It is recommended to make use of the Singularity container, which installs the requirements for all approaches and problems. Python 3.6+ is required to run the benchmark suite.</p>
+<div class="section" id="run-experiment-py">
+<h2><code class="docutils literal notranslate"><span class="pre">run_experiment.py</span></code><a class="headerlink" href="#run-experiment-py" title="Permalink to this headline">¶</a></h2>
+<p>The general command for running an experiment is listed below, for information for the <code class="docutils literal notranslate"><span class="pre">&lt;problem&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;approach&gt;</span></code> specifiers, refer to <a class="reference internal" href="problems.html#problems"><span class="std std-ref">Problems</span></a> and <a class="reference internal" href="approaches.html#approaches"><span class="std std-ref">Approaches</span></a> respectively, and look at <code class="docutils literal notranslate"><span class="pre">problem-key</span></code> and <code class="docutils literal notranslate"><span class="pre">approach-key</span></code>. The arguments directly following the name of the problem, are specifically for the problem itself. Similarly, the arguments directly following an approach form a configuration, and multiple configurations can be listed – even those including the same approach.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python run_experiment.py &lt;general-arguments&gt; &lt;problem&gt; &lt;problem-args*&gt; <span class="o">(</span>&lt;approach&gt; &lt;approach-args*&gt;<span class="o">)</span>+
+</pre></div>
+</div>
+<p>For example:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python ./run_experiment.py --max-eval<span class="o">=</span><span class="m">100</span> rosenbrock --n-cont<span class="o">=</span><span class="m">10</span> randomsearch hyperopt
+</pre></div>
+</div>
+<p>To run an experiment with 100 evaluations on the 10-dimensional rosenbrock function, with all variables, using both random search and Hyperopt.</p>
+<div class="section" id="general-arguments">
+<h3>General arguments<a class="headerlink" href="#general-arguments" title="Permalink to this headline">¶</a></h3>
+<dl class="option-list">
+<dt><kbd><span class="option">--max-eval</span></kbd></dt>
+<dd><p>Set the maximum number of evaluations.</p>
+</dd>
+<dt><kbd><span class="option">--rand-evals-all</span></kbd></dt>
+<dd><p>Set <code class="docutils literal notranslate"><span class="pre">--rand-evals</span></code> for all approaches. If not set, each approach uses their own default.</p>
+</dd>
+<dt><kbd><span class="option">--repetitions</span></kbd></dt>
+<dd><p>Number of times to repeat an experiment. (default: 1)</p>
+</dd>
+<dt><kbd><span class="option">--out-path</span></kbd></dt>
+<dd><p>The folder in which to place the experimental results.
+.. note:: In case of working with containers below, ensure the output directory is mounted to access the files after running an experiment. (default: ./results)</p>
+</dd>
+<dt><kbd><span class="option">--write-every</span></kbd></dt>
+<dd><p>The number of iterations in between writing calls to disk. If none, write after a full run (all evaluations) is completed. (default: none)</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="docker-and-singularity">
+<h2>Docker and Singularity<a class="headerlink" href="#docker-and-singularity" title="Permalink to this headline">¶</a></h2>
+<p>A subset of the problems – ESP and PitzDaily – are from <a class="bibtex reference internal" href="zzreferences.html#daniels2018suite" id="id1">[DRE+18]</a> and the corresponding <a class="reference external" href="https://bitbucket.org/arahat/cfd-test-problem-suite/">BitBucket repository</a>. The required installation to run these experiments makes use of OpenFOAM and is located in a Docker container or Singularity container.</p>
+<p>Running these problems provides a few options:</p>
+<ol class="arabic">
+<li><dl>
+<dt>Run everything inside the Singularity container:</dt><dd><ul>
+<li><p>Make sure Singularity 3.x is installed.</p></li>
+<li><p>Build the container, for example by running <code class="docutils literal notranslate"><span class="pre">buildCFD_singularity.sh</span></code>.</p></li>
+<li><dl>
+<dt>Run experiments</dt><dd><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo singularity run --writable-tmpfs ./CFD.sif <span class="s2">&quot;python3.7 /home/openfoam/expensiveoptimbenchmark/run_experiment.py ...&quot;</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Singularity mounts the home directory of the current user by default. As such, writing the result files to <code class="docutils literal notranslate"><span class="pre">~/results/</span></code> or similar, will avoid loss of data.</p>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The CFD Benchmarks create new files, whereas the singularity container is by default read-only.
+<code class="docutils literal notranslate"><span class="pre">--writable-tmpfs</span></code> will use a small amount of RAM to write these temporary files to.
+Sadly, the writing permissions for this storage seem to be different from the folder itself,
+and the root user must be used in order to be able to write files. (Hence the usage of <code class="docutils literal notranslate"><span class="pre">sudo</span></code> in the command above)</p>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>Run everything inside the Docker container:</dt><dd><ul>
+<li><p>Make sure Docker is installed.</p></li>
+<li><p>Build the container, for example by running <code class="docutils literal notranslate"><span class="pre">buildCFD_docker.sh</span></code> or <code class="docutils literal notranslate"><span class="pre">buildCFD_docker.bat</span></code>.</p></li>
+<li><dl>
+<dt>Run the experiment:</dt><dd><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo docker run cfdbench <span class="s2">&quot;python3.7 /home/openfoam/expensiveoptimbenchmark/run_experiment.py ...&quot;</span>
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Docker does not mount any directories of the host system by default. Make sure to include a <code class="docutils literal notranslate"><span class="pre">--mount</span></code> argument to the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">run</span></code> command above for the result directory.</p>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>Run the CFD simulation inside the Docker container:</dt><dd><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>This starts up a new Docker container for every evaluation, which may introduce additional overhead.</p>
+</div>
+<ul class="simple">
+<li><p>Make sure Docker is installed.</p></li>
+<li><p>Make sure all the dependencies of approaches are properly installed. See <a class="reference internal" href="#installation-notes"><span class="std std-ref">Installation Notes</span></a> for potential issues.
+Otherwise poetry should take care of the dependencies for you.</p></li>
+<li><p>Run directly on your machine itself, with admin rights if neccesary for docker (eg. on Mac and Linux).</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python ./expensiveoptimbenchmark/run_experiment.py ...
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ol>
+</div>
+<div class="section" id="installation-notes">
+<span id="id2"></span><h2>Installation Notes<a class="headerlink" href="#installation-notes" title="Permalink to this headline">¶</a></h2>
+<p>Usage of the containers is recommended, which provides all requirements for all approaches and problems.</p>
+<p>We cover some potential issues with specific dependencies for some approaches.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>SMAC3 makes use of swig 3 in order to call its C++ code. If swig 4 is used, a segmentation fault will occur.</dt><dd><ul>
+<li><p>If changing to swig 3 and reinstalling does not work, make sure to clean up pip’s cache.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DONE(jl) is written in Julia, and therefore requires Julia to be installed including dependencies. (<code class="docutils literal notranslate"><span class="pre">Distributions</span></code>, <code class="docutils literal notranslate"><span class="pre">NLopt</span></code>, <code class="docutils literal notranslate"><span class="pre">PyCall</span></code>)</dt><dd><ul>
+<li><p>Special case for <code class="docutils literal notranslate"><span class="pre">pyjulia</span></code> (Python package) and <code class="docutils literal notranslate"><span class="pre">pycall</span></code> (Julia package) should be linked to the right Python version.</p></li>
+<li><p>A workaround is present to deal with statically linked versions on Ubuntu in <code class="docutils literal notranslate"><span class="pre">run_experiment.py</span></code>. See <a class="reference external" href="https://pyjulia.readthedocs.io/en/latest/troubleshooting.html#your-python-interpreter-is-statically-linked-to-libpython">this page in the pyjulia documentation</a>. Expand the requirements to your needs if neccesary.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ExpensiveOptimBenchmark</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="problems.html">Problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="approaches.html">Approaches</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Running Experiments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#run-experiment-py"><code class="docutils literal notranslate"><span class="pre">run_experiment.py</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#docker-and-singularity">Docker and Singularity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation-notes">Installation Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extending/extending.html">Extending</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zzreferences.html">References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="approaches.html" title="previous chapter">Approaches</a></li>
+      <li>Next: <a href="extending/extending.html" title="next chapter">Extending</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Arthur Guijt, Laurens Bliek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/running_experiments.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

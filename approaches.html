@@ -38,12 +38,12 @@
           <div class="body" role="main">
             
   <div class="section" id="approaches">
-<h1>Approaches<a class="headerlink" href="#approaches" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>Approaches<a class="headerlink" href="#approaches" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="hyperopt">
 <h2>HyperOpt<a class="headerlink" href="#hyperopt" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list">
 <dt class="field-odd">publications</dt>
-<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#bergstra2013making" id="id1">[BYC13]</a>.</p>
+<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#bergstra2013making" id="id2">[BYC13]</a>.</p>
 </dd>
 <dt class="field-even">bibtex</dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bergstra2013making</span></code></p>
@@ -54,8 +54,11 @@
 <dt class="field-even">supports</dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">cont</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">cat</span></code></p>
 </dd>
-<dt class="field-odd">parameters</dt>
-<dd class="field-odd"><dl class="option-list">
+<dt class="field-odd">approach-key</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">hyperopt</span></code></p>
+</dd>
+<dt class="field-even">parameters</dt>
+<dd class="field-even"><dl class="option-list">
 <dt><kbd><span class="option">--rand-evals</span></kbd></dt>
 <dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 3)</p>
 </dd>
@@ -70,7 +73,7 @@
 <h2>Random Search (via HyperOpt)<a class="headerlink" href="#random-search-via-hyperopt" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list simple">
 <dt class="field-odd">publications</dt>
-<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#bergstra2013making" id="id2">[BYC13]</a>.</p>
+<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#bergstra2013making" id="id3">[BYC13]</a>.</p>
 </dd>
 <dt class="field-even">bibtex</dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bergstra2013making</span></code></p>
@@ -78,8 +81,11 @@
 <dt class="field-odd">supports</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">cont</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">cat</span></code></p>
 </dd>
-<dt class="field-even">repository</dt>
-<dd class="field-even"><p><a class="reference external" href="https://github.com/hyperopt/hyperopt">GitHub</a>, <a class="reference external" href="https://pypi.org/project/hyperopt/">PyPI</a></p>
+<dt class="field-even">approach-key</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">randomsearch</span></code></p>
+</dd>
+<dt class="field-odd">repository</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://github.com/hyperopt/hyperopt">GitHub</a>, <a class="reference external" href="https://pypi.org/project/hyperopt/">PyPI</a></p>
 </dd>
 </dl>
 </div>
@@ -87,7 +93,7 @@
 <h2>SMAC3<a class="headerlink" href="#smac3" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list">
 <dt class="field-odd">publications</dt>
-<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#hutter2010sequential-extended" id="id3">[HHLB10]</a>, <a class="bibtex reference internal" href="zzreferences.html#hutter2011sequential" id="id4">[HHLB11]</a></p>
+<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#hutter2010sequential-extended" id="id4">[HHLB10]</a>, <a class="bibtex reference internal" href="zzreferences.html#hutter2011sequential" id="id5">[HHLB11]</a></p>
 </dd>
 <dt class="field-even">bibtex</dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">hutter2010sequential-extended</span></code>, <code class="docutils literal notranslate"><span class="pre">hutter2011sequential</span></code></p>
@@ -98,8 +104,11 @@
 <dt class="field-even">supports</dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">cont</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">cat</span></code></p>
 </dd>
-<dt class="field-odd">parameters</dt>
-<dd class="field-odd"><dl class="option-list">
+<dt class="field-odd">approach-key</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">smac</span></code></p>
+</dd>
+<dt class="field-even">parameters</dt>
+<dd class="field-even"><dl class="option-list">
 <dt><kbd><span class="option">--rand-evals</span></kbd></dt>
 <dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 3)</p>
 </dd>
@@ -114,11 +123,54 @@
 </dd>
 </dl>
 </div>
+<div class="section" id="done">
+<h2>DONE<a class="headerlink" href="#done" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list">
+<dt class="field-odd">publications</dt>
+<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#donepaper" id="id6">[BliekVerstraeteVerhaegenWahls18]</a></p>
+</dd>
+<dt class="field-even">bibtex</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">DONEpaper</span></code></p>
+</dd>
+<dt class="field-odd">repository</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://github.com/rdoelman/DONEs.jl">GitHub</a></p>
+</dd>
+<dt class="field-even">supports</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">cont</span></code></p>
+</dd>
+<dt class="field-odd">approach-key</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">donejl</span></code></p>
+</dd>
+<dt class="field-even">parameters</dt>
+<dd class="field-even"><dl class="option-list">
+<dt><kbd><span class="option">--rand-evals</span></kbd></dt>
+<dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 0)</p>
+</dd>
+<dt><kbd><span class="option">--n-basis</span></kbd></dt>
+<dd><p>The number of basis functions (default: 2000)</p>
+</dd>
+<dt><kbd><span class="option">--sigma-coeff</span></kbd></dt>
+<dd><p>Variance of initial random fourier expansion coefficients. (default: <span class="math notranslate nohighlight">\(\min(0.1, {d}^{-0.5})\)</span>, with <span class="math notranslate nohighlight">\(d\)</span> the dimensionality of the function under test)</p>
+</dd>
+<dt><kbd><span class="option">--sigma-s</span></kbd></dt>
+<dd><p>Variance for surrogate exploration (default: <span class="math notranslate nohighlight">\(\min(0.1, {d}^{-0.5})\)</span>, with <span class="math notranslate nohighlight">\(d\)</span> the dimensionality of the function under test)</p>
+</dd>
+<dt><kbd><span class="option">--sigma-f</span></kbd></dt>
+<dd><p>Variance for function exploration (default: <span class="math notranslate nohighlight">\(\min(0.1, {d}^{-0.5})\)</span>, with <span class="math notranslate nohighlight">\(d\)</span> the dimensionality of the function under test)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>DONE is sensitive to its parameters. The default sigma values are for a normalized search space. If either the input or output values are very large, performance may suffer.</p>
+</div>
+</div>
 <div class="section" id="idone">
 <h2>IDONE<a class="headerlink" href="#idone" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list">
 <dt class="field-odd">publications</dt>
-<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#bliek2019black" id="id5">[BVdW19]</a></p>
+<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#bliek2019black" id="id7">[BVdW19]</a></p>
 </dd>
 <dt class="field-even">bibtex</dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bliek2019black</span></code></p>
@@ -129,8 +181,11 @@
 <dt class="field-even">supports</dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">cat</span></code> (as interpreted as integer / binarized)</p>
 </dd>
-<dt class="field-odd">parameters</dt>
-<dd class="field-odd"><dl class="option-list">
+<dt class="field-odd">approach-key</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">idone</span></code></p>
+</dd>
+<dt class="field-even">parameters</dt>
+<dd class="field-even"><dl class="option-list">
 <dt><kbd><span class="option">--rand-evals</span></kbd></dt>
 <dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 5)</p>
 </dd>
@@ -163,7 +218,7 @@
 <h2>MVRSM<a class="headerlink" href="#mvrsm" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list">
 <dt class="field-odd">publications</dt>
-<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#bliek2020black" id="id6">[BVdW20]</a></p>
+<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#bliek2020black" id="id8">[BVdW20]</a></p>
 </dd>
 <dt class="field-even">bibtex</dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bliek2020black</span></code></p>
@@ -179,8 +234,11 @@
 is only continuous.</p>
 </div>
 </dd>
-<dt class="field-odd">parameters</dt>
-<dd class="field-odd"><dl class="option-list">
+<dt class="field-odd">approach-key</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">mvrsm</span></code></p>
+</dd>
+<dt class="field-even">parameters</dt>
+<dd class="field-even"><dl class="option-list">
 <dt><kbd><span class="option">--rand-evals</span></kbd></dt>
 <dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 5)</p>
 </dd>
@@ -201,7 +259,7 @@ is only continuous.</p>
 <h2>CoCaBO<a class="headerlink" href="#cocabo" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list">
 <dt class="field-odd">publications</dt>
-<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#ru2019bayesian" id="id7">[RAN+19]</a></p>
+<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#ru2019bayesian" id="id9">[RAN+19]</a></p>
 </dd>
 <dt class="field-even">bibtex</dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">ru2019bayesian</span></code></p>
@@ -213,8 +271,11 @@ is only continuous.</p>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">cont</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code> (interpreted as categorical), <code class="docutils literal notranslate"><span class="pre">cat</span></code>.</p>
 <p>Currently requires at least one continuous (<code class="docutils literal notranslate"><span class="pre">cont</span></code>) and one discrete (<code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">cat</span></code>) variable.</p>
 </dd>
-<dt class="field-odd">parameters</dt>
-<dd class="field-odd"><dl class="option-list">
+<dt class="field-odd">approach-key</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">cocabo</span></code></p>
+</dd>
+<dt class="field-even">parameters</dt>
+<dd class="field-even"><dl class="option-list">
 <dt><kbd><span class="option">--rand-evals</span></kbd></dt>
 <dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 24)</p>
 </dd>
@@ -234,8 +295,11 @@ is only continuous.</p>
 <dt class="field-odd">supports</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">cont</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code> (via rounding), <code class="docutils literal notranslate"><span class="pre">cat</span></code> (interpreted as integer, via rounding)</p>
 </dd>
-<dt class="field-even">parameters</dt>
-<dd class="field-even"><dl class="option-list">
+<dt class="field-even">approach-key</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bayesianoptimization</span></code></p>
+</dd>
+<dt class="field-odd">parameters</dt>
+<dd class="field-odd"><dl class="option-list">
 <dt><kbd><span class="option">--rand-evals</span></kbd></dt>
 <dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 5)</p>
 </dd>
@@ -247,7 +311,7 @@ is only continuous.</p>
 <h2>pyGPGO<a class="headerlink" href="#pygpgo" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list">
 <dt class="field-odd">publications</dt>
-<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#jimenez2017" id="id8">[JG17]</a></p>
+<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#jimenez2017" id="id10">[JG17]</a></p>
 </dd>
 <dt class="field-even">bibtex</dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">pygpgo</span></code>, <code class="docutils literal notranslate"><span class="pre">Jimenez2017</span></code></p>
@@ -262,8 +326,11 @@ is only continuous.</p>
 <p>Built-in support for integers is not used due to crashes.</p>
 </div>
 </dd>
-<dt class="field-odd">parameters</dt>
-<dd class="field-odd"><dl class="option-list">
+<dt class="field-odd">approach-key</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">pygpgo</span></code></p>
+</dd>
+<dt class="field-even">parameters</dt>
+<dd class="field-even"><dl class="option-list">
 <dt><kbd><span class="option">--rand-evals</span></kbd></dt>
 <dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 3)</p>
 </dd>
@@ -297,6 +364,7 @@ is only continuous.</p>
 <li class="toctree-l2"><a class="reference internal" href="#hyperopt">HyperOpt</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#random-search-via-hyperopt">Random Search (via HyperOpt)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#smac3">SMAC3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#done">DONE</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#idone">IDONE</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#mvrsm">MVRSM</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cocabo">CoCaBO</a></li>
