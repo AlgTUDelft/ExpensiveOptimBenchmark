@@ -13,6 +13,8 @@ Welcome to ExpensiveOptimBenchmark's documentation!
    problems
    approaches
 
+   running_experiments
+
    extending/extending
 
    zzreferences

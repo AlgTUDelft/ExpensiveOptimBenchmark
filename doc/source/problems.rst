@@ -1,3 +1,5 @@
+.. _problems:
+
 Problems
 ========
 All evaluation functions provided by the benchmark suite are required to be minimized. If the objective value of the original underlying problem is to be maximized, the evaluation function provided has its value multiplied by :math:`-1`.
@@ -64,6 +66,7 @@ Windmill Wake Simulator
 -----------------------
 :bibtex:     ``floris2020``
 :repository:  `GitHub <https://github.com/NREL/floris>`__
+:problem-key: ``windwake``
 :parameters:
     --file   The path to the windpark/windmill specification. We recommend using `example_input.json <https://raw.githubusercontent.com/NREL/floris/master/examples/example_input.json>`__ from the FLORIS repository. (required)
     -n   The number of windmills to be placed. (default: 3)
@@ -110,6 +113,7 @@ Electrostatic Precipitator*
 :publications: (:cite:`daniels2018suite`)
 :bibtex:      (``daniels2018suite``)
 :repository:   `BitBucket <https://bitbucket.org/arahat/cfd-test-problem-suite/>`__
+:problem-key:   ``esp``
 :parameters:    None
 :dimensionality: :math:`49` - all categorical (``cat``)
 
@@ -132,6 +136,7 @@ PitzDaily
 :publications: :cite:`daniels2018suite`
 :bibtex:      ``daniels2018suite``
 :repository:   `BitBucket <https://bitbucket.org/arahat/cfd-test-problem-suite/>`__
+:problem-key:   ``pitzdaily``
 :parameters:    None
 :dimensionality: :math:`10` - all continuous (``cont``)
 
@@ -153,6 +158,7 @@ PitzDaily
 
 HPO / XGBoost
 -------------
+:problem-key:   ``hpo``
 :parameters:
     --folder   The folder containing the unpacked files of the `Steel Plates Faults <http://archive.ics.uci.edu/ml/datasets/Steel+Plates+Faults>`__ dataset. (required)
     --time-limit   The time limit for a single evaluation of the objective function in seconds.
@@ -183,6 +189,7 @@ HPO / XGBoost
 
 Rosenbrock
 ----------
+:problem-key:   rosenbrock
 :parameters:
     --n-int   The number of dimensions that are required to be integer (expressed as :math:`i` in the dimensionality below)
     --n-cont   The number of dimensions that are required to be continuous (expressed as :math:`c` in the dimensionality below)

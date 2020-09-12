@@ -1,3 +1,5 @@
+.. _approaches:
+
 Approaches
 ==========
 
@@ -7,6 +9,7 @@ HyperOpt
 :bibtex:      ``bergstra2013making``
 :repository:   `GitHub <https://github.com/hyperopt/hyperopt>`__, `PyPI <https://pypi.org/project/hyperopt/>`__
 :supports:    ``cont``, ``int``, ``cat``
+:approach-key:   ``hyperopt``
 :parameters:
     --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 3)
     --int-conversion-mode   How to convert integer variables. Choose from ``quniform`` or ``randint``. (default: ``quniform``)
@@ -16,6 +19,7 @@ Random Search (via HyperOpt)
 :publications: :cite:`bergstra2013making`.
 :bibtex:      ``bergstra2013making``
 :supports:    ``cont``, ``int``, ``cat``
+:approach-key:   ``randomsearch``
 :repository:   `GitHub <https://github.com/hyperopt/hyperopt>`__, `PyPI <https://pypi.org/project/hyperopt/>`__
 
 SMAC3
@@ -24,6 +28,7 @@ SMAC3
 :bibtex:      ``hutter2010sequential-extended``, ``hutter2011sequential``
 :repository:   `GitHub <https://github.com/automl/SMAC3>`__, `PyPI <https://pypi.org/project/smac/>`__
 :supports:    ``cont``, ``int``, ``cat``
+:approach-key:   ``smac``
 :parameters:
     --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 3)
     --deterministic   Whether to run SMAC in deterministic mode. (default: false)
@@ -36,6 +41,7 @@ DONE
 :bibtex:      ``DONEpaper``
 :repository:   `GitHub <https://github.com/rdoelman/DONEs.jl>`__
 :supports:    ``cont``
+:approach-key:   ``donejl``
 :parameters:
     --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 0)
     --n-basis   The number of basis functions (default: 2000)
@@ -52,6 +58,7 @@ IDONE
 :bibtex:       ``bliek2019black``
 :repository:   `BitBucket <https://bitbucket.org/lbliek2/idone>`__
 :supports:   ``int``, ``cat`` (as interpreted as integer / binarized)
+:approach-key:   ``idone``
 :parameters:
     --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 5)
     --model   The kind of model to use. Choose between ``basic`` and ``advanced``. (default: ``advanced``)
@@ -72,7 +79,8 @@ MVRSM
     .. note:: 
         Note that behaviour differs (defaults to a fixed 1000 of basis functions) in the case that the function
         is only continuous.
-    
+
+:approach-key:   ``mvrsm`` 
 :parameters:
     --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 5)
     --model   The kind of model to use. Choose between ``basic`` and ``advanced``. (default: ``advanced``)
@@ -87,6 +95,7 @@ CoCaBO
 :supports:    ``cont``, ``int`` (interpreted as categorical), ``cat``. 
 
     Currently requires at least one continuous (``cont``) and one discrete (``int``, ``cat``) variable.
+:approach-key:   ``cocabo``
 :parameters:
     --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 24)
 
@@ -95,6 +104,7 @@ bayesianoptimization
 :bibtex:      ``bayesianoptimization``
 :repository:   `GitHub <https://github.com/fmfn/BayesianOptimization>`__, `PyPI <https://pypi.org/project/bayesian-optimization/>`__
 :supports:    ``cont``, ``int`` (via rounding), ``cat`` (interpreted as integer, via rounding)
+:approach-key:   ``bayesianoptimization``
 :parameters:
     --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 5)
 
@@ -106,6 +116,7 @@ pyGPGO
 :supports:      ``cont``, ``int`` (via rounding), ``cat`` (interpreted as integer, via rounding)
     
     .. note:: Built-in support for integers is not used due to crashes.
-    
+
+:approach-key:   ``pygpgo``
 :parameters:
     --rand-evals   The number of random evaluations to perform before utilizing the surrogate model. (default: 3)
