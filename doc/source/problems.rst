@@ -154,7 +154,7 @@ PitzDaily
 
 :constraints: Points must lie in a polygon, constraint violations will result in an objective value of :math:`1.0`.
 
-:description: 
+:description: This is a pipe shape optimization problem, where a computational fluid dynamics simulator is used to calculate the pressure loss for a given pipe shape, which needs to be minimized. The variables denote the control points that determine the shape of the pipe.
 
 HPO / XGBoost
 -------------
