@@ -79,6 +79,28 @@ def construct_rosenbrock(params):
     logscale = params['--logscale'] in ['true','t', 'yes', 'y']
     return [Rosenbrock(d_int, d_cont, lb, ub, logscale) for d_int, d_cont in product(d_ints, d_conts)]
 
+# Six-hump camel
+def construct_sixhumpcamel(params):
+    from problems.sixhumpcamel import Sixhumpcamel
+    assert params['--n-int'] != '0' or params['--n-cont'] != '0', "Six-hump camel: Set at least one of --n-int, --n-cont"
+    d_ints = parse_numerical_ranges(params['--n-int'])
+    d_conts = parse_numerical_ranges(params['--n-cont'])
+    lb = float(params['--lb'])
+    ub = float(params['--ub'])
+    logscale = params['--logscale'] in ['true','t', 'yes', 'y']
+    return [Sixhumpcamel(d_int, d_cont, lb, ub, logscale) for d_int, d_cont in product(d_ints, d_conts)]
+    
+# Six-hump camel (constrained)
+def construct_sixhumpcamel_constrained(params):
+    from problems.sixhumpcamel_constrained import Sixhumpcamel_constrained
+    assert params['--n-int'] != '0' or params['--n-cont'] != '0', "Six-hump camel: Set at least one of --n-int, --n-cont"
+    d_ints = parse_numerical_ranges(params['--n-int'])
+    d_conts = parse_numerical_ranges(params['--n-cont'])
+    lb = float(params['--lb'])
+    ub = float(params['--ub'])
+    logscale = params['--logscale'] in ['true','t', 'yes', 'y']
+    return [Sixhumpcamel_constrained(d_int, d_cont, lb, ub, logscale) for d_int, d_cont in product(d_ints, d_conts)]
+    
 # Linear MIVABO Function
 def construct_linearmivabo(params):
     from problems.linear_MIVABOfunction import Linear
@@ -163,6 +185,28 @@ problems = {
             '--logscale': 'f',
         },
         'constructor': construct_rosenbrock
+    },
+    'sixhumpcamel': {
+        'args': {'--n-int', '--n-cont', '--lb', '--ub', '--logscale'},
+        'defaults': {
+            '--n-int': '0',
+            '--n-cont': '2',
+            '--lb': '-2',
+            '--ub': '2',
+            '--logscale': 'f',
+        },
+        'constructor': construct_sixhumpcamel
+    },
+    'sixhumpcamel_constrained': {
+        'args': {'--n-int', '--n-cont', '--lb', '--ub', '--logscale'},
+        'defaults': {
+            '--n-int': '0',
+            '--n-cont': '2',
+            '--lb': '-2',
+            '--ub': '2',
+            '--logscale': 'f',
+        },
+        'constructor': construct_sixhumpcamel_constrained
     },
     'convex': {
         'args': {'--seed', '-d'},
