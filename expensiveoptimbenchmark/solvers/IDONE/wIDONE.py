@@ -8,7 +8,7 @@ def optimize_IDONE(problem, max_evals, rand_evals=5, model='advanced', binarize_
     lb = problem.lbs()
     ub = problem.ubs()
 
-    supported = (np.logical_or(problem.vartype() == 'int', problem.vartype() == 'cat'))
+    supported = (np.logical_or(np.logical_or(problem.vartype() == 'int', problem.vartype() == 'cat'), problem.vartype() == 'cont')) #added continuous variables (supported by discretization)
 
     if not (supported).all():
         raise ValueError(f'Variable of types {np.unique(problem.vartype()[np.logical_not(supported)])} are not supported by IDONE.')
@@ -41,13 +41,29 @@ def optimize_IDONE(problem, max_evals, rand_evals=5, model='advanced', binarize_
         raise ValueError(f'Can not find any probability value matching {exploration_prob}. Create a new value or change to an existing one: {probability_values.keys()}')
 
 
+    discr = (problem.vartype() == 'cont') #discretize continuous variables
+    lb[discr] = np.ceil(lb[discr])
+    ub[discr] = np.floor(ub[discr])
+    if discr.any():
+        gridsize = 100 #probably it is too expensive to discretize the search space in more than 100 cells per continuous variable
+        lb_old = np.copy(lb)
+        ub_old = np.copy(ub)
+        lb[discr]=0*lb[discr]
+        ub[discr]=gridsize*np.ones(ub[discr].size)
+    
+    
+
     mon = Monitor(f"IDONE/{model}{'/scaled' if enable_scaling else ''}{'/binarized' if binarize_categorical or binarize_int else ''}{'/'+sampling if sampling != 'none' else ''}{'/'+exploration_prob}", problem, log=log)
     def f(x):
+        xd = np.asarray(x)
+        if discr.any():
+            xd[discr] = lb_old[discr]+xd[discr]*(ub_old[discr]-lb_old[discr])/gridsize #discretize continuous search space
+    
         mon.commit_start_eval()
         if binarize_categorical or binarize_int:
-            xalt = b.unbinarize(x)
+            xalt = b.unbinarize(xd)
         else:
-            xalt = x
+            xalt = xd
         r = problem.evaluate(xalt)
         mon.commit_end_eval(xalt, r)
         return r
