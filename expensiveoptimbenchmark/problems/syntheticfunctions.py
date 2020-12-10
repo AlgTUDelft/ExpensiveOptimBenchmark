@@ -169,6 +169,70 @@ SFDim238Rosenbrocklog = MixedFunction('dim238Rosenbrocklog', dim238Rosenbrock, 1
 fns.append(SFDim238Rosenbrock)
 fns.append(SFDim238Rosenbrocklog)
 
+
+#
+def cvxnonsep_psig20(x):
+    # https://www.minlplib.org/cvxnonsep_psig20.html
+    # convex MINLP test problem with non-separable signomial objective function
+    # Objective at known optimum: 93.811388
+    # First 10 variables are integer, the other 10 continuous
+    return ((20000*x[0]**(-0.32)*x[1]**(-0.19)*x[2]**(-0.405)*x[3]**(-0.265)*x[4]**(-0.175)
+    *x[5]**(-0.44)*x[6]**(-0.275)*x[7]**(-0.47)*x[8]**(-0.31)*x[9]**(-0.295)*x[10]**(-0.105)*
+    x[11]**(-0.15)*x[12]**(-0.235)*x[13]**(-0.115)*x[14]**(-0.42)*x[15]**(-0.095)*
+    x[16]**(-0.115)*x[17]**(-0.085)*x[18]**(-0.115)*x[19]**(-0.22))
+    + np.sum(x))
+     
+SFCvxnonsep_psig20 = MixedFunction('cvxnonsep_psig20', cvxnonsep_psig20, 10, 10, 
+    np.ones(20) * 1,
+    np.ones(20) * 10,
+    False)
+fns.append(SFCvxnonsep_psig20)
+
+
+def cvxnonsep_psig30(x):
+    # https://www.minlplib.org/cvxnonsep_psig30.html
+    # convex MINLP test problem with non-separable signomial objective function
+    # Objective at known optimum: 78.99885434
+    # First 15 variables are integer, the other 15 continuous
+    return ((30000*x[0]**(-0.48)*x[1]**(-0.275)*x[2]**(-0.26)*x[3]**(-0.215)*x[4]**(-0.245)*
+    x[5]**(-0.31)*x[6]**(-0.34)*x[7]**(-0.2)*x[8]**(-0.185)*x[9]**(-0.495)*x[10]**(-0.02)*
+    x[11]**(-0.445)*x[12]**(-0.455)*x[13]**(-0.4)*x[14]**(-0.05)*x[15]**(-0.13)*
+    x[16]**(-0.17)*x[17]**(-0.34)*x[18]**(-0.07)*x[19]**(-0.36)*x[20]**(-0.05)*
+    x[21]**(-0.325)*x[22]**(-0.245)*x[23]**(-0.39)*x[24]**(-0.36)*x[25]**(-0.45)*
+    x[26]**(-0.445)*x[27]**(-0.165)*x[28]**(-0.35)*x[29]**(-0.1))
+    + np.sum(x))
+     
+SFCvxnonsep_psig30 = MixedFunction('cvxnonsep_psig30', cvxnonsep_psig30, 15, 15, 
+    np.ones(30) * 1,
+    np.ones(30) * 10,
+    False)
+fns.append(SFCvxnonsep_psig30)
+
+
+def cvxnonsep_psig40(x):
+    # https://www.minlplib.org/cvxnonsep_psig40.html
+    # convex MINLP test problem with non-separable signomial objective function
+    # Objective at known optimum: 85.49576764
+    # First 20 variables are integer, the other 20 continuous
+    return ((40000*x[0]**(-0.015)*x[1]**(-0.37)*x[2]**(-0.25)*x[3]**(-0.24)*x[4]**(-0.45)*
+    x[5]**(-0.305)*x[6]**(-0.31)*x[7]**(-0.43)*x[8]**(-0.405)*x[9]**(-0.29)*x[10]**(-0.09)*
+    x[11]**(-0.12)*x[12]**(-0.445)*x[13]**(-0.015)*x[14]**(-0.245)*x[15]**(-0.085)*
+    x[16]**(-0.49)*x[17]**(-0.355)*x[18]**(-0.25)*x[19]**(-0.235)*x[20]**(-0.03)*
+    x[21]**(-0.34)*x[22]**(-0.02)*x[23]**(-0.035)*x[24]**(-0.26)*x[25]**(-0.05)*
+    x[26]**(-0.41)*x[27]**(-0.41)*x[28]**(-0.36)*x[29]**(-0.075)*x[29]**(-0.36)*
+    x[30]**(-0.33)*x[31]**(-0.26)*x[32]**(-0.485)*x[33]**(-0.325)*x[34]**(-0.4)*
+    x[35]**(-0.225)*x[36]**(-0.215)*x[37]**(-0.415)*x[38]**(-0.04)*x[39]**(-0.065))
+    + np.sum(x))
+
+     
+SFCvxnonsep_psig40 = MixedFunction('cvxnonsep_psig40', cvxnonsep_psig40, 20, 20, 
+    np.ones(40) * 1,
+    np.ones(40) * 10,
+    False)
+fns.append(SFCvxnonsep_psig40)
+
+
+
 #
 def dim53Ackley(x):
     # assert len(ht_list) == 50
