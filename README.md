@@ -46,4 +46,4 @@ If the use of Docker or Singularity is not desired, we recommend the use of Poet
 
 ## Contact information
 
-Besides the regular ways of contact on github, if you have any questions please contact `l.bliek@tudelft.nl`.
+Besides the regular ways of contact on github, if you have any questions please contact `l.bliek@tue.nl`.
