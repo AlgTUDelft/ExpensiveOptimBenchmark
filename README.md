@@ -1,4 +1,4 @@
-# Expensive Optimization Benchmark
+# EXPObench:  An  EXPensive Optimization  benchmark  library
 
 [**Extensive documentation is available here**](http://algtudelft.github.io/ExpensiveOptimBenchmark/)
 
@@ -7,6 +7,17 @@
 <!-- TODO: Insert general idea of why this benchmark is needed here -->
 
 The purpose of this repository is to benchmark different surrogate algorithms on expensive real life optimization problems. It contains different *problems*, where the goal is to minimize some objective function, and *approaches*, which solve the minimization problem through the use of surrogate models. The documentation above contains a list of the problems and approaches, as well as instructions for how to add new problems or approaches.
+
+If you make use of EXPObench in your scientific work, please cite us:
+
+```bibtex
+@Misc{expobench,
+    author    = {A. Guijt and L. Bliek and R. Karlsson and S. Verwer and M. de Weerdt},
+    title     = {EXPObench:  An  EXPensive Optimization  benchmark  library},
+    howpublished = {\url{https://github.com/AlgTUDelft/ExpensiveOptimBenchmark}},
+    year = {2021}
+}
+```
 
 This repository requires a working installation of python 3. A quick test to see if everything works is to run the following code. This runs random search (not a surrogate algorithm) on the rosenbrock problem (which is not an expensive optimization problem):
 
