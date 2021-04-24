@@ -434,6 +434,21 @@ def execute_cocabo(params, problem, max_eval, log):
     rand_evals = int(params['--rand-evals'])
     return optimize_CoCaBO(problem, max_eval, init_points=rand_evals, log=log)
 
+def execute_scipy_basinhopping(params, problem, max_eval, log):
+    from solvers.scipy.wscipy import optimize_basinhopping
+    T = float(params['--T'])
+    stepsize = float(params['--stepsize'])
+    method = params['--method']
+
+    return optimize_basinhopping(problem, max_eval, T=T, stepsize=stepsize, localmethod=method, log=log)
+
+def execute_scipy_local(params, problem, max_eval, log):
+    from solvers.scipy.wscipy import optimize_scipy_local
+    method = params['--method']
+
+    return optimize_scipy_local(problem, max_eval, method=method, log=log)
+
+
 solvers = {
     'idone': {
         'args': {'--model', '--binarize-categorical', '--binarize-int', '--rand-evals', '--scaling', '--sampling', '--expl-prob'},
@@ -527,6 +542,24 @@ solvers = {
             '--rand-evals': '24'
         },
         'executor': execute_cocabo,
+        'check': nop
+    },
+    'scipy-basin': {
+        'args': {'--T', '--stepsize', '--method'},
+        'defaults': {
+            '--T': 1.0,
+            '--stepsize': 0.5,
+            '--method': "L-BFGS-B"
+        },
+        'executor': execute_scipy_basinhopping,
+        'check': nop
+    },
+    'scipy-minimize': {
+        'args': {'--method'},
+        'defaults': {
+            '--method': "L-BFGS-B"
+        },
+        'executor': execute_scipy_local,
         'check': nop
     }
 }
