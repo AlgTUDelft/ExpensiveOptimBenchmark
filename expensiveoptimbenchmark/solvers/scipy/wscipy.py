@@ -3,6 +3,10 @@ import math
 from ..utils import Monitor
 from scipy.optimize import basinhopping, minimize, Bounds
 
+class OverbudgetException(Exception):
+    def __init__(self):
+        super(Exception, self).__init__()
+
 def get_variable_bounds(problem):
     lbs = problem.lbs()
     ubs = problem.ubs()
@@ -15,6 +19,10 @@ def optimize_basinhopping(problem, max_evals, T=1.0, stepsize=0.5, localmethod="
     ubs = problem.ubs()
     mon = Monitor(f"scipy.basinhopping/{localmethod}", problem, log=log)
     def f(x):
+        # This approach does not stay within its evaluation budget (it has little to no way to enforce this!)
+        # As such. raise an exception if we are over the limit
+        if mon.num_iters > max_evals:
+            raise OverbudgetException()
         # scipy.optimize
         xvec = x.copy()
         # Round non-continuous variables
@@ -52,11 +60,14 @@ def optimize_basinhopping(problem, max_evals, T=1.0, stepsize=0.5, localmethod="
     x0[vt != 'cont'] = np.round(x0[vt != 'cont'])
 
     mon.start()
-    optim_result = basinhopping(func=f, x0=x0, niter=max_evals, T=T, stepsize=stepsize, minimizer_kwargs=minimizer_kwargs, callback=budget_check_global)
+    try:
+        optim_result = basinhopping(func=f, x0=x0, niter=max_evals, T=T, stepsize=stepsize, minimizer_kwargs=minimizer_kwargs, callback=budget_check_global)
+    except OverbudgetException as e:
+        pass
     mon.end()
 
-    solX = optim_result['x']
-    solY = optim_result['fun']
+    solX = mon.best_x #optim_result['x']
+    solY = mon.best_fitness #optim_result['fun']
 
     return solX, solY, mon
 
@@ -66,6 +77,10 @@ def optimize_scipy_local(problem, max_evals, method="BFGS", log=None, verbose=Fa
     vt = problem.vartype()
     mon = Monitor(f"scipy.{method}", problem, log=log)
     def f(x):
+        # This approach does not stay within its evaluation budget (it has little to no way to enforce this!)
+        # As such. raise an exception if we are over the limit
+        if mon.num_iters > max_evals:
+            raise OverbudgetException()
         # scipy.optimize
         xvec = x.copy()
         # Round non-continuous variables
@@ -87,10 +102,13 @@ def optimize_scipy_local(problem, max_evals, method="BFGS", log=None, verbose=Fa
     x0[0:num_int] = np.round(x0[0:num_int])
 
     mon.start()
-    optim_result = minimize(func=f, x0=x0, method=method, bounds=get_variable_bounds(problem), callback=budget_check_local)
+    try:
+        optim_result = minimize(func=f, x0=x0, method=method, bounds=get_variable_bounds(problem), options={'maxiter': max_evals}, callback=budget_check_local)
+    except OverbudgetException as e:
+        pass
     mon.end()
 
-    solX = optim_result['x']
-    solY = optim_result['fun']
+    solX = mon.best_x #optim_result['x']
+    solY = mon.best_fitness #optim_result['fun']
 
     return solX, solY, mon
