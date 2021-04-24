@@ -98,12 +98,13 @@ def optimize_scipy_local(problem, max_evals, method="BFGS", log=None, verbose=Fa
     # Generate initial point, round the integers.
     lb = problem.lbs()
     ub = problem.ubs()
+    d = len(lb)
     x0 = np.random.rand(d)*(ub-lb) + lb
-    x0[0:num_int] = np.round(x0[0:num_int])
+    x0[vt != 'cont'] = np.round(x0[vt != 'cont'])
 
     mon.start()
     try:
-        optim_result = minimize(func=f, x0=x0, method=method, bounds=get_variable_bounds(problem), options={'maxiter': max_evals}, callback=budget_check_local)
+        optim_result = minimize(fun=f, x0=x0, method=method, bounds=get_variable_bounds(problem), options={'maxiter': max_evals}, callback=budget_check_local)
     except OverbudgetException as e:
         pass
     mon.end()
