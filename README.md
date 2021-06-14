@@ -6,16 +6,19 @@
 
 <!-- TODO: Insert general idea of why this benchmark is needed here -->
 
+This repository is based on the paper [EXPObench: Benchmarking Surrogate-based Optimisation Algorithms on Expensive Black-box Functions](https://arxiv.org/abs/2106.04618).
 The purpose of this repository is to benchmark different surrogate algorithms on expensive real life optimization problems. It contains different *problems*, where the goal is to minimize some objective function, and *approaches*, which solve the minimization problem through the use of surrogate models. The documentation above contains a list of the problems and approaches, as well as instructions for how to add new problems or approaches.
 
 If you make use of EXPObench in your scientific work, please cite us:
 
 ```bibtex
-@Misc{expobench,
-    author    = {A. Guijt and L. Bliek and R. Karlsson and S. Verwer and M. de Weerdt},
-    title     = {EXPObench:  An  EXPensive Optimization  benchmark  library},
-    howpublished = {\url{https://github.com/AlgTUDelft/ExpensiveOptimBenchmark}},
-    year = {2021}
+@article{bliek2021expobench,
+      title={{EXPObench}: Benchmarking Surrogate-based Optimisation Algorithms on Expensive Black-box Functions}, 
+      author={Laurens Bliek and Arthur Guijt and Rickard Karlsson and Sicco Verwer and Mathijs de Weerdt},
+      year={2021},
+      eprint={2106.04618},
+      primaryClass={cs.LG},
+      journal={arXiv preprint arXiv:2106.04618},
 }
 ```
 
