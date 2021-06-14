@@ -18,7 +18,7 @@ If you make use of EXPObench in your scientific work, please cite us:
       year={2021},
       eprint={2106.04618},
       primaryClass={cs.LG},
-      journal={arXiv preprint arXiv:2106.04618},
+      journal={arXiv preprint arXiv:2106.04618}
 }
 ```
 
