@@ -4,11 +4,10 @@ from .MVRSM import MVRSM_minimize
 from ..utils import Monitor, Binarizer
 from collections import Counter
 
-def optimize_MVRSM(problem, max_evals, rand_evals=0, enable_scaling=True, model='advanced', binarize_categorical=False, log=None):
+def optimize_MVRSM(problem, max_evals, rand_evals=0, enable_scaling=True, model='advanced', binarize_categorical=False, optimizer='L-BFGS-B', bound_h='transform', log=None):
     d = problem.dims()
 
     vartypes = problem.vartype()
-
     # Find the permutation that lists integers first.
     # And its inverse.
     perm = list(range(d))
@@ -52,7 +51,7 @@ def optimize_MVRSM(problem, max_evals, rand_evals=0, enable_scaling=True, model=
         return r
     
     mon.start()
-    solX, solY, model, logfile = MVRSM_minimize(f, x0, lb, ub, num_int, max_evals, rand_evals=rand_evals, enable_scaling=enable_scaling, model_type=model)
+    solX, solY, model, logfile = MVRSM_minimize(f, x0, lb, ub, num_int, max_evals, rand_evals=rand_evals, enable_scaling=enable_scaling, model_type=model, optimizer=optimizer, bound_h=bound_h)
     mon.end()
 
     return solX[invperm], solY, mon

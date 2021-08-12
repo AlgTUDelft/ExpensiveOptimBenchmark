@@ -292,6 +292,16 @@ problems.update({
     for dockerproblem in dockersimbenches
 })
 
+from problems.DockerHospitalBenchmark import dockerhospitalsimbenches
+problems.update({
+    dockerproblem.name.lower(): {
+        'args': set(),
+        'defaults': {},
+        'constructor': generate_construct_synthetic(dockerproblem)
+    }
+    for dockerproblem in dockerhospitalsimbenches
+})
+
 def nop(*x, **y):
     pass
 
@@ -325,6 +335,7 @@ def execute_IDONE(params, problem, max_eval, log):
     assert rand_evals >= 1, "IDONE requires at least one initial random evaluation."
     return optimize_IDONE(problem, max_eval, rand_evals=rand_evals, model=type_model, binarize_categorical=binarize_categorical, binarize_int=binarize_int, sampling=sampling, enable_scaling=enable_scaling, log=log, exploration_prob=expl_prob, idone_log=idone_log)
 
+## MVRSM
 def execute_MVRSM(params, problem, max_eval, log):
     from solvers.MVRSM.wMVRSM import optimize_MVRSM
     if params['--model'] not in ['basic', 'advanced']:
@@ -333,21 +344,27 @@ def execute_MVRSM(params, problem, max_eval, log):
         raise ValueError("--binarize-categorical should be a boolean.")
     if params['--scaling'] not in ['true', 't', 'yes', 'y', 'false', 'f', 'no', 'n']:
         raise ValueError("--scaling should be a boolean.")
+    if params['--optimizer'] not in ['adam', 'L-BFGS-B', 'CMA-ES']:
+        raise ValueError("Valid optimizers are `adam` and 'L-BFGS-B'")
 
     type_model = params['--model']
     binarize_categorical = params['--binarize-categorical'] in ['true','t', 'yes', 'y']
     enable_scaling = params['--scaling'] in ['true','t', 'yes', 'y']
     rand_evals = int(params['--rand-evals']) - 1
+    optimizer = params.get('--optimizer')
+    bound_h = params['--boundary-handler']
     assert rand_evals >= 0, "MVRSM requires at least one initial random evaluation."
 
-    return optimize_MVRSM(problem, max_eval, rand_evals=rand_evals, model=type_model, binarize_categorical=binarize_categorical, enable_scaling=enable_scaling, log=log)
+    return optimize_MVRSM(problem, max_eval, rand_evals=rand_evals, model=type_model, binarize_categorical=binarize_categorical, enable_scaling=enable_scaling, optimizer=optimizer, bound_h=bound_h, log=log)
 
-# SA
+## SA
 def execute_SA(params, problem, max_eval, log):
     from solvers.SA.wSA import optimize_SA
 
     return optimize_SA(problem, max_eval, log=log)
 
+
+## DONE
 def check_DONEjl():
     from solvers.DONEjl.wDONEjl import minimize_DONEjl
     import numpy as np
@@ -376,7 +393,7 @@ def execute_DONEjl(params, problem, max_eval, log):
 
     return optimize_DONEjl(problem, rand_evals, max_eval, hyperparams, log=log)
 
-# Hyperopt TPE
+## Hyperopt TPE
 def execute_hyperopt(params, problem, max_eval, log):
     from solvers.hyperopt.whyperopt import optimize_hyperopt_tpe
     rand_evals = int(params['--rand-evals'])
@@ -396,7 +413,7 @@ def execute_hyperopt_rnd(params, problem, max_eval, log):
 
     return optimize_hyperopt_rnd(problem, max_eval, cparams=conversion_params, log=log)
 
-# pyGPGO
+## pyGPGO
 def execute_pygpgo(params, problem, max_eval, log):
     from solvers.pyGPGO.wpyGPGO import optimize_pyGPGO
     from pyGPGO.covfunc import matern32
@@ -410,14 +427,14 @@ def execute_pygpgo(params, problem, max_eval, log):
     acq = Acquisition(mode='ExpectedImprovement')
     return optimize_pyGPGO(problem, max_eval, gp, acq, random_init_evals=rand_evals, log=log)
 
-# bayesian-optimization
+## bayesian-optimization
 def execute_bayesianoptimization(params, problem, max_eval, log):
     from solvers.bayesianoptimization.wbayesianoptimization import optimize_bayesian_optimization
     rand_evals = int(params['--rand-evals'])
     # TODO: Allow picking different configurations?
     return optimize_bayesian_optimization(problem, max_eval, random_init_evals=rand_evals, log=log)
 
-# smac
+## smac
 def execute_smac(params, problem, max_eval, log):
     from solvers.smac.wsmac import optimize_smac
     rand_evals = int(params['--rand-evals'])
@@ -428,12 +445,20 @@ def check_smac():
     from solvers.smac.wsmac import optimize_smac
     pass
 
-# CoCaBO
+## CoCaBO
 def execute_cocabo(params, problem, max_eval, log):
     from solvers.CoCaBO.wCoCaBo import optimize_CoCaBO
     rand_evals = int(params['--rand-evals'])
     return optimize_CoCaBO(problem, max_eval, init_points=rand_evals, log=log)
 
+## CMA
+def execute_cma(params, problem, max_eval, log):
+    from solvers.CMA.wCMA import optimize_CMA
+    bound_h = params['--boundary-handler']
+
+    return optimize_CMA(problem, max_eval, bound_h=bound_h, binarize_categorical=False, log=log)
+
+## Basinhopping
 def execute_scipy_basinhopping(params, problem, max_eval, log):
     from solvers.scipy.wscipy import optimize_basinhopping
     T = float(params['--T'])
@@ -442,6 +467,7 @@ def execute_scipy_basinhopping(params, problem, max_eval, log):
 
     return optimize_basinhopping(problem, max_eval, T=T, stepsize=stepsize, localmethod=method, log=log)
 
+## Local search
 def execute_scipy_local(params, problem, max_eval, log):
     from solvers.scipy.wscipy import optimize_scipy_local
     method = params['--method']
@@ -466,12 +492,14 @@ solvers = {
         'check': nop
     },
     'mvrsm': {
-        'args': {'--model', '--binarize-categorical', '--rand-evals', '--scaling'},
+        'args': {'--model', '--binarize-categorical', '--rand-evals', '--scaling', '--optimizer', '--boundary-handler'},
         'defaults': {
             '--model': 'advanced',
             '--binarize-categorical': 'false',
             '--rand-evals': '5',
-            '--scaling': 'true'
+            '--scaling': 'true',
+            '--optimizer': 'L-BFGS-B',
+            '--boundary-handler': 'transform'
         },
         'executor': execute_MVRSM,
         'check': nop
@@ -542,6 +570,14 @@ solvers = {
             '--rand-evals': '24'
         },
         'executor': execute_cocabo,
+        'check': nop
+    },
+    'cma': {
+        'args': {'--boundary-handler'},
+        'defaults': {
+            '--boundary-handler': 'penalty'
+        },
+        'executor': execute_cma,
         'check': nop
     },
     'scipy-basin': {
@@ -645,6 +681,7 @@ if len(args) == 1 or (len(args) == 2 and (args[1] == '-h' or args[1] == '--help'
     print(f" --binarize-categorical=<t|true|f|false> \t Whether to binarize categorical variables. (default: false)")
     print(f" --scaling=<t|true|f|false> \t Whether scaling is applied. (default: true)")
     print(f" --rand-evals=<int> \t Number of random evaluations. (default: 1)")
+    print(f" --optimizer=<adam|LBFGSB> Optimizer for the surrogate model (default: LBFGSB)")
     print()
     # HyperOpt
     print(f" hyperopt")

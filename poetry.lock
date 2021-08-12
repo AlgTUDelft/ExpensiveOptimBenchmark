@@ -115,6 +115,20 @@ version = "1.6.0"
 
 [[package]]
 category = "main"
+description = "CMA-ES, Covariance Matrix Adaptation Evolution Strategy for non-linear numerical optimization in Python"
+name = "cma"
+optional = false
+python-versions = "*"
+version = "3.0.3"
+
+[package.dependencies]
+numpy = "*"
+
+[package.extras]
+plotting = ["matplotlib"]
+
+[[package]]
+category = "main"
 description = "Cross-platform colored terminal text."
 marker = "sys_platform == \"win32\""
 name = "colorama"
@@ -1059,7 +1073,7 @@ julia = ["julia"]
 smac = ["smac"]
 
 [metadata]
-content-hash = "a39c589d52e053dc88e92f9eb9d28b23bf8b428138b01f45163418eaaab73250"
+content-hash = "5fe23491ee1068cd032ef9c25a54f61b3284e9c69394eb11af2272b3e4c7a4fd"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1119,6 +1133,10 @@ click = [
 cloudpickle = [
     {file = "cloudpickle-1.6.0-py3-none-any.whl", hash = "sha256:3a32d0eb0bc6f4d0c57fbc4f3e3780f7a81e6fee0fa935072884d58ae8e1cc7c"},
     {file = "cloudpickle-1.6.0.tar.gz", hash = "sha256:9bc994f9e9447593bd0a45371f0e7ac7333710fcf64a4eb9834bf149f4ef2f32"},
+]
+cma = [
+    {file = "cma-3.0.3-py2.py3-none-any.whl", hash = "sha256:592d1a1973ee0d97b11958a00a33359f1dda9a7b56ca21b42b674665d0cca760"},
+    {file = "cma-3.0.3.tar.gz", hash = "sha256:8f54d753fa2322d4fef1c40d899d65f0990a3b1b9b56ada0766c3cb9cb82bca8"},
 ]
 colorama = [
     {file = "colorama-0.4.3-py2.py3-none-any.whl", hash = "sha256:7d73d2a99753107a36ac6b455ee49046802e59d9d076ef8e47b61499fa29afff"},

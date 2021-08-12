@@ -120,6 +120,7 @@ class Binarizer:
         vars_each[mask] = np.ceil(np.log2(ub[mask] - lb[mask] + 1))
         self.dout = sum(vars_each)
         self.out_mask = np.asarray([False] * self.dout)
+        self.origin_mapping = np.zeros(self.dout, int) 
         # Construct binarization weight matrices
         self.W = np.zeros((self.din, self.dout))
         self.Winv = np.zeros((self.dout, self.din))
@@ -138,6 +139,7 @@ class Binarizer:
                 self.out_mask[i_out] = self.in_mask[i_in]
                 self.blb[i_out] = 0.0 if vars_each[i_in] != 1 else self.lb[i_in]
                 self.bub[i_out] = 1.0 if vars_each[i_in] != 1 else self.ub[i_in]
+                self.origin_mapping[i_out] = i_in
 
     def binarize(self, x):
         xv = np.matmul(x + self.shift, self.W)
