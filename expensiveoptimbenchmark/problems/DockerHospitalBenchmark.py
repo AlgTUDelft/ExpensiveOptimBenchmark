@@ -1,3 +1,7 @@
+## This problem requires docker, namely the docker file mrebolle/r-geccoc:Track1.
+## This file can be found at https://hub.docker.com/r/mrebolle/r-geccoc
+## For more information about this problem, see https://www.th-koeln.de/informatik-und-ingenieurwissenschaften/gecco-2021-industrial-challenge-call-for-participation_82086.php
+
 from .base import BaseProblem
 
 import subprocess
