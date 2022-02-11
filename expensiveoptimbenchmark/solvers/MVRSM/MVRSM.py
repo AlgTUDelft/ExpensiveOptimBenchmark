@@ -19,9 +19,10 @@ import random
 import time
 import numpy as np
 
-from scipy.optimize import minimize, Bounds
+from scipy.optimize import minimize, Bounds, OptimizeResult
+from cma import fmin, CMAOptions, BoundPenalty, BoundTransform
 
-def MVRSM_minimize(obj, x0, lb, ub, num_int, max_evals, rand_evals=0, enable_scaling=True, model_type='advanced'):
+def MVRSM_minimize(obj, x0, lb, ub, num_int, max_evals, rand_evals=0, enable_scaling=True, model_type='advanced', optimizer='L-BFGS-B', bound_h='transform'):
 	d = len(x0) # dimension, number of variables
 	current_time = time.time() # time when starting the algorithm
 	next_X = [] # candidate solution presented by the algorithm
@@ -202,7 +203,29 @@ def MVRSM_minimize(obj, x0, lb, ub, num_int, max_evals, rand_evals=0, enable_sca
 		model['out'] = out
 		model['outderiv'] = deriv
 		return model
-	
+
+	def minimize_model(start):
+		if optimizer != 'CMA-ES':
+			method = optimizer
+			if optimizer == 'adam':
+				method = adam
+			return minimize(model['out'], start, method=method, bounds = Bounds(lb, ub), jac=model['outderiv'], options={'maxiter':20,'maxfun':20}).x
+		else:
+			opts = CMAOptions()
+			opts['BoundaryHandler'] = BoundPenalty if bound_h == "penalty" else BoundTransform
+			opts['maxfevals'] = 100 # or 20?
+			opts['integer_variables'] = [i for i in range(num_int)]
+			opts['verbose'] = -9 # Supress printing!
+			cmascale = (ub - lb)
+			# Convert to list.
+			# Workaround for: ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+			opts['bounds'] = [list(lb / cmascale), list(ub / cmascale)]
+			def moutcmascaled(x):
+				return model['out'](x * cmascale)
+
+			sigma0 = 1/4
+			res = fmin(moutcmascaled, start / cmascale, sigma0, options=opts)
+			return res[0]
 	
 	
 	### Start actual algorithm
@@ -262,9 +285,9 @@ def MVRSM_minimize(obj, x0, lb, ub, num_int, max_evals, rand_evals=0, enable_sca
 		if ii >= rand_evals:
 			## Minimization of the surrogate model
 			time_start = time.time()
-			temp = minimize(model['out'], best_X, method='L-BFGS-B', bounds = Bounds(lb, ub), jac=model['outderiv'], options={'maxiter':20,'maxfun':20})
+			temp_x = minimize_model(best_X)
 			minimization_time = time.time()-time_start # Time used to find the minimum of the model
-			next_X = np.copy(temp.x)
+			next_X = np.copy(temp_x)
 			#print('minimum of surrogate: ', next_X)
 			next_X_before_rounding = np.copy(next_X)
 			for j in range(num_int):
@@ -504,5 +527,44 @@ def visualise_model(model, obj, x0, lb, ub, num_int):
 	# ax4.set_xlabel('Discrete variable')
 	# ax4.set_ylabel('Continuous variable')
 	# plt.show()
-			
-			
+
+
+
+def adam(
+	fun,
+	x0,
+	jac,
+	args=(),
+	learning_rate=0.001,
+	beta1=0.9,
+	beta2=0.999,
+	eps=1e-8,
+	startiter=0,
+	maxiter=1000,
+	callback=None,
+	**kwargs):
+	"""``scipy.optimize.minimize`` compatible implementation of ADAM -
+	[http://arxiv.org/pdf/1412.6980.pdf].
+	Adapted from ``autograd/misc/optimizers.py``.
+
+	Copied from: https://gist.github.com/jcmgray/e0ab3458a252114beecb1f4b631e19ab (JCMGRAY)
+	"""
+	x = np.asarray(x0).reshape(-1,1)
+	m = np.zeros(x.shape)
+	v = np.zeros(x.shape)
+
+	for i in range(startiter, startiter + maxiter):
+
+		g = jac(x)
+		g = np.asarray(g)
+
+		if callback and callback(x):
+			break 
+		m = (1 - beta1) * g + beta1 * m  # first  moment estimate.
+		v = (1 - beta2) * (np.power(g,2)) + beta2 * v  # second moment estimate.
+		mhat = m / (1 - beta1**(i + 1))  # bias correction.
+		vhat = v / (1 - beta2**(i + 1))
+		x = x - learning_rate * mhat / (np.sqrt(vhat) + eps)
+
+	i += 1
+	return OptimizeResult(x=x, fun=fun(x), jac=g, nit=i, nfev=i, success=True)
