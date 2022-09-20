@@ -68,7 +68,7 @@ Windmill Wake Simulator
 :repository:  `GitHub <https://github.com/NREL/floris>`__
 :problem-key: ``windwake``
 :parameters:
-    --file   The path to the windpark/windmill specification. We recommend using `example_input.json <https://raw.githubusercontent.com/NREL/floris/master/examples/example_input.json>`__ from the FLORIS repository. (required)
+    --file   The path to the windpark/windmill specification. We recommend using `example_input.json <https://github.com/NREL/floris/blob/v2/examples/example_input.json>`__ from the FLORIS repository. (required)
     -n   The number of windmills to be placed. (default: 3)
     -w   The width of the area in which the windmills are to be placed. (default: 333.33 * ``-n``)
     -h   The height of the area in which the windmills are to be placed. (default: 333.33 * ``-n``)
