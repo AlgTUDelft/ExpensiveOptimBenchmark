@@ -68,7 +68,7 @@ Windmill Wake Simulator
 :repository:  `GitHub <https://github.com/NREL/floris>`__
 :problem-key: ``windwake``
 :parameters:
-    --file   The path to the windpark/windmill specification. We recommend using `example_input.json <https://raw.githubusercontent.com/NREL/floris/master/examples/example_input.json>`__ from the FLORIS repository. (required)
+    --file   The path to the windpark/windmill specification. We recommend using `example_input.json <https://github.com/NREL/floris/blob/v2/examples/example_input.json>`__ from the FLORIS repository. (required)
     -n   The number of windmills to be placed. (default: 3)
     -w   The width of the area in which the windmills are to be placed. (default: 333.33 * ``-n``)
     -h   The height of the area in which the windmills are to be placed. (default: 333.33 * ``-n``)
@@ -154,7 +154,7 @@ PitzDaily
 
 :constraints: Points must lie in a polygon, constraint violations will result in an objective value of :math:`1.0`.
 
-:description: 
+:description: This is a pipe shape optimization problem, where a computational fluid dynamics simulator is used to calculate the pressure loss for a given pipe shape, which needs to be minimized. The variables denote the control points that determine the shape of the pipe.
 
 HPO / XGBoost
 -------------

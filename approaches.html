@@ -1,25 +1,29 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
     <title>Approaches &#8212; ExpensiveOptimBenchmark 2020 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/thebelab-helper.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Extending" href="extending/extending.html" />
+    <link rel="next" title="Running Experiments" href="running_experiments.html" />
     <link rel="prev" title="Problems" href="problems.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -37,27 +41,27 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="approaches">
-<span id="id1"></span><h1>Approaches<a class="headerlink" href="#approaches" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="hyperopt">
-<h2>HyperOpt<a class="headerlink" href="#hyperopt" title="Permalink to this headline">¶</a></h2>
+  <section id="approaches">
+<span id="id1"></span><h1>Approaches<a class="headerlink" href="#approaches" title="Permalink to this heading">¶</a></h1>
+<section id="hyperopt">
+<h2>HyperOpt<a class="headerlink" href="#hyperopt" title="Permalink to this heading">¶</a></h2>
 <dl class="field-list">
-<dt class="field-odd">publications</dt>
-<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#bergstra2013making" id="id2">[BYC13]</a>.</p>
+<dt class="field-odd">publications<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span id="id2">[<a class="reference internal" href="zzreferences.html#id2" title="James Bergstra, Daniel Yamins, and David Cox. Making a science of model search: hyperparameter optimization in hundreds of dimensions for vision architectures. In International conference on machine learning, 115–123. 2013.">BYC13</a>]</span>.</p>
 </dd>
-<dt class="field-even">bibtex</dt>
+<dt class="field-even">bibtex<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bergstra2013making</span></code></p>
 </dd>
-<dt class="field-odd">repository</dt>
+<dt class="field-odd">repository<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://github.com/hyperopt/hyperopt">GitHub</a>, <a class="reference external" href="https://pypi.org/project/hyperopt/">PyPI</a></p>
 </dd>
-<dt class="field-even">supports</dt>
+<dt class="field-even">supports<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">cont</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">cat</span></code></p>
 </dd>
-<dt class="field-odd">approach-key</dt>
+<dt class="field-odd">approach-key<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">hyperopt</span></code></p>
 </dd>
-<dt class="field-even">parameters</dt>
+<dt class="field-even">parameters<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="option-list">
 <dt><kbd><span class="option">--rand-evals</span></kbd></dt>
 <dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 3)</p>
@@ -68,46 +72,46 @@
 </dl>
 </dd>
 </dl>
-</div>
-<div class="section" id="random-search-via-hyperopt">
-<h2>Random Search (via HyperOpt)<a class="headerlink" href="#random-search-via-hyperopt" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="random-search-via-hyperopt">
+<h2>Random Search (via HyperOpt)<a class="headerlink" href="#random-search-via-hyperopt" title="Permalink to this heading">¶</a></h2>
 <dl class="field-list simple">
-<dt class="field-odd">publications</dt>
-<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#bergstra2013making" id="id3">[BYC13]</a>.</p>
+<dt class="field-odd">publications<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span id="id3">[<a class="reference internal" href="zzreferences.html#id2" title="James Bergstra, Daniel Yamins, and David Cox. Making a science of model search: hyperparameter optimization in hundreds of dimensions for vision architectures. In International conference on machine learning, 115–123. 2013.">BYC13</a>]</span>.</p>
 </dd>
-<dt class="field-even">bibtex</dt>
+<dt class="field-even">bibtex<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bergstra2013making</span></code></p>
 </dd>
-<dt class="field-odd">supports</dt>
+<dt class="field-odd">supports<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">cont</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">cat</span></code></p>
 </dd>
-<dt class="field-even">approach-key</dt>
+<dt class="field-even">approach-key<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">randomsearch</span></code></p>
 </dd>
-<dt class="field-odd">repository</dt>
+<dt class="field-odd">repository<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://github.com/hyperopt/hyperopt">GitHub</a>, <a class="reference external" href="https://pypi.org/project/hyperopt/">PyPI</a></p>
 </dd>
 </dl>
-</div>
-<div class="section" id="smac3">
-<h2>SMAC3<a class="headerlink" href="#smac3" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="smac3">
+<h2>SMAC3<a class="headerlink" href="#smac3" title="Permalink to this heading">¶</a></h2>
 <dl class="field-list">
-<dt class="field-odd">publications</dt>
-<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#hutter2010sequential-extended" id="id4">[HHLB10]</a>, <a class="bibtex reference internal" href="zzreferences.html#hutter2011sequential" id="id5">[HHLB11]</a></p>
+<dt class="field-odd">publications<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span id="id4">[<a class="reference internal" href="zzreferences.html#id4" title="Frank Hutter, Holger H Hoos, and Kevin Leyton-Brown. Sequential model-based optimization for general algorithm configuration (extended version). Technical Report TR-2010–10, University of British Columbia, Computer Science, Tech. Rep., 2010.">HHLB10</a>]</span>, <span id="id5">[<a class="reference internal" href="zzreferences.html#id3" title="Frank Hutter, Holger H Hoos, and Kevin Leyton-Brown. Sequential model-based optimization for general algorithm configuration. In International conference on learning and intelligent optimization, 507–523. Springer, 2011.">HHLB11</a>]</span></p>
 </dd>
-<dt class="field-even">bibtex</dt>
+<dt class="field-even">bibtex<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">hutter2010sequential-extended</span></code>, <code class="docutils literal notranslate"><span class="pre">hutter2011sequential</span></code></p>
 </dd>
-<dt class="field-odd">repository</dt>
+<dt class="field-odd">repository<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://github.com/automl/SMAC3">GitHub</a>, <a class="reference external" href="https://pypi.org/project/smac/">PyPI</a></p>
 </dd>
-<dt class="field-even">supports</dt>
+<dt class="field-even">supports<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">cont</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">cat</span></code></p>
 </dd>
-<dt class="field-odd">approach-key</dt>
+<dt class="field-odd">approach-key<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">smac</span></code></p>
 </dd>
-<dt class="field-even">parameters</dt>
+<dt class="field-even">parameters<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="option-list">
 <dt><kbd><span class="option">--rand-evals</span></kbd></dt>
 <dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 3)</p>
@@ -122,26 +126,26 @@
 </dl>
 </dd>
 </dl>
-</div>
-<div class="section" id="done">
-<h2>DONE<a class="headerlink" href="#done" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="done">
+<h2>DONE<a class="headerlink" href="#done" title="Permalink to this heading">¶</a></h2>
 <dl class="field-list">
-<dt class="field-odd">publications</dt>
-<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#donepaper" id="id6">[BliekVerstraeteVerhaegenWahls18]</a></p>
+<dt class="field-odd">publications<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span id="id6">[<a class="reference internal" href="zzreferences.html#id10" title="L. Bliek, H. R. G. W. Verstraete, M. Verhaegen, and S. Wahls. Online optimization with costly and noisy measurements using random Fourier expansions. IEEE Transactions on Neural Networks and Learning Systems, 29(1):167-182, 2018.">BliekVerstraeteVerhaegenWahls18</a>]</span></p>
 </dd>
-<dt class="field-even">bibtex</dt>
+<dt class="field-even">bibtex<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">DONEpaper</span></code></p>
 </dd>
-<dt class="field-odd">repository</dt>
+<dt class="field-odd">repository<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://github.com/rdoelman/DONEs.jl">GitHub</a></p>
 </dd>
-<dt class="field-even">supports</dt>
+<dt class="field-even">supports<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">cont</span></code></p>
 </dd>
-<dt class="field-odd">approach-key</dt>
+<dt class="field-odd">approach-key<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">donejl</span></code></p>
 </dd>
-<dt class="field-even">parameters</dt>
+<dt class="field-even">parameters<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="option-list">
 <dt><kbd><span class="option">--rand-evals</span></kbd></dt>
 <dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 0)</p>
@@ -165,26 +169,26 @@
 <p class="admonition-title">Note</p>
 <p>DONE is sensitive to its parameters. The default sigma values are for a normalized search space. If either the input or output values are very large, performance may suffer.</p>
 </div>
-</div>
-<div class="section" id="idone">
-<h2>IDONE<a class="headerlink" href="#idone" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="idone">
+<h2>IDONE<a class="headerlink" href="#idone" title="Permalink to this heading">¶</a></h2>
 <dl class="field-list">
-<dt class="field-odd">publications</dt>
-<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#bliek2019black" id="id7">[BVdW19]</a></p>
+<dt class="field-odd">publications<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span id="id7">[<a class="reference internal" href="zzreferences.html#id11" title="Laurens Bliek, Sicco Verwer, and Mathijs de Weerdt. Black-box combinatorial optimization using models with integer-valued minima. arXiv preprint arXiv:1911.08817, 2019.">BVdW19</a>]</span></p>
 </dd>
-<dt class="field-even">bibtex</dt>
+<dt class="field-even">bibtex<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bliek2019black</span></code></p>
 </dd>
-<dt class="field-odd">repository</dt>
+<dt class="field-odd">repository<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://bitbucket.org/lbliek2/idone">BitBucket</a></p>
 </dd>
-<dt class="field-even">supports</dt>
+<dt class="field-even">supports<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">cat</span></code> (as interpreted as integer / binarized)</p>
 </dd>
-<dt class="field-odd">approach-key</dt>
+<dt class="field-odd">approach-key<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">idone</span></code></p>
 </dd>
-<dt class="field-even">parameters</dt>
+<dt class="field-even">parameters<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="option-list">
 <dt><kbd><span class="option">--rand-evals</span></kbd></dt>
 <dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 5)</p>
@@ -213,20 +217,20 @@
 </dl>
 </dd>
 </dl>
-</div>
-<div class="section" id="mvrsm">
-<h2>MVRSM<a class="headerlink" href="#mvrsm" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="mvrsm">
+<h2>MVRSM<a class="headerlink" href="#mvrsm" title="Permalink to this heading">¶</a></h2>
 <dl class="field-list">
-<dt class="field-odd">publications</dt>
-<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#bliek2020black" id="id8">[BVdW20]</a></p>
+<dt class="field-odd">publications<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span id="id8">[<a class="reference internal" href="zzreferences.html#id12" title="Laurens Bliek, Sicco Verwer, and Mathijs de Weerdt. Black-box mixed-variable optimisation using a surrogate model that satisfies integer constraints. arXiv preprint arXiv:2006.04508, 2020.">BVdW20</a>]</span></p>
 </dd>
-<dt class="field-even">bibtex</dt>
+<dt class="field-even">bibtex<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bliek2020black</span></code></p>
 </dd>
-<dt class="field-odd">repository</dt>
+<dt class="field-odd">repository<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://github.com/lbliek/MVRSM">GitHub</a></p>
 </dd>
-<dt class="field-even">supports</dt>
+<dt class="field-even">supports<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">cont</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">cat</span></code> (as interpreted as integer / binarized).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -234,10 +238,10 @@
 is only continuous.</p>
 </div>
 </dd>
-<dt class="field-odd">approach-key</dt>
+<dt class="field-odd">approach-key<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">mvrsm</span></code></p>
 </dd>
-<dt class="field-even">parameters</dt>
+<dt class="field-even">parameters<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="option-list">
 <dt><kbd><span class="option">--rand-evals</span></kbd></dt>
 <dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 5)</p>
@@ -254,27 +258,27 @@ is only continuous.</p>
 </dl>
 </dd>
 </dl>
-</div>
-<div class="section" id="cocabo">
-<h2>CoCaBO<a class="headerlink" href="#cocabo" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="cocabo">
+<h2>CoCaBO<a class="headerlink" href="#cocabo" title="Permalink to this heading">¶</a></h2>
 <dl class="field-list">
-<dt class="field-odd">publications</dt>
-<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#ru2019bayesian" id="id9">[RAN+19]</a></p>
+<dt class="field-odd">publications<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span id="id9">[<a class="reference internal" href="zzreferences.html#id5" title="Binxin Ru, Ahsan S Alvi, Vu Nguyen, Michael A Osborne, and Stephen J Roberts. Bayesian optimisation over multiple continuous and categorical inputs. arXiv preprint arXiv:1906.08878, 2019.">RAN+19</a>]</span></p>
 </dd>
-<dt class="field-even">bibtex</dt>
+<dt class="field-even">bibtex<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">ru2019bayesian</span></code></p>
 </dd>
-<dt class="field-odd">repository</dt>
+<dt class="field-odd">repository<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://github.com/rubinxin/CoCaBO_code">GitHub</a></p>
 </dd>
-<dt class="field-even">supports</dt>
+<dt class="field-even">supports<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">cont</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code> (interpreted as categorical), <code class="docutils literal notranslate"><span class="pre">cat</span></code>.</p>
 <p>Currently requires at least one continuous (<code class="docutils literal notranslate"><span class="pre">cont</span></code>) and one discrete (<code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">cat</span></code>) variable.</p>
 </dd>
-<dt class="field-odd">approach-key</dt>
+<dt class="field-odd">approach-key<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">cocabo</span></code></p>
 </dd>
-<dt class="field-even">parameters</dt>
+<dt class="field-even">parameters<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="option-list">
 <dt><kbd><span class="option">--rand-evals</span></kbd></dt>
 <dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 24)</p>
@@ -282,23 +286,23 @@ is only continuous.</p>
 </dl>
 </dd>
 </dl>
-</div>
-<div class="section" id="bayesianoptimization">
-<h2>bayesianoptimization<a class="headerlink" href="#bayesianoptimization" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="bayesianoptimization">
+<h2>bayesianoptimization<a class="headerlink" href="#bayesianoptimization" title="Permalink to this heading">¶</a></h2>
 <dl class="field-list">
-<dt class="field-odd">bibtex</dt>
+<dt class="field-odd">bibtex<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bayesianoptimization</span></code></p>
 </dd>
-<dt class="field-even">repository</dt>
+<dt class="field-even">repository<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://github.com/fmfn/BayesianOptimization">GitHub</a>, <a class="reference external" href="https://pypi.org/project/bayesian-optimization/">PyPI</a></p>
 </dd>
-<dt class="field-odd">supports</dt>
+<dt class="field-odd">supports<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">cont</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code> (via rounding), <code class="docutils literal notranslate"><span class="pre">cat</span></code> (interpreted as integer, via rounding)</p>
 </dd>
-<dt class="field-even">approach-key</dt>
+<dt class="field-even">approach-key<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bayesianoptimization</span></code></p>
 </dd>
-<dt class="field-odd">parameters</dt>
+<dt class="field-odd">parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="option-list">
 <dt><kbd><span class="option">--rand-evals</span></kbd></dt>
 <dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 5)</p>
@@ -306,30 +310,30 @@ is only continuous.</p>
 </dl>
 </dd>
 </dl>
-</div>
-<div class="section" id="pygpgo">
-<h2>pyGPGO<a class="headerlink" href="#pygpgo" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="pygpgo">
+<h2>pyGPGO<a class="headerlink" href="#pygpgo" title="Permalink to this heading">¶</a></h2>
 <dl class="field-list">
-<dt class="field-odd">publications</dt>
-<dd class="field-odd"><p><a class="bibtex reference internal" href="zzreferences.html#jimenez2017" id="id10">[JG17]</a></p>
+<dt class="field-odd">publications<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span id="id10">[<a class="reference internal" href="zzreferences.html#id6" title="José Jiménez and Josep Ginebra. Pygpgo: bayesian optimization for python. Journal of Open Source Software, 2(19):431, 2017. URL: https://doi.org/10.21105/joss.00431, doi:10.21105/joss.00431.">JG17</a>]</span></p>
 </dd>
-<dt class="field-even">bibtex</dt>
+<dt class="field-even">bibtex<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">pygpgo</span></code>, <code class="docutils literal notranslate"><span class="pre">Jimenez2017</span></code></p>
 </dd>
-<dt class="field-odd">repository</dt>
+<dt class="field-odd">repository<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://github.com/josejimenezluna/pyGPGO">GitHub</a>, <a class="reference external" href="https://pypi.org/project/pyGPGO/">PyPI</a></p>
 </dd>
-<dt class="field-even">supports</dt>
+<dt class="field-even">supports<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">cont</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code> (via rounding), <code class="docutils literal notranslate"><span class="pre">cat</span></code> (interpreted as integer, via rounding)</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Built-in support for integers is not used due to crashes.</p>
 </div>
 </dd>
-<dt class="field-odd">approach-key</dt>
+<dt class="field-odd">approach-key<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">pygpgo</span></code></p>
 </dd>
-<dt class="field-even">parameters</dt>
+<dt class="field-even">parameters<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="option-list">
 <dt><kbd><span class="option">--rand-evals</span></kbd></dt>
 <dd><p>The number of random evaluations to perform before utilizing the surrogate model. (default: 3)</p>
@@ -337,8 +341,8 @@ is only continuous.</p>
 </dl>
 </dd>
 </dl>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -357,7 +361,7 @@ is only continuous.</p>
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="problems.html">Problems</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Approaches</a><ul>
@@ -372,6 +376,7 @@ is only continuous.</p>
 <li class="toctree-l2"><a class="reference internal" href="#pygpgo">pyGPGO</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="running_experiments.html">Running Experiments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extending/extending.html">Extending</a></li>
 <li class="toctree-l1"><a class="reference internal" href="zzreferences.html">References</a></li>
 </ul>
@@ -381,7 +386,7 @@ is only continuous.</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="problems.html" title="previous chapter">Problems</a></li>
-      <li>Next: <a href="extending/extending.html" title="next chapter">Extending</a></li>
+      <li>Next: <a href="running_experiments.html" title="next chapter">Running Experiments</a></li>
   </ul></li>
 </ul>
 </div>
@@ -389,12 +394,12 @@ is only continuous.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -411,7 +416,7 @@ is only continuous.</p>
       &copy;2020, Arthur Guijt, Laurens Bliek.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

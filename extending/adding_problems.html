@@ -1,22 +1,25 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
     <title>Adding Problems &#8212; ExpensiveOptimBenchmark 2020 documentation</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/thebelab.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/thebelab-helper.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="References" href="../zzreferences.html" />
@@ -37,16 +40,16 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="adding-problems">
-<span id="id1"></span><h1>Adding Problems<a class="headerlink" href="#adding-problems" title="Permalink to this headline">¶</a></h1>
+  <section id="adding-problems">
+<span id="id1"></span><h1>Adding Problems<a class="headerlink" href="#adding-problems" title="Permalink to this heading">¶</a></h1>
 <p>Adding a new benchmark problem consists of the following steps:</p>
 <ol class="arabic simple">
 <li><p>Define a problem class</p></li>
 <li><p>Create a problem instance constructor</p></li>
 <li><p>Add the problem to the <code class="docutils literal notranslate"><span class="pre">problems</span></code> dictionary in <code class="docutils literal notranslate"><span class="pre">run_experiment.py</span></code></p></li>
 </ol>
-<div class="section" id="define-a-problem-class">
-<h2>Define a problem class<a class="headerlink" href="#define-a-problem-class" title="Permalink to this headline">¶</a></h2>
+<section id="define-a-problem-class">
+<h2>Define a problem class<a class="headerlink" href="#define-a-problem-class" title="Permalink to this heading">¶</a></h2>
 <p>A problem instance is defined to be a ‘bundle’ of an evaluation function, alongside a search space specification. This bundle is specified by subclassing <code class="docutils literal notranslate"><span class="pre">BaseProblem</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>from ..base import BaseProblem
 
@@ -87,9 +90,9 @@ class &lt;name&gt;(BaseProblem):
 <dt><code class="docutils literal notranslate"><span class="pre">dims(self)</span></code></dt><dd><p>Return the number of dimensions.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="create-a-problem-instance-constructor">
-<h2>Create a problem instance constructor<a class="headerlink" href="#create-a-problem-instance-constructor" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="create-a-problem-instance-constructor">
+<h2>Create a problem instance constructor<a class="headerlink" href="#create-a-problem-instance-constructor" title="Permalink to this heading">¶</a></h2>
 <p>The parameters of a problem instance are passed as command line arguments. The processing of these arguments is performed by the instance constructor function.</p>
 <p>The function has a fixed function signature, and returns a list of problem instances:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">construct_</span><span class="o">&lt;</span><span class="n">name</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
@@ -98,9 +101,9 @@ class &lt;name&gt;(BaseProblem):
 </pre></div>
 </div>
 <p>Returning a list allows parameters to define a set of instances, rather than only encode a single instance at a time.</p>
-</div>
-<div class="section" id="adding-the-problem-to-run-experiment-py">
-<h2>Adding the problem to <code class="docutils literal notranslate"><span class="pre">run_experiment.py</span></code><a class="headerlink" href="#adding-the-problem-to-run-experiment-py" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="adding-the-problem-to-run-experiment-py">
+<h2>Adding the problem to <code class="docutils literal notranslate"><span class="pre">run_experiment.py</span></code><a class="headerlink" href="#adding-the-problem-to-run-experiment-py" title="Permalink to this heading">¶</a></h2>
 <p>Finally the problem can be added to the command line parser in <code class="docutils literal notranslate"><span class="pre">run_experiment.py</span></code> by adding the following entry to the <code class="docutils literal notranslate"><span class="pre">problems</span></code> dictionary:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;&lt;problem-name&gt;&#39;</span><span class="p">:</span> <span class="p">{</span>
     <span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;--&lt;arg-0&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;--&lt;arg-1&gt;&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">}</span>
@@ -120,8 +123,8 @@ class &lt;name&gt;(BaseProblem):
 <p class="admonition-title">Tip</p>
 <p>Make sure to run a small experiment first to verify everything works as expected!</p>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -140,10 +143,11 @@ class &lt;name&gt;(BaseProblem):
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../problems.html">Problems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../approaches.html">Approaches</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running_experiments.html">Running Experiments</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="extending.html">Extending</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="dependency_management.html">Dependency Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="adding_approaches.html">Adding Approaches</a></li>
@@ -168,12 +172,12 @@ class &lt;name&gt;(BaseProblem):
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -190,7 +194,7 @@ class &lt;name&gt;(BaseProblem):
       &copy;2020, Arthur Guijt, Laurens Bliek.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
