@@ -187,6 +187,33 @@ HPO / XGBoost
 
 :description: Machine Learning approaches often have a large amount of hyperparameters of varying types. This benchmark makes use of scikit-learn to build an XGBoost classifier with per-feature preprocessing. Evaluation of a solution is performed by k-fold cross validation, with the goal to maximize accuracy.
 
+
+Hospital Simulation
+-------------------
+:publications: :cite:`hospital`
+:bibtex:      ``hospital``
+:repository:   `Website <https://www.th-koeln.de/informatik-und-ingenieurwissenschaften/gecco-challenge-2022_93851.php>`__
+:problem-key:   ``hospital``
+:parameters:    None
+:dimensionality: :math:`29` - all continuous (``cont``)
+
+:runtime:
+    .. jupyter-execute::
+        :hide-code:
+
+        plot_hist("hospital_rs.csv.xz", 'iter_eval_time', dist=norm)
+
+:fitness:
+    .. jupyter-execute::
+        :hide-code:
+
+        plot_hist("hospital_rs.csv.xz", 'iter_fitness')
+
+:constraints: Lower and upper bounds only.
+
+:description: This problem consists of tuning the parameters of a discrete event simulator for a hospital planning tool in the context of the COVID-19 pandemic. It is especially challenging due to the large amount of noise in the objective function.
+
+
 Rosenbrock
 ----------
 :problem-key:   rosenbrock

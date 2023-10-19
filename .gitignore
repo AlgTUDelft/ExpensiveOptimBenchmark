@@ -3,6 +3,9 @@
 # Created by https://www.gitignore.io/api/windows,visualstudiocode,linux,python
 # Edit at https://www.gitignore.io/?templates=windows,visualstudiocode,linux,python
 
+## virtual environment
+venv2
+
 ### Linux ###
 *~
 

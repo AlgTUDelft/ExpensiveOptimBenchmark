@@ -1,22 +1,18 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Dependency Management &#8212; ExpensiveOptimBenchmark 2020 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=039e1c02" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css?v=572af1d6" />
     <link rel="stylesheet" type="text/css" href="../_static/thebelab.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/documentation_options.js?v=939ec2ff"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/thebelab-helper.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
@@ -41,7 +37,7 @@
           <div class="body" role="main">
             
   <section id="dependency-management">
-<span id="id1"></span><h1>Dependency Management<a class="headerlink" href="#dependency-management" title="Permalink to this heading">¶</a></h1>
+<span id="id1"></span><h1>Dependency Management<a class="headerlink" href="#dependency-management" title="Link to this heading">¶</a></h1>
 <p>When adding new approaches (<a class="reference internal" href="adding_approaches.html#adding-approaches"><span class="std std-ref">Adding Approaches</span></a>) or new problems (<a class="reference internal" href="adding_problems.html#adding-problems"><span class="std std-ref">Adding Problems</span></a>), a common requirement is to add new python libraries into the environment.</p>
 <p>Furthermore, when running experiments it is required to have an environment defined in which all dependencies are installed.</p>
 <p>This project utilizes <a class="reference external" href="https://python-poetry.org/">Poetry</a> to handle the configuration and management of these environments.</p>
@@ -51,32 +47,32 @@
 </div>
 <p>A short summary of the most important commands of poetry is as follows. See also <a class="reference external" href="https://python-poetry.org/docs/cli/">Poetry’s CLI Documentation</a>.</p>
 <p><strong>Setting up the environment</strong>:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry install
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>install
 </pre></div>
 </div>
 <p><strong>Updating the environment</strong>:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry update
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>update
 </pre></div>
 </div>
 <p><strong>Adding a new dependency</strong> (via PyPI or git respectively):</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry add pendulum
-poetry add git+https://github.com/sdispater/pendulum.git#develop
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>add<span class="w"> </span>pendulum
+poetry<span class="w"> </span>add<span class="w"> </span>git+https://github.com/sdispater/pendulum.git#develop
 </pre></div>
 </div>
 <p><strong>Running a single command inside the environment</strong>:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry run python ...
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>...
 </pre></div>
 </div>
 <p><strong>Opening a shell (command prompt) inside the environment</strong>:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry shell
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>shell
 </pre></div>
 </div>
 <section id="docker-and-singularity">
-<h2>Docker and Singularity<a class="headerlink" href="#docker-and-singularity" title="Permalink to this heading">¶</a></h2>
+<h2>Docker and Singularity<a class="headerlink" href="#docker-and-singularity" title="Link to this heading">¶</a></h2>
 <p>Not all dependencies are neccesarily restricted to Python. For example the CFD Simulator OpenFOAM is a binary that cannot be installed though poetry.</p>
 <p>Take a look at <code class="docutils literal notranslate"><span class="pre">CFD.Dockerfile</span></code> and <code class="docutils literal notranslate"><span class="pre">CFD.Singularity</span></code> for the specifications of these containers.</p>
 <section id="docker">
-<h3>Docker<a class="headerlink" href="#docker" title="Permalink to this heading">¶</a></h3>
+<h3>Docker<a class="headerlink" href="#docker" title="Link to this heading">¶</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Windows does not use sudo as a prefix.</p>
@@ -87,20 +83,20 @@ poetry add git+https://github.com/sdispater/pendulum.git#develop
 <p>If you want to export any files, for example the results of any experiments ran, <a class="reference external" href="https://docs.docker.com/storage/bind-mounts/">create a bind mount</a>.</p>
 </div>
 <p><strong>Building the container</strong>:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo docker build -t cfdbench . -f ./CFD.Dockerfile
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>cfdbench<span class="w"> </span>.<span class="w"> </span>-f<span class="w"> </span>./CFD.Dockerfile
 </pre></div>
 </div>
 <p><strong>Running a command inside the container</strong>:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo docker run cfdbench ...
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>cfdbench<span class="w"> </span>...
 </pre></div>
 </div>
 <p><strong>Obtaining a shell inside the container</strong>:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo docker run -it cfdbench bash
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>cfdbench<span class="w"> </span>bash
 </pre></div>
 </div>
 </section>
 <section id="singularity">
-<h3>Singularity<a class="headerlink" href="#singularity" title="Permalink to this heading">¶</a></h3>
+<h3>Singularity<a class="headerlink" href="#singularity" title="Link to this heading">¶</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Singularity only works on Linux</p>
@@ -115,15 +111,15 @@ poetry add git+https://github.com/sdispater/pendulum.git#develop
 <p>Refer to <a class="reference external" href="https://sylabs.io/guides/3.6/user-guide/persistent_overlays.html">Persistent Overlays</a> in the Singularity documentation for solutions.</p>
 </div>
 <p><strong>Building the container</strong>:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo singularity build ./CFD.sif ./CFD.Singularity
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>singularity<span class="w"> </span>build<span class="w"> </span>./CFD.sif<span class="w"> </span>./CFD.Singularity
 </pre></div>
 </div>
 <p><strong>Running a command inside the container</strong>:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>singularity run ./CFD.sif ...
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>singularity<span class="w"> </span>run<span class="w"> </span>./CFD.sif<span class="w"> </span>...
 </pre></div>
 </div>
 <p><strong>Obtaining a shell inside the container</strong>:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>singularity shell ./CFD.sif.
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>singularity<span class="w"> </span>shell<span class="w"> </span>./CFD.sif.
 </pre></div>
 </div>
 </section>
@@ -198,8 +194,8 @@ poetry add git+https://github.com/sdispater/pendulum.git#develop
       &copy;2020, Arthur Guijt, Laurens Bliek.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.2.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="../_sources/extending/dependency_management.rst.txt"
