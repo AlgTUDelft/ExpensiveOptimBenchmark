@@ -156,9 +156,9 @@ importlib-metadata==1.7.0; python_version < "3.8" \
 iniconfig==1.0.1 \
     --hash=sha256:80cf40c597eb564e86346103f609d74efce0f6b4d4f30ec8ce9e2c26411ba437 \
     --hash=sha256:e5f92f89355a67de0595932a6c6c02ab4afddc6fcdc0bfc5becd0d60884d3f69
-joblib==0.16.0 \
-    --hash=sha256:d348c5d4ae31496b2aa060d6d9b787864dd204f9480baaa52d18850cb43e9f49 \
-    --hash=sha256:8f52bf24c64b608bf0b2563e0e47d6fcf516abc8cfafe10cfd98ad66d94f92d6
+joblib==1.2.0 \
+    --hash=sha256:091138ed78f800342968c523bdde947e7a305b8594b910a0fea2ab83c3c6d385 \
+    --hash=sha256:e1cee4a79e4af22881164f218d4311f60074197fb707e082e803b61f6d137018
 julia==0.5.4 \
     --hash=sha256:edab82bbcd71dd9472dbb17a10be9e10ce763e52ec8486fa5e8393e355980ab0 \
     --hash=sha256:1f1c2098fed7694c6e107841e56b17291e829bfcb7851f7dd0adabb7faf34f1d
