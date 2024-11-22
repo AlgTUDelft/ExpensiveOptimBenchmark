@@ -807,15 +807,17 @@ loginfo = {
     'emit_header': True
 }
 
-for solver in current_solvers:
-    for problem_instance in problems:
-        for r in range(repetitions):
-            solY, solX, monitor = solver['info']['executor'](solver['params'], problem_instance, max_eval, log=loginfo)
-            with open(logfile_iters, 'a') as f:
-                from_iter = 0
-                if write_every is not None:
-                    from_iter = monitor.num_iters - (monitor.num_iters % write_every)
-                monitor.emit_csv_iters(f, from_iter=from_iter, emit_header=loginfo['emit_header'])
-            with open(logfile_summary, 'a') as f:
-                monitor.emit_csv_summary(f, emit_header=loginfo['emit_header'])
-            loginfo['emit_header'] = False
+if __name__ == '__main__':
+
+    for solver in current_solvers:
+        for problem_instance in problems:
+            for r in range(repetitions):
+                solY, solX, monitor = solver['info']['executor'](solver['params'], problem_instance, max_eval, log=loginfo)
+                with open(logfile_iters, 'a') as f:
+                    from_iter = 0
+                    if write_every is not None:
+                        from_iter = monitor.num_iters - (monitor.num_iters % write_every)
+                    monitor.emit_csv_iters(f, from_iter=from_iter, emit_header=loginfo['emit_header'])
+                with open(logfile_summary, 'a') as f:
+                    monitor.emit_csv_summary(f, emit_header=loginfo['emit_header'])
+                loginfo['emit_header'] = False

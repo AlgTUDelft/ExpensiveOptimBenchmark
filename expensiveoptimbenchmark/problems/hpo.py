@@ -16,6 +16,8 @@ from sklearn.model_selection import LeaveOneOut, StratifiedKFold, BaseCrossValid
 from sklearn.preprocessing import FunctionTransformer, Normalizer, MinMaxScaler, StandardScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.decomposition import PCA
+from sklearn.preprocessing import LabelEncoder
+#import timeout_decorator
 
 
 class HPOSFP(BaseProblem):
@@ -38,16 +40,29 @@ class HPOSFP(BaseProblem):
         classifier = construct_classifier(argdict, self.random_state)
                 
         try:
-            evaluate_classifier_b = pynisher.enforce_limits(wall_time_in_s=time_limit_in_s)(evaluate_classifier)
-        except:
+            #evaluate_classifier_b = pynisher.enforce_limits(wall_time_in_s=time_limit_in_s)(evaluate_classifier)
+            evaluate_classifier_b = pynisher.limit(evaluate_classifier,wall_time=(time_limit_in_s,"s"), context="spawn") #updated version of pynisher
+
+            #Also tried timeout decorator to solve pynisher multi-threading problems, but this had its own problems
+            #@timeout_decorator.timeout(time_limit_in_s,use_signals=False)
+            #def evaluate_classifier_b(classifier: Pipeline, validator: BaseCrossValidator, X, y):
+                #return evaluate_classifier(classifier, validator, X, y)
+        except Exception as e:
             print("WARNING: Could not enforce limits on evaluate_classifier. Dropping limits.")
+            print(e)
             evaluate_classifier_b = evaluate_classifier
         
         try:
             # evaluation is higher is better. But optimizer minimizes.
             # Flip sign to compensate.
-            return -1 * evaluate_classifier_b(classifier, self.validator, self.data_X, self.data_y)
-        except:
+            #with pynisher.limit(evaluate_classifier, wall_time=(time_limit_in_s, "s"), context="spawn") as evaluate_classifier_b:
+            result = -1 * evaluate_classifier_b(classifier, self.validator, self.data_X, self.data_y)
+            return result
+            # else:
+            #     print('no main')
+            #     return 0.0
+        except Exception as e:
+            print(e)
             return 0.0
 
     def lbs(self):
@@ -93,29 +108,41 @@ def load_data(directory):
 def data_to_X_and_y(data):
     # Binary features indicating which one is the right class.
     class_headers = np.array(['Pastry', 'Z_Scratch', 'K_Scatch', 'Stains', 'Dirtiness', 'Bumps', 'Other_Faults'])
-    
+    le = LabelEncoder()
+
     # Turn features into an array
     X = np.asarray(data.drop(class_headers, axis=1))
     # And classes into an array of strings.
     y = class_headers[np.argmax(np.asarray(data[class_headers]), axis=1)]
+    y = le.fit_transform(y) #classes now need to be [0, 1, 2, etc.], the LabelEncoder does this
 
     return X, y
 
 def evaluate_classifier(classifier: Pipeline, validator: BaseCrossValidator, X, y):
-
     scores = []
-
+    fold = 0
     for train_index, test_index in validator.split(X, y):
         X_train, X_test = X[train_index], X[test_index]
         y_train, y_test = y[train_index], y[test_index]
 
-        classifier.fit(X_train, y_train)
+        try:
+            #print('start training')
+            print(f'Training fold {fold}')
+            classifier.fit(X_train, y_train)
+            #print('finished training')
+        except Exception as e:
+            print(f"Error during training: {e}")
+            return 0
+
         # TODO: Something with dropout and the `max_tree` parameter. 
         y_pred_test = classifier.predict(X_test)
         # print(list(zip(y_pred_test, y_test)))
         scores.append(np.sum(y_test == y_pred_test) / y_test.shape[0])
+        #print(scores)
+        fold+=1
 
     # Return mean score
+    print(np.mean(scores))
     return np.mean(scores)
 
 def argspec_to_vecs(argspec):
