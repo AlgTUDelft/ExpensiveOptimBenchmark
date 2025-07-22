@@ -389,7 +389,8 @@ def train(folder_path):
         #params = {}
         #params = {'max_depth': 18}
         #params = {'max_depth': 60}
-        params = {'max_depth': 240}
+        #params = {'max_depth': 240}
+        params = {'max_depth': 480}
         
         # # Load surrogate
         # XGBfile = "XGB.pkl"

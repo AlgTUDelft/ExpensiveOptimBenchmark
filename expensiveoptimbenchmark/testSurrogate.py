@@ -101,6 +101,10 @@ XGB240file = os.path.join(folder_path,"XGB240.pkl")
 with open(XGB240file, 'rb') as file:
     XGB240 = pickle.load(file)
 
+XGB480file = os.path.join(folder_path,"XGB480.pkl")
+with open(XGB480file, 'rb') as file:
+    XGB480 = pickle.load(file)
+
 class medClassifier:
     def __init__(self, classifiers=None):
         self.classifiers = classifiers
@@ -122,18 +126,19 @@ class medClassifier:
         out = med1 + np.random.rand()*np.abs(med1-mean1) #add more noise if median is far from mean, indicating more uncertainty, also all noise is positive to focus on minimizing parts with more certainty
         return out
 
-# Create Ensemble
-# Ensemble = medClassifier([RF, XGB6, XGB18, XGB60, XGB240])
+#Create Ensemble
+#Ensemble = medClassifier([RF, XGB6, XGB18, XGB60, XGB240])
+Ensemble = medClassifier([XGB6, XGB18, XGB60, XGB240, XGB480])
 
-# Save Ensemble
-# Ensemblefile = "Ensemble.pkl"
-# with open(Ensemblefile, 'wb') as file:
-#     pickle.dump(Ensemble, file)
+#Save Ensemble
+Ensemblefile = "Ensemble.pkl"
+with open(Ensemblefile, 'wb') as file:
+    pickle.dump(Ensemble, file)
 
 # Load Ensemble
-Ensemblefile = os.path.join(folder_path,"Ensemble.pkl")
-with open(Ensemblefile, 'rb') as file:
-    Ensemble = pickle.load(file)
+# Ensemblefile = os.path.join(folder_path,"Ensemble.pkl")
+# with open(Ensemblefile, 'rb') as file:
+#     Ensemble = pickle.load(file)
 
 smalldata = 1
 if smalldata:
@@ -168,6 +173,8 @@ if smalldata:
     print(XGB60.predict(xtry))
     print('XGB240')
     print(XGB240.predict(xtry))
+    print('XGB480')
+    print(XGB480.predict(xtry))
 else:
     print("Loading data...")
     folder_path = r"C:\Users\20205209\OneDrive - TU Eindhoven\TUE\Code\BO Summer School Hasselt\BO windwake lab\Raw data of the EXPensive Optimization benchmark library (EXPObench)_2_all\Windwake_1000iter_10runs"
@@ -190,6 +197,8 @@ else:
     print(mean_absolute_error(y_train, XGB60.predict(xtry)))
     print('XGB240 MAE')
     print(mean_absolute_error(y_train, XGB240.predict(xtry)))
+    print('XGB480 MAE')
+    print(mean_absolute_error(y_train, XGB480.predict(xtry)))
 
 
 
