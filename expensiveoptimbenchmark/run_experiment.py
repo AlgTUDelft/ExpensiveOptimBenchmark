@@ -1,5 +1,6 @@
 import os
 import sys
+import pickle
 
 from itertools import product
 
@@ -155,6 +156,38 @@ def construct_hpo(params):
     instance_info_folder = params['--folder']
     return [HPOSFP(instance_info_folder)]
 
+class medClassifier:
+    def __init__(self, classifiers=None):
+        self.classifiers = classifiers
+
+    def predict(self, X):
+        self.predictions_ = list()
+        for classifier in self.classifiers:
+            try:
+                self.predictions_.append(classifier.predict(X)) #used for the random forest that is part of the ensemble
+            except:
+                import xgboost as xgb
+                X = xgb.DMatrix(X)
+                self.predictions_.append(classifier.predict(X)) #used for the XGBoost models that are part of the ensemble
+        import numpy as np
+        med1 = np.median(self.predictions_, axis=0) #median of predictions
+        mean1 = np.mean(self.predictions_, axis=0) #mean of predictions
+        out = med1 + np.random.rand()*np.abs(med1-mean1) #add more noise if median is far from mean, indicating more uncertainty, also all noise is positive to focus on minimizing parts with more certainty
+        return out
+
+def construct_WWsurrogate(params):
+    from problems.WWsurrogate import WWsurrogate
+    d = int(params['-d'])
+
+    # try:
+    Ensemblefile = r"Ensemble.pkl"
+    with open(Ensemblefile, 'rb') as file:
+        Ensemble = pickle.load(file)
+        #print('Loading Ensemble successful')
+    # except:
+    #     print('Error loading Ensemble.pkl, make sure this file is in the same folder as run_experiment.py.')
+    return [WWsurrogate(d=d, e=Ensemble)]
+
 # Summary of problems and their parameters.
 problems = {
     'tsp': {
@@ -263,6 +296,14 @@ problems = {
         'args': {'--folder'},
         'defaults': {},
         'constructor': construct_hpo
+    },
+    'WWsurrogate': {
+        'args': {'-d'},
+        'defaults': {
+            '-d': '10',
+            '-e': '0'
+        },
+        'constructor': construct_WWsurrogate
     }
 }
 
