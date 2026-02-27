@@ -188,6 +188,19 @@ def construct_WWsurrogate(params):
     #     print('Error loading Ensemble.pkl, make sure this file is in the same folder as run_experiment.py.')
     return [WWsurrogate(d=d, e=Ensemble)]
 
+def construct_WW_sorted_surrogate(params):
+    from problems.WW_sorted_surrogate import WW_sorted_surrogate
+    d = int(params['-d'])
+
+    # try:
+    Ensemblefile = r"Ensemble_sorted.pkl"
+    with open(Ensemblefile, 'rb') as file:
+        Ensemble = pickle.load(file)
+        #print('Loading Ensemble successful')
+    # except:
+    #     print('Error loading Ensemble.pkl, make sure this file is in the same folder as run_experiment.py.')
+    return [WW_sorted_surrogate(d=d, e=Ensemble)]
+
 # Summary of problems and their parameters.
 problems = {
     'tsp': {
@@ -304,6 +317,14 @@ problems = {
             '-e': '0'
         },
         'constructor': construct_WWsurrogate
+    },
+    'WW_sorted_surrogate': {
+        'args': {'-d'},
+        'defaults': {
+            '-d': '10',
+            '-e': '0'
+        },
+        'constructor': construct_WW_sorted_surrogate
     }
 }
 
