@@ -6,7 +6,7 @@ authors = ["Arthur <arthur.guijt12@gmail.com>", "Laurens <>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-wheel = "^0.34.2"
+wheel = "^0.38.1"
 numpy = "^1.18.4"
 hyperopt = "^0.2.4"
 smac = {version="^0.12.2", optional=true}
