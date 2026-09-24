@@ -29,7 +29,7 @@ def sort2d(xx):
 def from_2d_to_vec(xx):
     # transform back from 2D coordinates to vector values
     num_turbines = 5  # number of wind turbines
-    xx = np.concatenate((np.reshape(xx[:,0], (1,num_turbines)), np.reshape(xx[:,1], (1,num_turbines))))
+    xx = np.concatenate((np.reshape(xx[:,0], (1,num_turbines)), np.reshape(xx[:,1], (1,num_turbines))),axis=1)
     return xx[0]
 
 def sort2d_full(xx):
