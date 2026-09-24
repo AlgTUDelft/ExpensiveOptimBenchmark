@@ -17,19 +17,19 @@ def to_np(xx):
 def vec_to_2d(xx):
     # transform from vector values to 2D coordinates
     num_turbines = 5  # number of wind turbines
-    xx = np.reshape(xx, (num_turbines, 2))
+    xx = np.reshape(xx, (2, num_turbines))
+    xx = np.transpose(xx)
     return xx
 
 def sort2d(xx):
     # sort wind turbines from left to right
-    # xx = np.transpose(xx) # so that x[0,:]
     ind = np.lexsort((xx[:, 1], xx[:, 0]))
     return xx[ind]
 
 def from_2d_to_vec(xx):
     # transform back from 2D coordinates to vector values
     num_turbines = 5  # number of wind turbines
-    xx = np.reshape(xx, (1, num_turbines * 2))
+    xx = np.concatenate((np.reshape(xx[:,0], (1,num_turbines)), np.reshape(xx[:,1], (1,num_turbines))))
     return xx[0]
 
 def sort2d_full(xx):
@@ -76,3 +76,14 @@ print(evaluate_WWensemble(x1))
 
 x2 = [0.4482183477205983, 0.027409116218383683, 0.25874372878562424, 0.6394764496282036, 1.0, 0.0, 1.0, 0.4692043394584843, 0.566542139621032, 0.0]
 print(evaluate_WWensemble(x2))
+
+# good solution of about 71 GWh
+x3 = [0.021946399792690363,0.14758613294341658, 0.5527813580504545, 0.8365883772315181,0.9889926312512337, 0.9935644172435926, 0.07890115878277747,0.2889801154078123,0.9925503140918277,4148795881645418]
+print(evaluate_WWensemble(x3))
+
+x4 = [np.float64(0.5561898390342438), np.float64(0.8006886197578583), np.float64(0.24212881638026462), np.float64(0.5614968582664879), np.float64(0.8195496761384983), np.float64(0.7511574305317662), np.float64(0.7398266355358496), np.float64(0.22941958927880024), np.float64(0.5207337011354721), np.float64(0.9267783983342328)]
+print(evaluate_WWensemble(x4))
+
+#74GWh in simulator:
+x5 = [0.039602075085971904, 0.9345808188563574, 0.10123332612146797, 0.5039334697500139, 0.9883610447867386, 0.24460605636236385, 0.04091102244130369, 0.9675233394185299, 0.12457466692504467, 0.9958827777647239]
+print(evaluate_WWensemble(x5))

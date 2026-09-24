@@ -46,7 +46,8 @@ class WW_sorted_surrogate(BaseProblem):
     def vec_to_2d(self,xx):
         # transform from vector values to 2D coordinates
         num_turbines = 5  # number of wind turbines
-        xx = np.reshape(xx, (num_turbines, 2))
+        xx = np.reshape(xx, (2, num_turbines))
+        xx = np.transpose(xx)
         return xx
 
     def sort2d(self,xx):
@@ -58,7 +59,7 @@ class WW_sorted_surrogate(BaseProblem):
     def from_2d_to_vec(self,xx):
         # transform back from 2D coordinates to vector values
         num_turbines = 5  # number of wind turbines
-        xx = np.reshape(xx, (1, num_turbines * 2))
+        xx = np.concatenate((np.reshape(xx[:,0], (1,num_turbines)), np.reshape(xx[:,1], (1,num_turbines))))
         return xx[0]
 
     def sort2d_full(self,xx):
@@ -69,7 +70,8 @@ class WW_sorted_surrogate(BaseProblem):
     def constraint1(self,x):
         rotor_diameter = 126  # in meters
         farm_length = 333.33 * 5  # in meters
-        coords = np.resize(x, (5, 2))
+        coords = np.resize(x, (2, 5))
+        coords = np.transpose(coords)
         min_dist = 999999  # minimum distance between turbines (Euclidean)
 
         for turb in range(4):
@@ -142,3 +144,13 @@ class WW_sorted_surrogate(BaseProblem):
 # t1 = time.time()
 # print(evaluate_WWensemble(x2))
 # print('time: ', t1 - t0)
+
+
+# Try out the class
+# # too close with wrong encoding, good with good encoding
+# x1 = [0, 0, 0.3, 1, 1,   0, 0.7, 1, 0.3, 1]
+# print('hi', self.constraint1(x1))
+#
+# # too close with good encoding, good with bad encoding
+# x2 = [0, 0, 0, 0.5, 1,   1, 1, 0, 1, 0.5]
+# print('hi', self.constraint1(x2))
